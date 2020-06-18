@@ -1,7 +1,7 @@
 # AGMPowerCLI
 A Powershell module for Powershell V7 for Actifio Global Manager.
 
-It is currently limited in function and is considered beta.
+It is currently very limited in function and is considered beta.
 
 
 ### What versions of PowerShell will this module work with?
