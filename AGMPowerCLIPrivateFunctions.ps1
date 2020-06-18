@@ -1,28 +1,10 @@
-# this function prevents errors trying to  run commands without these variables set.
-Function Test-AGMConnection
-{
-    <#
-    .SYNOPSIS
-    This is an internal function used to test if parms exist to connect to an appliance.  You do not use this function directly
-    #>
-
-
-    if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
-    {
-        Write-host ""
-        Write-Host "Error"
-        Write-Host "-----"
-        Write-Host "Not logged in or session expired. Please login using Connect-AGM"
-        Write-Host ""
-        break;
-    }
-}
-
-
 Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search, [int]$timeout, $endpoint,[switch][alias("o")]$options)
 {
-
-    Test-AGMConnection
+    if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
+    {
+        Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM"
+        return
+    }
 
     if (!($endpoint))
     {
@@ -67,7 +49,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                 $fv = $fv + "&filter=" + $firstword + ":=|" + [System.Web.HttpUtility]::UrlEncode($secondwordfuzzy)
             }
         }
-        $fv
+        # $fv
     }
     else
     {
@@ -152,7 +134,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             {
                 $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
             }
-            }
+        }
             Catch
             {
                 $RestError = $_
@@ -167,7 +149,10 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             {
                 if ($options)
                 {
-                    $resp | ConvertTo-Json
+                    $grab = $resp | ConvertTo-JSON | ConvertFrom-Json -AsHashtable
+                    $grab1 = $grab.Values.filterablefields.Split("@{field=") | select -skip 1 
+                    $grab2 = $grab1 -notmatch '^\s*$'
+                    $grab2 -replace "}"
                 }
                 else 
                 {
@@ -232,3 +217,83 @@ Function Test-AGMJSON()
     }
 }
 
+function Get-AGMErrorMessage ([string]$messagetoprint)
+{
+
+        $acterror = @()
+        $acterrorcol = "" | Select errormessage
+        $acterrorcol.errormessage = "$messagetoprint"
+        $acterror = $acterror + $acterrorcol
+        $acterror
+}
+
+
+Function Remove-AGMAPIData ([int]$timeout, $endpoint,[switch][alias("d")]$delete,[switch][alias("f")]$force,[switch][alias("r")]$remove)
+{
+    if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
+    {
+        Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM"
+        return
+    }
+
+    if (!($endpoint))
+    {
+        $endpoint = Read-Host "AGM End point"
+    }
+
+    if ($endpoint[0] -ne "/")
+    {
+        $endpoint = "/" + $endpoint
+    }
+
+    # default of 15 seconds may be too short
+    if (!($timeout))
+    {
+        $timeout = 15
+    }
+
+    # we need to set the method
+    $method = "Post"
+
+    #this is the body
+    $body = 'accept: */*'
+    $json = $body | ConvertTo-Json
+
+    # time to send out endpoint   =
+    Try
+    {
+        $url = "https://$AGMIP/actifio" + "$endpoint"  
+        # write-host "we are going to use this method: $method     with this url: $url"
+        if ($IGNOREAGMCERTS)
+        {
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID"; accept = "application/json" }  -Uri "$url" -TimeoutSec $timeout 
+        }
+        else
+        {
+            $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" }  -Uri "$url" -TimeoutSec $timeout 
+        }
+    }
+    Catch
+    {
+        $RestError = $_
+    }
+    if ($RestError)
+    {
+        Test-AGMJSON $RestError 
+    }
+    else
+    {
+        $resp
+        if (!($resp))
+        {
+            Write-host "No output was returned but no error occurred."
+        }
+        return
+    } 
+}
+
+
+Function Convert-FromUnixDate ($UnixDate) 
+{
+   [timezone]::CurrentTimeZone.ToLocalTime(([datetime]'1/1/1970').AddSeconds($UnixDate.ToString().SubString(0,10))).ToUniversalTime().ToString('yyyy-MM-dd HH:mm:ss')
+}

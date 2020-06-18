@@ -53,12 +53,12 @@ function Connect-AGM
         }
         if ($RestError -like "The operation was canceled.")
         {
-            Write-Host "No response was received from $agmip after 15 seconds"
+            Get-AGMErrorMessage -messagetoprint "No response was received from $agmip after 15 seconds"
             return;
         }
         elseif ($RestError -like "Connection refused")
         {
-            Write-Host "Connection refused received from $agmip"
+            Get-AGMErrorMessage -messagetoprint "Connection refused received from $agmip"
             return;
         }
         elseif ($RestError)
@@ -114,7 +114,7 @@ function Connect-AGM
         }
         else
         {
-            Write-Error "Password file: $passwordfile could not be opened."
+            Get-AGMErrorMessage -messagetoprint "Password file: $passwordfile could not be opened."
             return;
         }
     }
@@ -131,9 +131,32 @@ function Connect-AGM
     {
         $RestError = $_
     }
-    if ($RestError)
+    if ($RestError -like "The operation was canceled.")
     {
-        Test-AGMJSON $RestError
+        Get-AGMErrorMessage -messagetoprint "No response was received from $agmip after 15 seconds"
+        return;
+    }
+    elseif ($RestError -like "Connection refused")
+    {
+        Get-AGMErrorMessage -messagetoprint "Connection refused received from $agmip"
+        return;
+    }
+    elseif ($RestError)
+    {
+        $loginfailedsniff = Test-AGMJSON $RestError
+        if ($loginfailedsniff.err_code -eq "10011")
+        {
+            $agmerror = @()
+            $agmerrorcol = "" | Select err_code,errormessage
+            [int]$agmerrorcol.err_code = "10011"
+            $agmerrorcol.errormessage = "Login failed"
+            $agmerror = $agmerror + $agmerrorcol
+            $agmerror
+        }
+        else
+        {
+            $loginfailedsniff
+        }
     }
     else
     {
@@ -258,7 +281,7 @@ Function Save-AGMPassword([string]$filename)
 	# if the filename already exists. don't overwrite it. error and exit.
 	if ( Test-Path $filename ) 
 	{
-		Write-Error "The file: $filename already exists. Please delete it first.";
+		Get-AGMErrorMessage -messagetoprint "The file: $filename already exists. Please delete it first.";
 		return;
 	}
 
@@ -269,12 +292,12 @@ Function Save-AGMPassword([string]$filename)
 
 	if ( $? )
 	{
-		echo "Password saved to $filename."
-		echo "You may now use -passwordfile with Connect-AGM to provide a saved password file."
+		Write-Host "Password saved to $filename."
+		Write-Host "You may now use -passwordfile with Connect-AGM to provide a saved password file."
 	}
 	else 
 	{
-		Write-Error "An error occurred in saving the password";
+		Get-AGMErrorMessage -messagetoprint "An error occurred in saving the password";
 	}
 }
 

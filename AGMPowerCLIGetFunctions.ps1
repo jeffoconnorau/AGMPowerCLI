@@ -4,6 +4,16 @@ function Get-AGMVersion
     Get-AGMAPIData -endpoint /config/version
 }
 
+function Get-AGMVersionDetail
+{
+    $output = Get-AGMAPIData -endpoint /config/versiondetail
+    if ($output.installed)
+    {
+        $output.installed = Convert-FromUnixDate $output.installed
+    }
+    $output
+}
+
 function Get-AGMSession  ([String]$sessionid)
 {
     if ((!($sessionid)) -and (!($agmsessionid)))
@@ -21,11 +31,6 @@ function Get-AGMSession  ([String]$sessionid)
     }
 }
 
-function Get-AGMSystemInfo
-{
-    Get-AGMAPIData -endpoint /config/systeminfo
-}
-
 function Get-AGMUpgradeHistory
 {
     Get-AGMAPIData -endpoint /config/upgradehistory
@@ -34,14 +39,6 @@ function Get-AGMUpgradeHistory
 function Get-AGMLDAPConfig
 {
     Get-AGMAPIData -endpoint /ldap/config
-}
-
-function Get-AGMLDAPGroupDetail ([String]$ldapgroup)
-{
-    if ($ldapgroup)
-    {
-        Get-AGMAPIData -endpoint /ldap/server/group -search $ldapgroup
-    }
 }
 
 function Get-AGMLDAPGroup 
@@ -73,28 +70,49 @@ function Get-AGMApplication ([string]$filtervalue,[string]$keyword,[switch][alia
     }
 }
 
-
-function Get-AGMApplicationAppClass ([int]$appid)
+function Get-AGMApplicationActiveImage ([Parameter(Mandatory=$true)][int]$id)
 {
-    if ($appid)
+    if ($id)
     {
-        Get-AGMAPIData -endpoint /application/$appid/appclass
+        Get-AGMAPIData -endpoint /application/$id/activeimage
     }
 }
 
-function Get-AGMApplicationWorkflows ([int]$appid)
+function Get-AGMApplicationAppClass ([Parameter(Mandatory=$true)][int]$id)
 {
-    if ($appid)
+    if ($id)
     {
-        Get-AGMAPIData -endpoint /application/$appid/workflow
+        Get-AGMAPIData -endpoint /application/$id/appclass
     }
 }
 
-function Get-AGMApplicationWorkflowStatus ([int]$appid,[int]$workflowid)
+function Get-AGMApplicationBackup ([Parameter(Mandatory=$true)][int]$id)
 {
-    if (($appid) -and ($workflowid))
+    if ($id)
     {
-        Get-AGMAPIData -endpoint /application/$appid/workflow/$workflowid
+        Get-AGMAPIData -endpoint /application/$id/backup
+    }
+}
+
+function Get-AGMApplicationTypes 
+{
+    Get-AGMAPIData -endpoint /application/types
+}
+
+
+function Get-AGMApplicationWorkflow ([Parameter(Mandatory=$true)][int]$id)
+{
+    if ($id)
+    {
+        Get-AGMAPIData -endpoint /application/$id/workflow
+    }
+}
+
+function Get-AGMApplicationWorkflowStatus ([Parameter(Mandatory=$true)][int]$id,[Parameter(Mandatory=$true)][int]$workflowid)
+{
+    if (($id) -and ($workflowid))
+    {
+        Get-AGMAPIData -endpoint /application/$id/workflow/$workflowid
     }
 }
 
