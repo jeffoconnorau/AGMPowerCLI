@@ -37,8 +37,11 @@ To upgrade repeat the same process except you don't need to create the directory
 pwsh
 mkdir /opt/microsoft/powershell/7/Modules/AGMPowerCLI
 cd /opt/microsoft/powershell/7/Modules/AGMPowerCLI
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/ActPowerCLI-PS7/main/ActPowerCLI.psd1 -OutFile ActPowerCLI.psd1
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/ActPowerCLI-PS7/main/ActPowerCLI.psm1 -OutFile ActPowerCLI.psm1                  
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psd1 -OutFile AGMPowerCLI.psd1
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psm1 -OutFile AGMPowerCLI.psm1      
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIConnectFunctions.ps1	 -OutFile AGMPowerCLIConnectFunctions.ps1	
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIGetFunctions.ps1 -OutFile AGMPowerCLIGetFunctions.ps1
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIPrivateFunctions.ps1 -OutFile AGMPowerCLIPrivateFunctions.ps1           
 Connect-AGM
 ```
 
@@ -52,8 +55,11 @@ To upgrade repeat the same process except you don't need to create the directory
 pwsh
 mkdir ~/.local/share/powershell/Modules/AGMPowerCLI
 cd ~/.local/share/powershell/Modules/AGMPowerCLI
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/ActPowerCLI-PS7/main/ActPowerCLI.psd1 -OutFile ActPowerCLI.psd1
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/ActPowerCLI-PS7/main/ActPowerCLI.psm1 -OutFile ActPowerCLI.psm1                  
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psd1 -OutFile AGMPowerCLI.psd1
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psm1 -OutFile AGMPowerCLI.psm1      
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIConnectFunctions.ps1	 -OutFile AGMPowerCLIConnectFunctions.ps1	
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIGetFunctions.ps1 -OutFile AGMPowerCLIGetFunctions.ps1
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIPrivateFunctions.ps1 -OutFile AGMPowerCLIPrivateFunctions.ps1         
 Connect-AGM
 ```
 
@@ -67,8 +73,11 @@ To upgrade repeat the same process except you don't need to create the directory
 pwsh
 mkdir "C:\Program Files\PowerShell\7\Modules\AGMPowerCLI"
 cd "C:\Program Files\PowerShell\7\Modules\AGMPowerCLI"
-Invoke-WebRequest -Uri https://raw.githubusercontent.com/Actifio/ActPowerCLI-PS7/main/ActPowerCLI.psd1 -OutFile ActPowerCLI.psd1
-Invoke-WebRequest -Uri https://raw.githubusercontent.com/Actifio/ActPowerCLI-PS7/main/ActPowerCLI.psm1 -OutFile ActPowerCLI.psm1
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psd1 -OutFile AGMPowerCLI.psd1
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psm1 -OutFile AGMPowerCLI.psm1      
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIConnectFunctions.ps1	 -OutFile AGMPowerCLIConnectFunctions.ps1	
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIGetFunctions.ps1 -OutFile AGMPowerCLIGetFunctions.ps1
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIPrivateFunctions.ps1 -OutFile AGMPowerCLIPrivateFunctions.ps1
 Connect-AGM
 ```
 
@@ -134,6 +143,21 @@ Major  Minor  Build  Revision
 
 ### 7) Example commands
 
+There are four common options that may be available for a commnad (if shown with Get-Help)
+
+-id   This will fetch a specific ID
+-keyword   This is a case insensitive search of certain fields for a stated keyword.  This is useful for finding an object that has a unique value, like a unique DB name.  You  can only specify one keyword.
+-filtervalue   This is a filtering function.  To get a list of available filters, run the command with option -o.   The filters allow for searches using equals, less than, greater than or fuzzy.   To combine searches use & between each filter and encase the whole thing in double quotes.   Here are some examples:
+
+-filtervalue appname=smalldb          -->  Filter on appname
+-filtervalue "appname=smalldb&hostname=prodserver"  --> filter on appname and hostname
+-filtervalue id<10000    -->  filter on objects where the ID is less than 10000
+-filtervalue id>10000     -->  filter on objects where the ID is greater than 10000
+-filtervalue appname~smalldb   -->  fuzzy search for appname like smalldb,  so you could get SmallDb, smalldb1, smalldbold.
+
+
+
+
 
 
 ### 8)  Disconnect from your appliance
@@ -156,7 +180,7 @@ In the example below, we login and search for snapshot jobs and find there are o
 ```
 PS /Users/anthony/git/ActPowerCLI> Connect-Act 172.24.1.180 av -passwordfile avpass.key -ignorecerts
 Login Successful!
-PS /Users/anthony/git/ActPowerCLI> $jobs = Get-AGMJobHistory 
+PS /Users/anthony/git/ActPowerCLI> $jobs = Get-AGMJobHistory -filtervalue jobclass=snapshot
 PS /Users/anthony/git/ActPowerCLI> $jobs.jobname.count
 60231
 PS /Users/anthony/git/ActPowerCLI> Set-AGMAPILimit 100
