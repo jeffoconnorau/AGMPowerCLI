@@ -1,6 +1,8 @@
 # AGMPowerCLI
 A Powershell module for Powershell V7 for Actifio Global Manager.
 
+It is currently limited in function and is considered beta.
+
 
 ### What versions of PowerShell will this module work with?
 
@@ -37,7 +39,7 @@ mkdir /opt/microsoft/powershell/7/Modules/AGMPowerCLI
 cd /opt/microsoft/powershell/7/Modules/AGMPowerCLI
 Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/ActPowerCLI-PS7/main/ActPowerCLI.psd1 -OutFile ActPowerCLI.psd1
 Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/ActPowerCLI-PS7/main/ActPowerCLI.psm1 -OutFile ActPowerCLI.psm1                  
-Connect-Act 
+Connect-AGM
 ```
 
 #### Mac OS Install directions
@@ -52,7 +54,7 @@ mkdir ~/.local/share/powershell/Modules/AGMPowerCLI
 cd ~/.local/share/powershell/Modules/AGMPowerCLI
 Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/ActPowerCLI-PS7/main/ActPowerCLI.psd1 -OutFile ActPowerCLI.psd1
 Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/ActPowerCLI-PS7/main/ActPowerCLI.psm1 -OutFile ActPowerCLI.psm1                  
-Connect-Act 
+Connect-AGM
 ```
 
 #### Windows OS Install directions
@@ -67,12 +69,13 @@ mkdir "C:\Program Files\PowerShell\7\Modules\AGMPowerCLI"
 cd "C:\Program Files\PowerShell\7\Modules\AGMPowerCLI"
 Invoke-WebRequest -Uri https://raw.githubusercontent.com/Actifio/ActPowerCLI-PS7/main/ActPowerCLI.psd1 -OutFile ActPowerCLI.psd1
 Invoke-WebRequest -Uri https://raw.githubusercontent.com/Actifio/ActPowerCLI-PS7/main/ActPowerCLI.psm1 -OutFile ActPowerCLI.psm1
-Connect-Act 
+Connect-AGM
 ```
 
 
 ### 3)  Get some help
 
+Help may not exist yet for all functions
 
 List the available commands in the AGMPowerCLI module:
 ```
@@ -80,11 +83,11 @@ Get-Command -module AGMPowerCLI
 ```
 Find out the syntax and how you can use a specific command. For instance:
 ```
-Get-Help Connect-Act
+Get-Help Connect-AGM
 ```
 If you need some examples on the command:
 ```
-Get-Help Connect-Act -examples
+Get-Help Connect-AGM -examples
 ```
 
 ### 4)  Save your password
@@ -194,9 +197,9 @@ Unsuccessful login:
 ```
 PS /Users/anthony/git/ActPowerCLI> Connect-AGM 172.24.1.180 av password -i
 
-errormessage                               errorcode
-------------                               ---------
-Login failed.                              10011
+err_code errormessage
+-------- ------------
+   10011 Login failed
 
 PS /Users/anthony/git/ActPowerCLI> $?
 True
@@ -218,9 +221,9 @@ But an unsuccessful login can be 'seen'.
 PS /Users/anthony/git/ActPowerCLI> $loginattempt = Connect-AGM 172.24.1.180 av password -i -q
 PS /Users/anthony/git/ActPowerCLI> $loginattempt
 
-errormessage                               errorcode
-------------                               ---------
-java.lang.SecurityException: Login failed.     10011
+err_code errormessage
+-------- ------------
+   10011 Login failed
 
 PS /Users/anthony/git/ActPowerCLI> $loginattempt.errormessage
 java.lang.SecurityException: Login failed.
