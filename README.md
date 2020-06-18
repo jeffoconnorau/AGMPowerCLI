@@ -145,8 +145,13 @@ Major  Minor  Build  Revision
 
 There are four common options that may be available for a commnad (if shown with Get-Help)
 
+#### id search
 -id   This will fetch a specific ID
+
+#### keyword search
 -keyword   This is a case insensitive search of certain fields for a stated keyword.  This is useful for finding an object that has a unique value, like a unique DB name.  You  can only specify one keyword.
+
+#### filtering
 -filtervalue   This is a filtering function.  To get a list of available filters, run the command with option -o.   The filters allow for searches using equals, less than, greater than or fuzzy.   To combine searches use & between each filter and encase the whole thing in double quotes.   Here are some examples:
 
 -filtervalue appname=smalldb          -->  Filter on appname
@@ -155,8 +160,11 @@ There are four common options that may be available for a commnad (if shown with
 -filtervalue id>10000     -->  filter on objects where the ID is greater than 10000
 -filtervalue appname~smalldb   -->  fuzzy search for appname like smalldb,  so you could get SmallDb, smalldb1, smalldbold.
 
+#### Get-AGMApplication
 
+Fetch Applications to get their ID, protection status, host info.   In this example we know that smalldb3 is a unique value.
 
+Get-AGMApplication -keyword smalldb3
 
 
 
@@ -178,14 +186,14 @@ The module has no API limit which means if you run Get-AGMJobHistory you can eas
 In the example below, we login and search for snapshot jobs and find there are over sixty thousand.  A smart move would be to use more filters (such as date or appname), but we could also limit the number of results using an APIlimit, so we set it to 100 and only get 100 jobs back:
 
 ```
-PS /Users/anthony/git/ActPowerCLI> Connect-Act 172.24.1.180 av -passwordfile avpass.key -ignorecerts
+PS /Users/anthony/git/ActPowerCLI> Connect-Act 172.24.1.117 av -passwordfile avpass.key -ignorecerts
 Login Successful!
-PS /Users/anthony/git/ActPowerCLI> $jobs = Get-AGMJobHistory -filtervalue jobclass=snapshot
-PS /Users/anthony/git/ActPowerCLI> $jobs.jobname.count
-60231
-PS /Users/anthony/git/ActPowerCLI> Set-AGMAPILimit 100
-PS /Users/anthony/git/ActPowerCLI> $jobs = Get-AGMJobHistory 
-PS /Users/anthony/git/ActPowerCLI> $jobs.jobname.count
+PS /Users/anthony/git/AGMPowerCLI> $jobs = Get-AGMJobHistory -filtervalue jobclass=snapshot
+PS /Users/anthony/git/AGMPowerCLI> $jobs.id.count
+32426
+PS /Users/anthony/git/AGMPowerCLI> Set-AGMAPILimit 100
+PS /Users/anthony/git/AGMPowerCLI> $jobs = Get-AGMJobHistory -filtervalue jobclass=snapshot
+PS /Users/anthony/git/AGMPowerCLI> $jobs.id.count
 100
 ```
 
