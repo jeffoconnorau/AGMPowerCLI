@@ -154,11 +154,33 @@ There are four common options that may be available for a commnad (if shown with
 #### filtering
 -filtervalue   This is a filtering function.  To get a list of available filters, run the command with option -o.   The filters allow for searches using equals, less than, greater than or fuzzy.   To combine searches use & between each filter and encase the whole thing in double quotes.   Here are some examples:
 
+```
 -filtervalue appname=smalldb          -->  Filter on appname
 -filtervalue "appname=smalldb&hostname=prodserver"  --> filter on appname and hostname
 -filtervalue id<10000    -->  filter on objects where the ID is less than 10000
 -filtervalue id>10000     -->  filter on objects where the ID is greater than 10000
 -filtervalue appname~smalldb   -->  fuzzy search for appname like smalldb,  so you could get SmallDb, smalldb1, smalldbold.
+```
+
+#### API Limit
+
+The module has no API limit which means if you run Get-AGMJobHistory you can easily get results in the thousands or millions.   So we added a command to prevent giant lookups by setting a limit on the number of returned objects, although by default this limit is off.  You can set the limit with:   Set-AGMAPILimit
+
+In the example below, we login and search for snapshot jobs and find there are over sixty thousand.  A smart move would be to use more filters (such as date or appname), but we could also limit the number of results using an APIlimit, so we set it to 100 and only get 100 jobs back:
+
+```
+PS /Users/anthony/git/ActPowerCLI> Connect-Act 172.24.1.117 av -passwordfile avpass.key -ignorecerts
+Login Successful!
+PS /Users/anthony/git/AGMPowerCLI> $jobs = Get-AGMJobHistory -filtervalue jobclass=snapshot
+PS /Users/anthony/git/AGMPowerCLI> $jobs.id.count
+32426
+PS /Users/anthony/git/AGMPowerCLI> Set-AGMAPILimit 100
+PS /Users/anthony/git/AGMPowerCLI> $jobs = Get-AGMJobHistory -filtervalue jobclass=snapshot
+PS /Users/anthony/git/AGMPowerCLI> $jobs.id.count
+100
+```
+
+You can reset the limit to 'unlimited' by setting it to '0'.
 
 #### Get-AGMApplication
 
@@ -179,25 +201,7 @@ Disconnect-AGM
 # What else do I need to know?
 
 
-## API Limit
 
-The module has no API limit which means if you run Get-AGMJobHistory you can easily get results in the thousands or millions.   So we added a command to prevent giant lookups by setting a limit on the number of returned objects, although by default this limit is off.  You can set the limit with:   Set-AGMAPILimit
-
-In the example below, we login and search for snapshot jobs and find there are over sixty thousand.  A smart move would be to use more filters (such as date or appname), but we could also limit the number of results using an APIlimit, so we set it to 100 and only get 100 jobs back:
-
-```
-PS /Users/anthony/git/ActPowerCLI> Connect-Act 172.24.1.117 av -passwordfile avpass.key -ignorecerts
-Login Successful!
-PS /Users/anthony/git/AGMPowerCLI> $jobs = Get-AGMJobHistory -filtervalue jobclass=snapshot
-PS /Users/anthony/git/AGMPowerCLI> $jobs.id.count
-32426
-PS /Users/anthony/git/AGMPowerCLI> Set-AGMAPILimit 100
-PS /Users/anthony/git/AGMPowerCLI> $jobs = Get-AGMJobHistory -filtervalue jobclass=snapshot
-PS /Users/anthony/git/AGMPowerCLI> $jobs.id.count
-100
-```
-
-You can reset the limit to 'unlimited' by setting it to '0'.
 
 ## Out-GridView for Mac
 
