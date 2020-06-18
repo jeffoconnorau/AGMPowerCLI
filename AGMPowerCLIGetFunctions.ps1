@@ -116,6 +116,55 @@ function Get-AGMApplicationWorkflowStatus ([Parameter(Mandatory=$true)][int]$id,
     }
 }
 
+# Consistency group
+
+function Get-AGMConsistencyGroup ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
+{
+    if ($options)
+    { 
+        Get-AGMAPIData -endpoint /consistencygroup -o
+    }
+    elseif ($id)
+    { 
+        Get-AGMAPIData -endpoint /consistencygroup/$id
+    }
+    elseif ($filtervalue)
+    {
+        Get-AGMAPIData -endpoint /consistencygroup -filtervalue $filtervalue
+    }
+    else
+    {
+        Get-AGMAPIData -endpoint /consistencygroup
+    }
+}
+
+# Disk pool
+
+function Get-AGMDiskPool([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
+{
+    if ($options)
+    { 
+        Get-AGMAPIData -endpoint /diskpool -o
+    }
+    elseif ($id)
+    { 
+        Get-AGMAPIData -endpoint /diskpool/$id
+    }
+    elseif ($filtervalue)
+    {
+        Get-AGMAPIData -endpoint /diskpool -filtervalue $filtervalue
+    }
+    elseif ($keyword)
+    {
+        Get-AGMAPIData -endpoint /diskpool -keyword $keyword   
+    } 
+    else
+    {
+        Get-AGMAPIData -endpoint /diskpool
+    }
+}
+
+
 #SLT 
 function Get-AGMSLT ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
 {
