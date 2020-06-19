@@ -1,0 +1,18 @@
+# Changelog
+All notable changes to AGMPowerCLI will be documented in this file
+
+## [0.0.0.2] 2020-06-19
+Convert all displayed dates from Epoch to local time or UTC in ISO 8601 format
+Create method for user to indicate if they want to work in their local TZ or UTC
+Support filtervalue using ISO 8601 dates
+Added the following functions:
+
+'Get-AGMAudit',
+'Get-AGMLogicalGroup', 
+'Get-AGMLogicalGroupMember',
+'Get-AGMTimeZoneHandling',
+'Set-AGMAPILimit',
+'Set-AGMTimeZoneHandling'
+
+## [0.0.0.1] 2020-06-18
+Initial upload
