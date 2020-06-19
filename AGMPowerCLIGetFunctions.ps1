@@ -2,6 +2,7 @@
 
 function Get-AGMAppliance ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "syncdate"
     if ($options)
     { 
         Get-AGMAPIData -endpoint /cluster -o
@@ -9,15 +10,15 @@ function Get-AGMAppliance ([string]$filtervalue,[switch][alias("o")]$options,[st
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /cluster/$id
+        Get-AGMAPIData -endpoint /cluster/$id -datefields $datefields
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /cluster -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /cluster -filtervalue $filtervalue -datefields $datefields
     }
     else
     {
-        Get-AGMAPIData -endpoint /cluster
+        Get-AGMAPIData -endpoint /cluster -datefields $datefields
     }
 }
 
@@ -25,33 +26,35 @@ function Get-AGMAppliance ([string]$filtervalue,[switch][alias("o")]$options,[st
 
 function Get-AGMApplication ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "syncdate"
     if ($options)
     { 
         Get-AGMAPIData -endpoint /application -o
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /application/$id
+        Get-AGMAPIData -endpoint /application/$id -datefields $datefields
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /application -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /application -filtervalue $filtervalue -datefields $datefields
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /application -keyword $keyword   
+        Get-AGMAPIData -endpoint /application -keyword $keyword -datefields $datefields    
     } 
     else
     {
-        Get-AGMAPIData -endpoint /application
+        Get-AGMAPIData -endpoint /application -datefields $datefields
     }
 }
 
 function Get-AGMApplicationActiveImage ([Parameter(Mandatory=$true)][int]$id)
 {
+    $datefields = "backupdate,modifydate,consistencydate"
     if ($id)
     {
-        Get-AGMAPIData -endpoint /application/$id/activeimage
+        Get-AGMAPIData -endpoint /application/$id/activeimage -datefields $datefields
     }
 }
 
@@ -65,9 +68,10 @@ function Get-AGMApplicationAppClass ([Parameter(Mandatory=$true)][int]$id)
 
 function Get-AGMApplicationBackup ([Parameter(Mandatory=$true)][int]$id)
 {
+    $datefields = "backupdate,modifydate,consistencydate,beginpit,endpit"
     if ($id)
     {
-        Get-AGMAPIData -endpoint /application/$id/backup
+        Get-AGMAPIData -endpoint /application/$id/backup -datefields $datefields
     }
 }
 
@@ -93,25 +97,50 @@ function Get-AGMApplicationWorkflowStatus ([Parameter(Mandatory=$true)][int]$id,
     }
 }
 
+# Audit
+function Get-AGMAudit ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
+{
+    $datefields = "issuedate"
+    if ($options)
+    { 
+        Get-AGMAPIData -endpoint /localaudit -o
+    }
+    elseif ($id)
+    { 
+        Get-AGMAPIData -endpoint /localaudit/$id -datefields $datefields
+    }
+    elseif ($filtervalue)
+    {
+        Get-AGMAPIData -endpoint /localaudit -filtervalue $filtervalue -datefields $datefields
+    }
+    else
+    {
+        Get-AGMAPIData -endpoint /localaudit -datefields $datefields
+    }
+}
+
+
+
 # Consistency group
 
 function Get-AGMConsistencyGroup ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "syncdate"
     if ($options)
     { 
         Get-AGMAPIData -endpoint /consistencygroup -o
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /consistencygroup/$id
+        Get-AGMAPIData -endpoint /consistencygroup/$id -datefields $datefields
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /consistencygroup -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /consistencygroup -filtervalue $filtervalue -datefields $datefields
     }
     else
     {
-        Get-AGMAPIData -endpoint /consistencygroup
+        Get-AGMAPIData -endpoint /consistencygroup -datefields $datefields
     }
 }
 
@@ -119,25 +148,26 @@ function Get-AGMConsistencyGroup ([string]$filtervalue,[switch][alias("o")]$opti
 
 function Get-AGMDiskPool([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "modifydate"
     if ($options)
     { 
         Get-AGMAPIData -endpoint /diskpool -o
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /diskpool/$id
+        Get-AGMAPIData -endpoint /diskpool/$id -datefields $datefields
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /diskpool -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /diskpool -filtervalue $filtervalue -datefields $datefields
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /diskpool -keyword $keyword   
+        Get-AGMAPIData -endpoint /diskpool -keyword $keyword -datefields $datefields   
     } 
     else
     {
-        Get-AGMAPIData -endpoint /diskpool
+        Get-AGMAPIData -endpoint /diskpool -datefields $datefields
     }
 }
 
@@ -145,21 +175,22 @@ function Get-AGMDiskPool([string]$filtervalue,[string]$keyword,[switch][alias("o
 
 function Get-AGMEvent ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "eventdate,syncdate"
     if ($options)
     { 
         Get-AGMAPIData -endpoint /event -o
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /event/$id
+        Get-AGMAPIData -endpoint /event/$id -datefields $datefields
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /event -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /event -filtervalue $filtervalue -datefields $datefields
     }
     else
     {
-        Get-AGMAPIData -endpoint /event
+        Get-AGMAPIData -endpoint /event -datefields $datefields
     }
 }
 
@@ -167,25 +198,26 @@ function Get-AGMEvent ([string]$filtervalue,[switch][alias("o")]$options,[string
 
 function Get-AGMHost ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "modifydate,syncdate"
     if ($options)
     { 
         Get-AGMAPIData -endpoint /host -o       
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /host/$id
+        Get-AGMAPIData -endpoint /host/$id -datefields $datefields
     }
     elseif ($filtervalue)
     { 
-        Get-AGMAPIData -endpoint /host -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /host -filtervalue $filtervalue -datefields $datefields
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /host -keyword $keyword   
+        Get-AGMAPIData -endpoint /host -keyword $keyword -datefields $datefields
     } 
     else
     {
-        Get-AGMAPIData -endpoint /host
+        Get-AGMAPIData -endpoint /host -datefields $datefields
     }
 }
 
@@ -193,25 +225,27 @@ function Get-AGMHost ([string]$filtervalue,[string]$keyword,[switch][alias("o")]
 
 function Get-AGMImage ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "backupdate,modifydate,consistencydate,expiration,beginpit,endpit"
+    #$datefields = ""
     if ($options)
     { 
         Get-AGMAPIData -endpoint /backup -o
     }
     elseif ($id)
     {
-        Get-AGMAPIData -endpoint /backup/$id
+        Get-AGMAPIData -endpoint /backup/$id -datefields $datefields
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /backup -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /backup -filtervalue $filtervalue -datefields $datefields
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /backup -keyword $keyword   
+        Get-AGMAPIData -endpoint /backup -keyword $keyword -datefields $datefields    
     } 
     else
     {
-        Get-AGMAPIData -endpoint /backup
+        Get-AGMAPIData -endpoint /backup -datefields $datefields
     }
 }
 
@@ -219,25 +253,26 @@ function Get-AGMImage ([string]$filtervalue,[string]$keyword,[switch][alias("o")
 
 function Get-AGMJob ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "queuedate,expirationdate,startdate"
     if ($options)
     { 
         Get-AGMAPIData -endpoint /job -o
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /job/$id
+        Get-AGMAPIData -endpoint /job/$id -datefields $datefields
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /job -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /job -filtervalue $filtervalue -datefields $datefields
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /job -keyword $keyword   
+        Get-AGMAPIData -endpoint /job -keyword $keyword -datefields $datefields
     } 
     else
     {
-        Get-AGMAPIData -endpoint /job
+        Get-AGMAPIData -endpoint /job -datefields $datefields
     }
 }
 
@@ -251,21 +286,22 @@ function Get-AGMJobCountSummary
 
 function Get-AGMJobHistory ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options)
 {
+    $datefields = "queuedate,expirationdate,startdate,consistencydate,enddate"
     if ($options)
     { 
         Get-AGMAPIData -endpoint /jobhistory -o 
     }
     elseif ($filtervalue)
     { 
-        Get-AGMAPIData -endpoint /jobhistory -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /jobhistory -filtervalue $filtervalue -datefields $datefields
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /jobhistory -keyword $keyword   
+        Get-AGMAPIData -endpoint /jobhistory -keyword $keyword -datefields $datefields   
     } 
     else
     {
-        Get-AGMAPIData -endpoint /jobhistory 
+        Get-AGMAPIData -endpoint /jobhistory -datefields $datefields
     }
 }
 
@@ -281,29 +317,64 @@ function Get-AGMLDAPGroup
         Get-AGMAPIData -endpoint /ldap/group
 }
 
+# Logical group
+
+function Get-AGMLogicalGroup ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
+{
+    $datefields = "modifydate,syncdate"
+    if ($options)
+    { 
+        Get-AGMAPIData -endpoint /logicalgroup -o
+    }
+    elseif ($id)
+    { 
+        Get-AGMAPIData -endpoint /logicalgroup/$id -datefields $datefields
+    }
+    elseif ($filtervalue)
+    {
+        Get-AGMAPIData -endpoint /logicalgroup -filtervalue $filtervalue -datefields $datefields
+    }
+    else
+    {
+        Get-AGMAPIData -endpoint /logicalgroup -datefields $datefields
+    }
+}
+
+
+
+function Get-AGMLogicalGroupMember ([Parameter(Mandatory=$true)][int]$id)
+{
+    if ($id)
+    {
+        Get-AGMAPIData -endpoint /logicalgroup/$id/member
+    }
+}
+
+
 #org
 
 function Get-AGMOrg ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "modifydate,createdate"
     if ($options)
     { 
         Get-AGMAPIData -endpoint /org -o
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /org/$id
+        Get-AGMAPIData -endpoint /org/$id -datefields $datefields
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /org -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /org -filtervalue $filtervalue -datefields $datefields
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /org -keyword $keyword   
+        Get-AGMAPIData -endpoint /org -keyword $keyword -datefields $datefields  
     } 
     else
     {
-        Get-AGMAPIData -endpoint /org
+        Get-AGMAPIData -endpoint /org -datefields $datefields
     }
 }
 
@@ -338,25 +409,26 @@ function Get-AGMRight ([string]$filtervalue,[string]$keyword,[switch][alias("o")
 
 function Get-AGMRole ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "createdate"
     if ($options)
     { 
         Get-AGMAPIData -endpoint /role -o
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /role/$id
+        Get-AGMAPIData -endpoint /role/$id -datefields $datefields
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /role -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /role -filtervalue $filtervalue -datefields $datefields
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /role -keyword $keyword   
+        Get-AGMAPIData -endpoint /role -keyword $keyword -datefields $datefields  
     } 
     else
     {
-        Get-AGMAPIData -endpoint /role
+        Get-AGMAPIData -endpoint /role -datefields $datefields
     }
 }
 
@@ -383,43 +455,45 @@ function Get-AGMSession  ([String]$sessionid)
 
 function Get-AGMSLA ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "modifydate,syncdate"
     if ($options)
     { 
         Get-AGMAPIData -endpoint /sla -o
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /sla/$id
+        Get-AGMAPIData -endpoint /sla/$id -datefields $datefields
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /sla -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /sla -filtervalue $filtervalue -datefields $datefields
     }
     else
     {
-        Get-AGMAPIData -endpoint /sla
+        Get-AGMAPIData -endpoint /sla -datefields $datefields
     }
 }
 
 #SLP 
 function Get-AGMSLP ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "modifydate,syncdate,createdate"
     if ($options)
     { 
         Get-AGMAPIData -endpoint /slp -o
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /slp/$id
+        Get-AGMAPIData -endpoint /slp/$id -datefields $datefields
         
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /slp -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /slp -filtervalue $filtervalue -datefields $datefields
     }
     else
     {
-        Get-AGMAPIData -endpoint /slp
+        Get-AGMAPIData -endpoint /slp -datefields $datefields
     }
 }
 
@@ -456,27 +530,24 @@ function Get-AGMUpgradeHistory
 
 #user
 
-function Get-AGMUser ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
+function Get-AGMUser ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
 {
+    $datefields = "createdate"
     if ($options)
     { 
-        Get-AGMAPIData -endpoint /user -o
+        Get-AGMAPIData -endpoint /user -o 
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /user/$id
+        Get-AGMAPIData -endpoint /user/$id -datefields $datefields
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /user -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /user -filtervalue $filtervalue -datefields $datefields
     }
-    elseif ($keyword)
-    {
-        Get-AGMAPIData -endpoint /user -keyword $keyword   
-    } 
     else
     {
-        Get-AGMAPIData -endpoint /user
+        Get-AGMAPIData -endpoint /user -datefields $datefields
     }
 }
 
@@ -491,12 +562,8 @@ function Get-AGMVersion
 
 function Get-AGMVersionDetail
 {
-    $output = Get-AGMAPIData -endpoint /config/versiondetail
-    if ($output.installed)
-    {
-        $output.installed = Convert-FromUnixDate $output.installed
-    }
-    $output
+    $datefields = "installed"
+    Get-AGMAPIData -endpoint /config/versiondetail -datefields $datefields
 }
 
 #workflow

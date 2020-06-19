@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.1'
+ModuleVersion = '0.0.0.2'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -80,6 +80,7 @@ FunctionsToExport = @(
     'Get-AGMApplicationTypes',
     'Get-AGMApplicationWorkflow',
     'Get-AGMApplicationWorkflowStatus',
+    'Get-AGMAudit',
     'Get-AGMConsistencyGroup',
     'Get-AGMDiskPool',
     'Get-AGMEvent',
@@ -90,6 +91,8 @@ FunctionsToExport = @(
     'Get-AGMJobHistory',
     'Get-AGMLDAPConfig',
     'Get-AGMLDAPGroup',
+    'Get-AGMLogicalGroup',
+    'Get-AGMLogicalGroupMember',
     'Get-AGMOrg',
     'Get-AGMRight',
     'Get-AGMRole',
@@ -97,13 +100,15 @@ FunctionsToExport = @(
     'Get-AGMSLT',
     'Get-AGMSLP',
     'Get-AGMSLA',
+    'Get-AGMTimeZoneHandling',
     'Get-AGMUpgradeHistory',
     'Get-AGMUser',
     'Get-AGMVersion',
     'Get-AGMVersionDetail',
     'Get-AGMWorkflow',
     'Save-AGMPassword',
-    'Set-AGMAPILimit')
+    'Set-AGMAPILimit',
+    'Set-AGMTimeZoneHandling')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = '*'

@@ -1,4 +1,4 @@
-Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search, [int]$timeout, $endpoint,[switch][alias("o")]$options)
+Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search, [int]$timeout, $endpoint,[switch][alias("o")]$options,[string]$datefields)
 {
     if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
     {
@@ -31,25 +31,65 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             if ($secondwordequals)
             {
                 $firstword = $trimm.Split("=") | Select -First 1
+                if ($datefields)
+                {
+                    foreach ($field in $datefields.Split(","))
+                    {
+                        if ($field -eq $firstword)
+                        {
+                            $secondwordequals = Convert-ToUnixDate $secondwordequals
+                        }
+                    }
+                }
                 $fv = $fv + "&filter=" + $firstword + ":==" + [System.Web.HttpUtility]::UrlEncode($secondwordequals)
             }
             elseif ($secondwordgreater)
             {
                 $firstword = $trimm.Split(">") | Select -First 1
+                if ($datefields)
+                {
+                    foreach ($field in $datefields.Split(","))
+                    {
+                        if ($field -eq $firstword)
+                        {
+                            $secondwordgreater = Convert-ToUnixDate $secondwordgreater
+                        }
+                    }
+                }
                 $fv = $fv + "&filter=" + $firstword + ":>=" + [System.Web.HttpUtility]::UrlEncode($secondwordgreater)
             }
             elseif ($secondwordlesser)
             {
                 $firstword = $trimm.Split("<") | Select -First 1
+                if ($datefields)
+                {
+                    foreach ($field in $datefields.Split(","))
+                    {
+                        if ($field -eq $firstword)
+                        {
+                            $secondwordlesser = Convert-ToUnixDate $secondwordlesser
+                        }
+                    }
+                }
                 $fv = $fv + "&filter=" + $firstword + ":<=" + [System.Web.HttpUtility]::UrlEncode($secondwordlesser)
             }
             elseif ($secondwordfuzzy)
             {
                 $firstword = $trimm.Split("~") | Select -First 1
+                if ($datefields)
+                {
+                    foreach ($field in $datefields.Split(","))
+                    {
+                        if ($field -eq $firstword)
+                        {
+                            $secondwordfuzzy = Convert-ToUnixDate $secondwordfuzzy
+                        }
+                    }
+                }
                 $fv = $fv + "&filter=" + $firstword + ":=|" + [System.Web.HttpUtility]::UrlEncode($secondwordfuzzy)
             }
         }
-        # $fv
+        #$fv
     }
     else
     {
@@ -117,7 +157,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
     {
         $method = "options"
     }
-   
+    
     # time to send out endpoint   
     $done = 0
     Do
@@ -156,6 +196,17 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                 }
                 else 
                 {
+                    # time stamp conversion
+                    if ($datefields)
+                    {
+                        foreach ($field in $datefields.Split(","))
+                        {
+                            if ($resp.$field)
+                            {
+                                $resp.$field = Convert-FromUnixDate $resp.$field
+                            }
+                        }
+                    }
                     $resp
                 }
                 
@@ -163,6 +214,22 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             }
             else
             {
+                if ($datefields)
+                {
+                    if ($resp.items)
+                    {
+                        foreach($line in $resp.items)
+                        {
+                            foreach ($field in $datefields.Split(","))
+                            {
+                                if ($line.$field)
+                                {
+                                    $line.$field = Convert-FromUnixDate $line.$field
+                                }
+                            }
+                        }
+                    }
+                }
                 $resp.items
             }
         }
@@ -295,5 +362,31 @@ Function Remove-AGMAPIData ([int]$timeout, $endpoint,[switch][alias("d")]$delete
 
 Function Convert-FromUnixDate ($UnixDate) 
 {
-   [timezone]::CurrentTimeZone.ToLocalTime(([datetime]'1/1/1970').AddSeconds($UnixDate.ToString().SubString(0,10))).ToUniversalTime().ToString('yyyy-MM-dd HH:mm:ss')
+    if ($AGMTimezone -eq "local")
+    {
+        [timezone]::CurrentTimeZone.ToLocalTime(([datetime]'1/1/1970').AddSeconds($UnixDate.ToString().SubString(0,10))).ToLocalTime().ToString('yyyy-MM-dd HH:mm:ss')
+    }
+    if ($AGMTimezone -eq "utc") 
+    {
+        [timezone]::CurrentTimeZone.ToLocalTime(([datetime]'1/1/1970').AddSeconds($UnixDate.ToString().SubString(0,10))).ToUniversalTime().ToString('yyyy-MM-dd HH:mm:ss')
+    }
+   
+}
+
+Function Convert-ToUnixDate ([datetime]$InputEpoch) 
+{
+    if ($AGMTimezone -eq "local")
+    {
+        [datetime]$Epoch = [timezone]::CurrentTimeZone.ToLocalTime([datetime]'1/1/1970')
+        $Ctime = (New-TimeSpan -Start $Epoch -End $InputEpoch).TotalSeconds
+        $Ctime = $Ctime * 1000000
+        $Ctime -as [decimal]
+    }
+    if ($AGMTimezone -eq "utc") 
+    {
+        [datetime]$Epoch = '1970-01-01 00:00:00'
+        $Ctime = (New-TimeSpan -Start $Epoch -End $InputEpoch).TotalSeconds
+        $Ctime = $Ctime * 1000000
+        $Ctime -as [decimal]
+    }
 }

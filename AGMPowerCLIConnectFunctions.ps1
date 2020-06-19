@@ -162,6 +162,7 @@ function Connect-AGM
     {
         $global:AGMSESSIONID = $resp.session_id
         $global:AGMIP = $agmip
+        $GLOBAL:AGMTimezone = "local"
         if ($quiet)
         {
             return
@@ -308,4 +309,35 @@ function Set-AGMAPILimit([Parameter(Mandatory = $true)]
 [ValidateRange("NonNegative")][int]$userapilimit )
 {
     $global:agmmaxapilimit = $userapilimit
+}
+
+
+# offer a way to control timezone used in output.  By default we use User local time for all data
+function Set-AGMTimeZoneHandling ([switch][alias("l")]$local,[switch][alias("u")]$utc)
+{
+    if ($utc)
+    {
+        $GLOBAL:AGMTimezone = "UTC"
+    }
+    if ($local)
+    {
+        $GLOBAL:AGMTimezone = "local"
+    }
+}
+
+function Get-AGMTimeZoneHandling 
+{
+    if (!($AGMTimezone))
+    {
+        Get-AGMErrorMessage -messagetoprint "Timezone handling has not been set-up.  Run Set-AGMTimeZoneHandling or Connect-Act";
+    }
+    elseif ($AGMTimezone -eq "local")
+    {
+        $currentlocal = Get-TimeZone
+        Write-Host "Currently timezone in use is $GLOBAL:AGMTimezone which is $currentlocal"
+    }
+    else 
+    {
+        Write-Host "Currently timezone in use is $GLOBAL:AGMTimezone"
+    }
 }
