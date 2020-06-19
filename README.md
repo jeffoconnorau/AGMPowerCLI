@@ -205,6 +205,44 @@ Disconnect-AGM
 # What else do I need to know?
 
 
+##  Time Zone handling
+
+By default all dates shown will be in the local session timezone as shown by Get-TimeZone.  There are two commands to help you:
+```
+Get-AGMTimeZoneHandling
+Set-AGMTimeZoneHandling -l
+Set-AGMTimeZoneHandling -u 
+```
+In this example we see timestamps are being shown in local TZ (Melbourne), so we switch to UTC and grab a date example:
+
+```
+PS /Users/anthony/git/AGMPowerCLI> Get-AGMTimeZoneHandling
+Currently timezone in use is local which is (UTC+10:00) Australian Eastern Standard Time
+PS /Users/anthony/git/AGMPowerCLI> Set-AGMTimeZoneHandling -u
+PS /Users/anthony/git/AGMPowerCLI> Get-AGMTimeZoneHandling
+Currently timezone in use is UTC
+PS /Users/anthony/git/AGMPowerCLI> Get-AGMUser -filtervalue name=av | select createdate
+
+createdate
+----------
+2020-06-19 00:28:07
+```
+We then switch the timestamps back to local and validate the output of the same command shows Melebourne local time:
+
+```
+PS /Users/anthony/git/AGMPowerCLI> Set-AGMTimeZoneHandling -l
+PS /Users/anthony/git/AGMPowerCLI> Get-AGMTimeZoneHandling
+Currently timezone in use is local which is (UTC+10:00) Australian Eastern Standard Time
+PS /Users/anthony/git/AGMPowerCLI> Get-AGMUser -filtervalue name=av | select createdate
+
+createdate
+----------
+2020-06-19 10:28:07
+```
+
+## Date field format
+
+All date fields are returned by AGM as EPOCH time (an offset from Jan 1, 1970).  The Module transforms these using the timezone discussed above.   If an EPOCH time is shown (which will be a long number), then this field has been missed and needs to be added to the transform effort.
 
 
 ## Out-GridView for Mac
