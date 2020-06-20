@@ -1,8 +1,17 @@
 #appliance
 
-function Get-AGMAppliance ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
+function Get-AGMAppliance ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "syncdate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /cluster -o
@@ -10,23 +19,32 @@ function Get-AGMAppliance ([string]$filtervalue,[switch][alias("o")]$options,[st
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /cluster/$id -datefields $datefields
+        Get-AGMAPIData -endpoint /cluster/$id -datefields $datefields 
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /cluster -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /cluster -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     else
     {
-        Get-AGMAPIData -endpoint /cluster -datefields $datefields
+        Get-AGMAPIData -endpoint /cluster -datefields $datefields -limit $limit -sort $sort
     }
 }
 
 # Application
 
-function Get-AGMApplication ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
+function Get-AGMApplication ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "syncdate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /application -o
@@ -37,24 +55,33 @@ function Get-AGMApplication ([string]$filtervalue,[string]$keyword,[switch][alia
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /application -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /application -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /application -keyword $keyword -datefields $datefields    
+        Get-AGMAPIData -endpoint /application -keyword $keyword -datefields $datefields -sort $sort
     } 
     else
     {
-        Get-AGMAPIData -endpoint /application -datefields $datefields
+        Get-AGMAPIData -endpoint /application -datefields $datefields -limit $limit -sort $sort
     }
 }
 
-function Get-AGMApplicationActiveImage ([Parameter(Mandatory=$true)][int]$id)
+function Get-AGMApplicationActiveImage ([Parameter(Mandatory=$true)][int]$id,[int]$limit,[string]$sort)
 {
     $datefields = "backupdate,modifydate,consistencydate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($id)
     {
-        Get-AGMAPIData -endpoint /application/$id/activeimage -datefields $datefields
+        Get-AGMAPIData -endpoint /application/$id/activeimage -datefields $datefields -limit $limit -sort $sort
     }
 }
 
@@ -66,12 +93,21 @@ function Get-AGMApplicationAppClass ([Parameter(Mandatory=$true)][int]$id)
     }
 }
 
-function Get-AGMApplicationBackup ([Parameter(Mandatory=$true)][int]$id)
+function Get-AGMApplicationBackup ([Parameter(Mandatory=$true)][int]$id,[int]$limit,[string]$sort)
 {
     $datefields = "backupdate,modifydate,consistencydate,beginpit,endpit"
+     # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($id)
     {
-        Get-AGMAPIData -endpoint /application/$id/backup -datefields $datefields
+        Get-AGMAPIData -endpoint /application/$id/backup -datefields $datefields -limit $limit -sort $sort
     }
 }
 
@@ -81,11 +117,15 @@ function Get-AGMApplicationTypes
 }
 
 
-function Get-AGMApplicationWorkflow ([Parameter(Mandatory=$true)][int]$id)
+function Get-AGMApplicationWorkflow ([Parameter(Mandatory=$true)][int]$id,[int]$limit,[string]$sort)
 {
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($id)
     {
-        Get-AGMAPIData -endpoint /application/$id/workflow
+        Get-AGMAPIData -endpoint /application/$id/workflow -limit $limit -sort $sort
     }
 }
 
@@ -98,9 +138,18 @@ function Get-AGMApplicationWorkflowStatus ([Parameter(Mandatory=$true)][int]$id,
 }
 
 # Audit
-function Get-AGMAudit ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
+function Get-AGMAudit ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "issuedate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /localaudit -o
@@ -111,11 +160,11 @@ function Get-AGMAudit ([string]$filtervalue,[switch][alias("o")]$options,[string
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /localaudit -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /localaudit -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     else
     {
-        Get-AGMAPIData -endpoint /localaudit -datefields $datefields
+        Get-AGMAPIData -endpoint /localaudit -datefields $datefields -limit $limit -sort $sort
     }
 }
 
@@ -123,9 +172,18 @@ function Get-AGMAudit ([string]$filtervalue,[switch][alias("o")]$options,[string
 
 # Consistency group
 
-function Get-AGMConsistencyGroup ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
+function Get-AGMConsistencyGroup ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "syncdate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /consistencygroup -o
@@ -136,19 +194,28 @@ function Get-AGMConsistencyGroup ([string]$filtervalue,[switch][alias("o")]$opti
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /consistencygroup -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /consistencygroup -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     else
     {
-        Get-AGMAPIData -endpoint /consistencygroup -datefields $datefields
+        Get-AGMAPIData -endpoint /consistencygroup -datefields $datefields -limit $limit -sort $sort
     }
 }
 
 # Disk pool
 
-function Get-AGMDiskPool([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
+function Get-AGMDiskPool([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "modifydate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /diskpool -o
@@ -159,23 +226,32 @@ function Get-AGMDiskPool([string]$filtervalue,[string]$keyword,[switch][alias("o
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /diskpool -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /diskpool -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /diskpool -keyword $keyword -datefields $datefields   
+        Get-AGMAPIData -endpoint /diskpool -keyword $keyword -datefields $datefields -limit $limit -sort $sort
     } 
     else
     {
-        Get-AGMAPIData -endpoint /diskpool -datefields $datefields
+        Get-AGMAPIData -endpoint /diskpool -datefields $datefields -limit $limit -sort $sort
     }
 }
 
 # Event
 
-function Get-AGMEvent ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
+function Get-AGMEvent ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "eventdate,syncdate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /event -o
@@ -186,19 +262,28 @@ function Get-AGMEvent ([string]$filtervalue,[switch][alias("o")]$options,[string
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /event -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /event -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     else
     {
-        Get-AGMAPIData -endpoint /event -datefields $datefields
+        Get-AGMAPIData -endpoint /event -datefields $datefields -limit $limit -sort $sort
     }
 }
 
 #host 
 
-function Get-AGMHost ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
+function Get-AGMHost ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "modifydate,syncdate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /host -o       
@@ -209,27 +294,36 @@ function Get-AGMHost ([string]$filtervalue,[string]$keyword,[switch][alias("o")]
     }
     elseif ($filtervalue)
     { 
-        Get-AGMAPIData -endpoint /host -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /host -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /host -keyword $keyword -datefields $datefields
+        Get-AGMAPIData -endpoint /host -keyword $keyword -datefields $datefields -limit $limit -sort $sort
     } 
     else
     {
-        Get-AGMAPIData -endpoint /host -datefields $datefields
+        Get-AGMAPIData -endpoint /host -datefields $datefields -limit $limit -sort $sort
     }
 }
 
 #Image (backup) 
 
-function Get-AGMImage ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
+function Get-AGMImage ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "backupdate,modifydate,consistencydate,expiration,beginpit,endpit"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     #$datefields = ""
     if ($options)
     { 
-        Get-AGMAPIData -endpoint /backup -o
+        Get-AGMAPIData -endpoint /backup -o 
     }
     elseif ($id)
     {
@@ -237,23 +331,32 @@ function Get-AGMImage ([string]$filtervalue,[string]$keyword,[switch][alias("o")
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /backup -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /backup -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /backup -keyword $keyword -datefields $datefields    
+        Get-AGMAPIData -endpoint /backup -keyword $keyword -datefields $datefields -limit $limit -sort $sort
     } 
     else
     {
-        Get-AGMAPIData -endpoint /backup -datefields $datefields
+        Get-AGMAPIData -endpoint /backup -datefields $datefields -limit $limit -sort $sort
     }
 }
 
 #job
 
-function Get-AGMJob ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
+function Get-AGMJob ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "queuedate,expirationdate,startdate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /job -o
@@ -264,15 +367,15 @@ function Get-AGMJob ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /job -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /job -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /job -keyword $keyword -datefields $datefields
+        Get-AGMAPIData -endpoint /job -keyword $keyword -datefields $datefields -limit $limit -sort $sort
     } 
     else
     {
-        Get-AGMAPIData -endpoint /job -datefields $datefields
+        Get-AGMAPIData -endpoint /job -datefields $datefields -limit $limit -sort $sort
     }
 }
 
@@ -284,24 +387,33 @@ function Get-AGMJobCountSummary
 
 #jobhistory
 
-function Get-AGMJobHistory ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options)
+function Get-AGMJobHistory ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "queuedate,expirationdate,startdate,consistencydate,enddate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /jobhistory -o 
     }
     elseif ($filtervalue)
     { 
-        Get-AGMAPIData -endpoint /jobhistory -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /jobhistory -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /jobhistory -keyword $keyword -datefields $datefields   
+        Get-AGMAPIData -endpoint /jobhistory -keyword $keyword -datefields $datefields -limit $limit -sort $sort
     } 
     else
     {
-        Get-AGMAPIData -endpoint /jobhistory -datefields $datefields
+        Get-AGMAPIData -endpoint /jobhistory -datefields $datefields -limit $limit -sort $sort
     }
 }
 
@@ -319,9 +431,18 @@ function Get-AGMLDAPGroup
 
 # Logical group
 
-function Get-AGMLogicalGroup ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
+function Get-AGMLogicalGroup ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "modifydate,syncdate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /logicalgroup -o
@@ -332,11 +453,11 @@ function Get-AGMLogicalGroup ([string]$filtervalue,[switch][alias("o")]$options,
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /logicalgroup -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /logicalgroup -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     else
     {
-        Get-AGMAPIData -endpoint /logicalgroup -datefields $datefields
+        Get-AGMAPIData -endpoint /logicalgroup -datefields $datefields -limit $limit -sort $sort
     }
 }
 
@@ -353,9 +474,18 @@ function Get-AGMLogicalGroupMember ([Parameter(Mandatory=$true)][int]$id)
 
 #org
 
-function Get-AGMOrg ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
+function Get-AGMOrg ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "modifydate,createdate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /org -o
@@ -366,23 +496,32 @@ function Get-AGMOrg ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /org -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /org -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /org -keyword $keyword -datefields $datefields  
+        Get-AGMAPIData -endpoint /org -keyword $keyword -datefields $datefields -limit $limit -sort $sort
     } 
     else
     {
-        Get-AGMAPIData -endpoint /org -datefields $datefields
+        Get-AGMAPIData -endpoint /org -datefields $datefields -limit $limit -sort $sort
     }
 }
 
 
 #right
 
-function Get-AGMRight ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
+function Get-AGMRight ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /right -o
@@ -393,23 +532,32 @@ function Get-AGMRight ([string]$filtervalue,[string]$keyword,[switch][alias("o")
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /right -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /right -filtervalue $filtervalue -limit $limit -sort $sort
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /right -keyword $keyword   
+        Get-AGMAPIData -endpoint /right -keyword $keyword -limit $limit -sort $sort
     } 
     else
     {
-        Get-AGMAPIData -endpoint /right
+        Get-AGMAPIData -endpoint /right -limit $limit -sort $sort
     }
 }
 
 #role
 
-function Get-AGMRole ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id)
+function Get-AGMRole ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "createdate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /role -o
@@ -420,15 +568,15 @@ function Get-AGMRole ([string]$filtervalue,[string]$keyword,[switch][alias("o")]
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /role -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /role -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /role -keyword $keyword -datefields $datefields  
+        Get-AGMAPIData -endpoint /role -keyword $keyword -datefields $datefields -limit $limit -sort $sort
     } 
     else
     {
-        Get-AGMAPIData -endpoint /role -datefields $datefields
+        Get-AGMAPIData -endpoint /role -datefields $datefields -limit $limit -sort $sort
     }
 }
 
@@ -453,9 +601,18 @@ function Get-AGMSession  ([String]$sessionid)
 
 #sla
 
-function Get-AGMSLA ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
+function Get-AGMSLA ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "modifydate,syncdate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /sla -o
@@ -466,18 +623,27 @@ function Get-AGMSLA ([string]$filtervalue,[switch][alias("o")]$options,[string]$
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /sla -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /sla -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     else
     {
-        Get-AGMAPIData -endpoint /sla -datefields $datefields
+        Get-AGMAPIData -endpoint /sla -datefields $datefields -limit $limit -sort $sort
     }
 }
 
 #SLP 
-function Get-AGMSLP ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
+function Get-AGMSLP ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "modifydate,syncdate,createdate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /slp -o
@@ -489,17 +655,26 @@ function Get-AGMSLP ([string]$filtervalue,[switch][alias("o")]$options,[string]$
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /slp -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /slp -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     else
     {
-        Get-AGMAPIData -endpoint /slp -datefields $datefields
+        Get-AGMAPIData -endpoint /slp -datefields $datefields -limit $limit -sort $sort
     }
 }
 
 #SLT 
-function Get-AGMSLT ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
+function Get-AGMSLT ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /slt -o
@@ -510,11 +685,11 @@ function Get-AGMSLT ([string]$filtervalue,[switch][alias("o")]$options,[string]$
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /slt -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /slt -filtervalue $filtervalue -limit $limit -sort $sort
     }
     else
     {
-        Get-AGMAPIData -endpoint /slt
+        Get-AGMAPIData -endpoint /slt -limit $limit -sort $sort
     }
 }
 
@@ -530,9 +705,18 @@ function Get-AGMUpgradeHistory
 
 #user
 
-function Get-AGMUser ([string]$filtervalue,[switch][alias("o")]$options,[string]$id)
+function Get-AGMUser ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "createdate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /user -o 
@@ -543,11 +727,11 @@ function Get-AGMUser ([string]$filtervalue,[switch][alias("o")]$options,[string]
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /user -filtervalue $filtervalue -datefields $datefields
+        Get-AGMAPIData -endpoint /user -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     else
     {
-        Get-AGMAPIData -endpoint /user -datefields $datefields
+        Get-AGMAPIData -endpoint /user -datefields $datefields -limit $limit -sort $sort
     }
 }
 
@@ -568,23 +752,32 @@ function Get-AGMVersionDetail
 
 #workflow
 
-function Get-AGMWorkFlow ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options)
+function Get-AGMWorkFlow ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /workflow -o
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /workflow -filtervalue $filtervalue
+        Get-AGMAPIData -endpoint /workflow -filtervalue $filtervalue -limit $limit -sort $sort
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /workflow -keyword $keyword   
+        Get-AGMAPIData -endpoint /workflow -keyword $keyword -limit $limit -sort $sort
     } 
     else
     {
-        Get-AGMAPIData -endpoint /workflow
+        Get-AGMAPIData -endpoint /workflow -limit $limit -sort $sort
     }
 }
 

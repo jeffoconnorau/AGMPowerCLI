@@ -1,4 +1,4 @@
-Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search, [int]$timeout, $endpoint,[switch][alias("o")]$options,[string]$datefields)
+Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search, [int]$timeout, $endpoint,[switch][alias("o")]$options,[string]$datefields,[int]$limit,[string]$sort)
 {
     if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
     {
@@ -115,7 +115,26 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
         $kw = ""
     }
 
-
+    if ($sort)
+    {
+        $order = $sort.Split(":") | select -skip 1
+        if (!($order))
+        {
+            Get-AGMErrorMessage -messagetoprint "Please specify a sort order of asc or desc after a semi colon, e.g.  appname:asc or appname:desc"
+            return
+        }
+        elseif 
+        (($order -ne "asc") -and ($order -ne "desc"))
+        {
+            Get-AGMErrorMessage -messagetoprint "Please specify a sort order of asc or desc after a semi colon, e.g.  appname:asc or appname:desc"
+            return
+        }
+        $sort = "&sort=" + [System.Web.HttpUtility]::UrlEncode($sort)
+    }
+    else
+    {
+        $sort = ""
+    }
 
     if ($search)
     {
@@ -152,6 +171,14 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
     {
         $maxlimitpercommand = 4096
     }
+
+    # if user askedd for a limit lets use it
+    if (($limit) -and ($limit -ne 0))
+    {
+        $maxlimitpercommand = $limit
+    }
+
+
     $method = "get"
     if ($options)
     {
@@ -164,7 +191,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
     {
         Try
         {
-            $url = "https://$AGMIP/actifio" + "$endpoint"  + "?offset=" + "$apistart" + "&limit=$maxlimitpercommand" + "$fv" + "$searchitem" + "$kw"
+            $url = "https://$AGMIP/actifio" + "$endpoint"  + "?offset=" + "$apistart" + "&limit=$maxlimitpercommand" + "$fv" + "$searchitem" + "$kw" + "$sort"
             # write-host "we are going to use this method: $method     with this url: $url"
             if ($IGNOREAGMCERTS)
             {
@@ -390,3 +417,4 @@ Function Convert-ToUnixDate ([datetime]$InputEpoch)
         $Ctime -as [decimal]
     }
 }
+
