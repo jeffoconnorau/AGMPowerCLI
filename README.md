@@ -15,18 +15,7 @@ It was written and tested for PowerShell V7 with Linux, Mac OS and Windows
 ## Usage
 
 
-### 1)    Determine where to place AGMPowerCLI if needed
-
-Find out where we should place the AGMPowerCLI PowerShell module in the environment by querying the PSModulePath environment variable:
-```
-Get-ChildItem Env:\PSModulePath | format-list
-```
-Try to avoid installing AGMPowerCLI into multiple folders.  You can check for existing installs with this command:
-```
-(Get-Module -ListAvailable AGMPowerCLI).path
-```
-
-### 2)    Install or Upgrade AGMPowerCLI
+### 1)    Install or Upgrade AGMPowerCLI
 
 Install from PowerShell Gallery:
 
@@ -58,6 +47,17 @@ If you cannot access Powershell gallery then use these instructions:
 
 The commands are basically the same for each OS.
 To upgrade simply run the two Invoke-WebRequest commands.  If you get permission denied because the existing files are read only, delete the old files first.
+
+#####  Determine where to place AGMPowerCLI if needed
+
+Find out where we should place the AGMPowerCLI PowerShell module in the environment by querying the PSModulePath environment variable:
+```
+Get-ChildItem Env:\PSModulePath | format-list
+```
+Try to avoid installing AGMPowerCLI into multiple folders.  You can check for existing installs with this command:
+```
+(Get-Module -ListAvailable AGMPowerCLI).path
+```
 
 ##### Linux OS Install directions
 ```
@@ -92,7 +92,7 @@ Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/A
 ```
 
 
-### 3)  Get some help
+### 2)  Get some help
 
 Help may not exist yet for all functions
 
@@ -109,7 +109,7 @@ If you need some examples on the command:
 Get-Help Connect-AGM -examples
 ```
 
-### 4)  Save your password
+### 3)  Save your password
 
 Create an encrypted password file using the AGMPowerCLI Save-AGMPassword function:
 ```
@@ -127,7 +127,7 @@ Key not valid for use in specified state.
 This will cause issues when running saved scripts when two differerent users want to run the same script with the same keyfile.    To work around this issue, please have each user create a keyfile for their own use.   Then when running a shared script, each user should execute the script specifying their own keyfile.  This can be done by using a parameter file for each script.
 
 
-### 5)  Login to your appliance
+### 4)  Login to your appliance
 
 To login to an AGM (10.61.5.114) as admin and enter password interactvely:
 ```
@@ -141,7 +141,7 @@ You will need to store the certificate during first login if you don't use **-ig
 
 Note you can use **-quiet** to supress messages.   This is handy when scripting.
 
-### 6)  Find out the current version of AGMPowerCLI:
+### 5)  Find out the current version of AGMPowerCLI:
 
 ```
 (Get-Module AGMPowerCLI).Version
@@ -151,7 +151,7 @@ Major  Minor  Build  Revision
 0      0      0      1
 ```
 
-### 7) Example commands
+### 6) Example commands
 
 There are four common options that may be available for a commnad (if shown with Get-Help)
 
@@ -200,7 +200,7 @@ Get-AGMApplication -keyword smalldb3
 
 
 
-### 8)  Disconnect from your appliance
+### 7)  Disconnect from your appliance
 Once you are finished, make sure to disconnect (logout).   If you are running many scripts in quick succession, each script should connect and then disconnect, otherwise each session will be left open to time-out on its own.
 ```
 Disconnect-AGM
