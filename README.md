@@ -23,7 +23,7 @@ Install from PowerShell Gallery:
 Install-Module -Name AGMPowerCLI
 ```
 
-If the install worked, you can now move to Step 3.
+If the install worked, you can now move to Step 2.
 
 #### Upgrades using PowerShell Gallery
 
