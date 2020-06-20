@@ -28,61 +28,67 @@ Try to avoid installing AGMPowerCLI into multiple folders.  You can check for ex
 
 ### 2)    Install or Upgrade AGMPowerCLI
 
+Install from PowerShell Gallery:
+
+```
+Install-Module -Name AGMPowerCLI
+```
+
+If the install worked, you can now move to Step 3.
+
+#### Upgrades using PowerShell Gallery
+
+Note if you run 'Install-Module' to update an installed module, it will complain.  You need to run:
+```
+Update-Module -name AGMPowerCLI
+```
+It will install the latest version and leave the older version in place.  To see the version in use versus all versions downloaded use these two commands:
+```
+Get-InstalledModule AGMPowerCLI
+Get-InstalledModule AGMPowerCLI -AllVersions
+```
+To uninstall all older versions run this command:
+```
+$Latest = Get-InstalledModule AGMPowerCLI; Get-InstalledModule AGMPowerCLI -AllVersions | ? {$_.Version -ne $Latest.Version} | Uninstall-Module
+```
+
+#### Install from GitHub
+
+If you cannot access Powershell gallery then use these instructions:
+
 The commands are basically the same for each OS.
-To upgrade simply run the five Invoke-WebRequest commands.  If you get permission denied because the existing files are read only, delete the old files first.
+To upgrade simply run the two Invoke-WebRequest commands.  If you get permission denied because the existing files are read only, delete the old files first.
 
-#### Linux OS Install directions
-
-Presuming you are happy to place into the example folder, these instructions can be followed.   We create a folder for the module and then download the files into that folder.   The module should auto load.
-
-To upgrade repeat the same process except you don't need to create the directory.
-
+##### Linux OS Install directions
 ```
 pwsh
 mkdir /opt/microsoft/powershell/7/Modules/AGMPowerCLI
 cd /opt/microsoft/powershell/7/Modules/AGMPowerCLI
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psd1 -OutFile AGMPowerCLI.psd1
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psm1 -OutFile AGMPowerCLI.psm1      
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIConnectFunctions.ps1	 -OutFile AGMPowerCLIConnectFunctions.ps1	
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIGetFunctions.ps1 -OutFile AGMPowerCLIGetFunctions.ps1
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIPrivateFunctions.ps1 -OutFile AGMPowerCLIPrivateFunctions.ps1           
-Connect-AGM
 ```
 
-#### Mac OS Install directions
-
-Presuming you are happy to place into the example folder, these instructions can be followed.   We create a folder for the module and then download the files into that folder.   The module should auto load:
-
-To upgrade repeat the same process except you don't need to create the directory.
-
+##### Mac OS Install directions
 ```
 pwsh
 mkdir ~/.local/share/powershell/Modules/AGMPowerCLI
 cd ~/.local/share/powershell/Modules/AGMPowerCLI
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psd1 -OutFile AGMPowerCLI.psd1
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psm1 -OutFile AGMPowerCLI.psm1      
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIConnectFunctions.ps1	 -OutFile AGMPowerCLIConnectFunctions.ps1	
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIGetFunctions.ps1 -OutFile AGMPowerCLIGetFunctions.ps1
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIPrivateFunctions.ps1 -OutFile AGMPowerCLIPrivateFunctions.ps1         
-Connect-AGM
 ```
 
-#### Windows OS Install directions
-
-Presuming you are happy to place into the example folder, these instructions can be followed.   We create a folder for the module and then download the files into that folder.   The module should auto load:
-
-To upgrade repeat the same process except you don't need to create the directory.
+##### Windows OS Install directions
 
 ```
 pwsh
 mkdir "C:\Program Files\PowerShell\7\Modules\AGMPowerCLI"
 cd "C:\Program Files\PowerShell\7\Modules\AGMPowerCLI"
+```
+
+#####  File download:
+Now run these commands:
+```
 Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psd1 -OutFile AGMPowerCLI.psd1
 Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psm1 -OutFile AGMPowerCLI.psm1      
 Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIConnectFunctions.ps1	 -OutFile AGMPowerCLIConnectFunctions.ps1	
 Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIGetFunctions.ps1 -OutFile AGMPowerCLIGetFunctions.ps1
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIPrivateFunctions.ps1 -OutFile AGMPowerCLIPrivateFunctions.ps1
-Connect-AGM
+Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIPrivateFunctions.ps1 -OutFile AGMPowerCLIPrivateFunctions.ps1           
 ```
 
 
