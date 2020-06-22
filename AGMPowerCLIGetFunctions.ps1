@@ -2,6 +2,52 @@
 
 function Get-AGMAppliance ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
+
+    <#
+    .SYNOPSIS
+    Gets details about Appliances
+
+    .EXAMPLE
+    Get-AGMAppliance
+    Will display all Appliances
+
+    .EXAMPLE
+    Get-AGMAppliance -limit 2
+    Will display a maximum of two objects 
+    
+    .EXAMPLE
+    Get-AGMAppliance -id 200
+    Display only the object with an ID of 200
+
+    .EXAMPLE
+    Get-AGMAppliance -o
+    To display all fields that can be filtered with filtervalue
+
+    .EXAMPLE
+    Get-AGMAppliance -filtervalue id=1234
+    Looks for any object with id 1234
+
+    .EXAMPLE
+    Get-AGMAppliance -filtervalue "id>1234&name~sky"
+    Looks for any object with id greater than 1234 and a name like sky.   
+
+    .EXAMPLE
+    Get-AGMAppliance -sort id:desc
+    Displays all objects sorting on ID descending.  
+
+    .EXAMPLE
+    Get-AGMAppliance -sort "id:desc,name:asc"
+    Displays all objects sorting on ID descending and name ascending. 
+
+    .DESCRIPTION
+    A function to display Appliances
+    Multiple filtervalues need to be encased in double quotes and separated by the & symbol
+    Filtervalues can be =, <, > or ~ (fuzzy)
+    Multiple sorts need to be encased in double quotes and separated by the , symbol
+    Sorts can only be asc for ascending or desc for descending.
+
+    #>
+
     $datefields = "syncdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
     if (!($limit))
@@ -35,6 +81,53 @@ function Get-AGMAppliance ([string]$filtervalue,[switch][alias("o")]$options,[st
 
 function Get-AGMApplication ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
 {
+
+    <#
+    .SYNOPSIS
+    Gets details about Applications
+
+    .EXAMPLE
+    Get-AGMApplication
+    Will display all Applications
+
+    .EXAMPLE
+    Get-AGMApplication -limit 2
+    Will display a maximum of two objects 
+    
+    .EXAMPLE
+    Get-AGMApplication -id 200
+    Display only the object with an ID of 200
+
+    .EXAMPLE
+    Get-AGMApplication -o
+    To display all fields that can be filtered with filtervalue
+
+    .EXAMPLE
+    Get-AGMApplication -filtervalue id=1234
+    Looks for any object with id 1234
+
+    .EXAMPLE
+    Get-AGMApplication -filtervalue "id>1234&name~sky"
+    Looks for any object with id greater than 1234 and a name like sky.   
+
+    .EXAMPLE
+    Get-AGMApplication -sort id:desc
+    Displays all objects sorting on ID descending.  
+
+    .EXAMPLE
+    Get-AGMApplication -sort "id:desc,name:asc"
+    Displays all objects sorting on ID descending and name ascending. 
+
+    .DESCRIPTION
+    A function to display Applications
+    Multiple filtervalues need to be encased in double quotes and separated by the & symbol
+    Filtervalues can be =, <, > or ~ (fuzzy)
+    Multiple sorts need to be encased in double quotes and separated by the , symbol
+    Sorts can only be asc for ascending or desc for descending.
+    
+    #>
+
+
     $datefields = "syncdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
     if (!($limit))
@@ -417,6 +510,40 @@ function Get-AGMJobHistory ([string]$filtervalue,[string]$keyword,[switch][alias
     }
 }
 
+
+#jobstatus
+
+function Get-AGMJobStatus ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
+{
+    $datefields = "queuedate,expirationdate,startdate,consistencydate,enddate"
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
+    if ($options)
+    { 
+        Get-AGMAPIData -endpoint /jobstatus -o 
+    }
+    elseif ($filtervalue)
+    { 
+        Get-AGMAPIData -endpoint /jobstatus -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
+    }
+    elseif ($keyword)
+    {
+        Get-AGMAPIData -endpoint /jobstatus -keyword $keyword -datefields $datefields -limit $limit -sort $sort
+    } 
+    else
+    {
+        Get-AGMAPIData -endpoint /jobstatus -datefields $datefields -limit $limit -sort $sort
+    }
+}
+
+
 #LDAP
 
 function Get-AGMLDAPConfig
@@ -693,8 +820,20 @@ function Get-AGMSLT ([string]$filtervalue,[switch][alias("o")]$options,[string]$
     }
 }
 
-
-
+#SLTPolicy
+function Get-AGMSLTPolicy ([string]$id,[int]$limit)
+{
+    if ( (!($id)) -and (!($options)) )
+    {
+        [int]$id = Read-Host "SLTID"
+    }
+    # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    Get-AGMAPIData -endpoint /slt/$id/policy -limit $limit
+}
 
 # upgrade
 

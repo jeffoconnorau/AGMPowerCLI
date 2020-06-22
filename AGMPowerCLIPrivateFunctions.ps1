@@ -117,23 +117,34 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
 
     if ($sort)
     {
-        $order = $sort.Split(":") | select -skip 1
-        if (!($order))
+        $commasplit = $sort.Split(",") 
+        foreach ($line in $commasplit)
         {
-            Get-AGMErrorMessage -messagetoprint "Please specify a sort order of asc or desc after a semi colon, e.g.  appname:asc or appname:desc"
-            return
+            $order = $line.Split(":") | select -skip 1
+            if (!($order))
+            {
+                Get-AGMErrorMessage -messagetoprint "Please specify a sort order of asc or desc after a full colon, e.g.  appname:asc or appname:desc"
+                return
+            }
+            elseif 
+            (($order -ne "asc") -and ($order -ne "desc"))
+            {
+                Get-AGMErrorMessage -messagetoprint "Please specify a sort order of asc or desc after a full colon, e.g.  appname:asc or appname:desc"
+                return
+            }
+            if (!($sortreq))
+            {
+                $sortreq = "&sort=" + [System.Web.HttpUtility]::UrlEncode($line)
+            }
+            else
+            {
+                $sortreq = $sortreq + "," + [System.Web.HttpUtility]::UrlEncode($line)
+            }
         }
-        elseif 
-        (($order -ne "asc") -and ($order -ne "desc"))
-        {
-            Get-AGMErrorMessage -messagetoprint "Please specify a sort order of asc or desc after a semi colon, e.g.  appname:asc or appname:desc"
-            return
-        }
-        $sort = "&sort=" + [System.Web.HttpUtility]::UrlEncode($sort)
     }
     else
     {
-        $sort = ""
+        $sortreq = ""
     }
 
     if ($search)
@@ -147,10 +158,10 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
 
 
 
-    # default of 15 seconds may be too short
+    # default of 120 seconds may be too short
     if (!($timeout))
     {
-        $timeout = 15
+        $timeout = 120
     }
 
     # we always start at apistart of 0 which is the first result
@@ -191,7 +202,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
     {
         Try
         {
-            $url = "https://$AGMIP/actifio" + "$endpoint"  + "?offset=" + "$apistart" + "&limit=$maxlimitpercommand" + "$fv" + "$searchitem" + "$kw" + "$sort"
+            $url = "https://$AGMIP/actifio" + "$endpoint"  + "?offset=" + "$apistart" + "&limit=$maxlimitpercommand" + "$fv" + "$searchitem" + "$kw" + "$sortreq"
             # write-host "we are going to use this method: $method     with this url: $url"
             if ($IGNOREAGMCERTS)
             {
@@ -322,7 +333,7 @@ function Get-AGMErrorMessage ([string]$messagetoprint)
 }
 
 
-Function Remove-AGMAPIData ([int]$timeout, $endpoint,[switch][alias("d")]$delete,[switch][alias("f")]$force,[switch][alias("r")]$remove)
+Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]$method,[string]$datefields)
 {
     if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
     {
@@ -340,31 +351,35 @@ Function Remove-AGMAPIData ([int]$timeout, $endpoint,[switch][alias("d")]$delete
         $endpoint = "/" + $endpoint
     }
 
-    # default of 15 seconds may be too short
+    # default of 120 seconds may be too short
     if (!($timeout))
     {
-        $timeout = 15
+        $timeout = 120
     }
 
     # we need to set the method
-    $method = "Post"
+    if (!($method))
+    {    
+        $method = "post"
+    }
 
-    #this is the body
-    $body = 'accept: */*'
-    $json = $body | ConvertTo-Json
 
-    # time to send out endpoint   =
+    if (!($body))
+    {
+        $body = '{ "accept": "*/*" }'   
+    }
+
     Try
     {
         $url = "https://$AGMIP/actifio" + "$endpoint"  
         # write-host "we are going to use this method: $method     with this url: $url"
         if ($IGNOREAGMCERTS)
         {
-            $resp = Invoke-RestMethod -SkipCertificateCheck -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID"; accept = "application/json" }  -Uri "$url" -TimeoutSec $timeout 
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" ; accept = "application/json" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
         }
         else
         {
-            $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" }  -Uri "$url" -TimeoutSec $timeout 
+            $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" ; accept = "application/json" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
         }
     }
     Catch
@@ -375,16 +390,96 @@ Function Remove-AGMAPIData ([int]$timeout, $endpoint,[switch][alias("d")]$delete
     {
         Test-AGMJSON $RestError 
     }
-    else
+    else 
     {
-        $resp
-        if (!($resp))
+        if ($resp)   
         {
-            Write-host "No output was returned but no error occurred."
+            # time stamp conversion
+            if ($datefields)
+            {
+                foreach ($field in $datefields.Split(","))
+                {
+                    if ($resp.$field)
+                    {
+                        $resp.$field = Convert-FromUnixDate $resp.$field
+                    }
+                }
+            }
+            $resp
         }
-        return
-    } 
+    }
 }
+
+
+Function Put-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body)
+{
+    if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
+    {
+        Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM"
+        return
+    }
+
+    if (!($endpoint))
+    {
+        $endpoint = Read-Host "AGM End point"
+    }
+
+    if ($endpoint[0] -ne "/")
+    {
+        $endpoint = "/" + $endpoint
+    }
+
+    # default of 120 seconds may be too short
+    if (!($timeout))
+    {
+        $timeout = 120
+    }
+    if (!($body))
+    {
+        $body = '{ "accept": "*/*" }' 
+    }
+    Try
+    {
+        $url = "https://$AGMIP/actifio" + "$endpoint"  
+        # write-host "we are going to use this method: $method     with this url: $url"
+        if ($IGNOREAGMCERTS)
+        {
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method put -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+        }
+        else
+        {
+            $resp = Invoke-RestMethod -Method put -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+        }
+    }
+    Catch
+    {
+        $RestError = $_
+    }
+    if ($RestError)
+    {
+        Test-AGMJSON $RestError 
+    }
+    else 
+    {
+        if ($resp)   
+        {
+            # time stamp conversion
+            if ($datefields)
+            {
+                foreach ($field in $datefields.Split(","))
+                {
+                    if ($resp.$field)
+                    {
+                        $resp.$field = Convert-FromUnixDate $resp.$field
+                    }
+                }
+            }
+            $resp
+        }
+    }
+}
+
+
 
 
 Function Convert-FromUnixDate ($UnixDate) 
@@ -418,3 +513,9 @@ Function Convert-ToUnixDate ([datetime]$InputEpoch)
     }
 }
 
+Function Convert-AGMDuration ($duration)
+{
+    $convertedtime =  [timespan]::fromseconds($duration/1000000)
+    $truehours = $convertedtime.days * 24 + $convertedtime.hours
+    [string]$truehours + $convertedtime.ToString("\:mm\:ss")
+}
