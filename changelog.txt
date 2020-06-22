@@ -2,7 +2,24 @@
 All notable changes to AGMPowerCLI will be documented in this file
 
 ## [0.0.0.4] 2020-06-22
-Add more functions and help info
+Improved help for some functions
+Added the following functions:
+
+'Get-AGMJobStatus',
+'Get-AGMSLTPolicy',
+'Get-AGMLatestImage',
+'Get-AGMDBMApplicationID',
+'Get-AGMDBMImageDetails',
+'New-AGMDBMImage',
+'Get-AGMFollowJobStatus',
+'New-AGMOrg',
+'New-AGMRole',
+'Remove-AGMApplication',
+'Remove-AGMImage',
+'Remove-AGMJob',
+'Remove-AGMOrg',
+'Remove-AGMRole',
+'Remove-AGMUser'
 
 ## [0.0.0.3] 2020-06-20
 Add sorting and limits to all Gets
