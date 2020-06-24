@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.4'
+ModuleVersion = '0.0.0.5'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -154,7 +154,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @()
+        Tags = @(Actifio,AGM,Sky,CDS,CDX,VDP,Virtual Data Pipeline)
 
         # A URL to the license for this module.
         # LicenseUri = ''
