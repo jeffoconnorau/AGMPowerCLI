@@ -10,8 +10,9 @@ function New-AGMOrg ([string]$orgname,[string]$description)
     {
         $description = Read-Host "Description"
     }
-    $body = '{ "name": "' + $orgname + '", "description": "' + $description + '" }'
-    Put-AGMAPIData -endpoint /org -body $body -datefields $datefields
+    $body = @{name=$orgname;description=$description}
+    $json = $body | ConvertTo-Json
+    Post-AGMAPIData -endpoint /org -body $json -datefields $datefields
 }
 
 
@@ -27,6 +28,7 @@ function New-AGMRole ([string]$rolename,[string]$description)
     {
         $description = Read-Host "Description"
     }
-    $body = '{ "name": "' + $rolename + '", "description": "' + $description + '" }'
-    Put-AGMAPIData -endpoint /role -body $body -datefields $datefields
+    $body = @{name=$rolename;description=$description}
+    $json = $body | ConvertTo-Json
+    Post-AGMAPIData -endpoint /role -body $json -datefields $datefields
 }

@@ -19,10 +19,10 @@ function Remove-AGMApplication ([Parameter(Mandatory=$true)][int]$appid)
     #>
 
 
-    Post-AGMAPIData -endpoint /application/$appid 
+    Post-AGMAPIData -endpoint /application/$appid -method delete
 }
 
-function Remove-AGMImage ([string]$id)
+function Remove-AGMImage ([string]$imagename)
 {
     <#
     .SYNOPSIS
@@ -30,11 +30,11 @@ function Remove-AGMImage ([string]$id)
 
     .EXAMPLE
     Remove-AGMImage
-    You will be prompted for Image ID
+    You will be prompted for Image Name
 
     .EXAMPLE
-    Remove-AGMImage 2133445
-    Expires Image 2133445
+    Remove-AGMImage Image_2133445
+    Expires Image_2133445
 
 
     .DESCRIPTION
@@ -42,9 +42,19 @@ function Remove-AGMImage ([string]$id)
 
     #>
 
-    if (!($id)) 
+    if (!($imagename)) 
     {
-        [int]$id = Read-Host "Image ID"
+        $imagename = Read-Host "ImageName"
+    }
+    $imagegrab = Get-AGMImage -filtervalue backupname=$imagename
+    if ($imagegrab.id)
+    {
+        $id = $imagegrab.id
+    }
+    else 
+    {
+        Get-AGMErrorMessage -messagetoprint "Failed to find $imagename"
+        return
     }
     Post-AGMAPIData -endpoint /backup/$id/expire 
 }
@@ -160,8 +170,9 @@ function Remove-AGMJob([string]$jobname)
             return
         }
     }
-    $body = '{ "status": "cancel" }' 
-    $cancelgrab = Put-AGMAPIData -endpoint /job/$id -body $body
+    $body = @{status="cancel"}
+    $json = $body | ConvertTo-Json
+    $cancelgrab = Put-AGMAPIData -endpoint /job/$id -body $json
     if ($cancelgrab.errormessage)
     { 
         $cancelgrab
@@ -175,4 +186,53 @@ function Remove-AGMJob([string]$jobname)
         $cancelgrab
     }
 
+}
+
+
+function Remove-AGMMount([string]$imagename,[switch][alias("d")]$delete,[switch][alias("f")]$force)
+{
+    <#
+    .SYNOPSIS
+    Unmounts a nominated image
+
+    .EXAMPLE
+    Remove-AGMMount
+    You will be prompted for image Name 
+
+    .EXAMPLE
+    Remove-AGM -imagename Image_2133445
+    Unmounts Image_2133445 but does not delete it
+
+        .EXAMPLE
+    Remove-AGM -imagename Image_2133445 -d
+    Unmounts Image_2133445 and deletes it
+
+    .DESCRIPTION
+    A function to unmount images
+
+    #>
+
+
+    if (!($imagename))
+    {
+        $imagename = Read-Host "ImageName"
+    }
+    if ($imagename)
+    {
+        $imagegrab = Get-AGMImage -filtervalue backupname=$imagename
+        if ($imagegrab.id)
+        {
+            $id = $imagegrab.id
+        }
+        else 
+        {
+            Get-AGMErrorMessage -messagetoprint "Failed to find $imagename"
+            return
+        }
+    }
+
+
+    $body = @{delete=$delete;force=$force}
+    $json = $body | ConvertTo-Json
+    Post-AGMAPIData -endpoint /backup/$id/unmount -body $json
 }

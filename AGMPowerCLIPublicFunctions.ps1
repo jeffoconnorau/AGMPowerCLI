@@ -51,3 +51,123 @@ Function Get-AGMLatestImage([int]$id, [string]$jobclass)
         $backup
     }
 }
+
+
+Function Get-AGMActiveImage([int]$appid, [string]$jobclass,[switch][alias("u")]$unmount) 
+{
+    <#
+    .SYNOPSIS
+    Displays all mounts
+
+    .EXAMPLE
+    Get-AGMActiveImages
+    Displays all active images
+
+    .EXAMPLE
+    Get-AGMActiveImages -appid 4771
+    Displays all active images for the app with ID 4771
+
+    .DESCRIPTION
+    A function to find the active images
+
+    #>
+
+    $fv = "characteristic=MOUNT"
+    if ($unmount)
+    {
+        $fv = "characteristic=UNMOUNT"
+    }
+    if ($jobclass)
+    {
+        $fv = "characteristic=MOUNT&jobclass=$jobclass"
+    }
+    if ($appid) 
+    {
+        $fv = "characteristic=MOUNT&appid=$id" 
+    }
+    if ( ($appid) -and  ($jobclass) )
+    {
+        $fv = "characteristic=MOUNT&appid=$id&jobclass=$jobclass"
+    }
+    
+    
+    $backup = Get-AGMImage -filtervalue "$fv" 
+    if ($backup.id)
+    {
+        $AGMArray = @()
+
+        Foreach ($id in $backup)
+        { 
+            $id | Add-Member -NotePropertyName appliancename -NotePropertyValue $id.cluster.name
+            $id | Add-Member -NotePropertyName hostname -NotePropertyValue $id.host.hostname
+            $id | Add-Member -NotePropertyName appid -NotePropertyValue $id.application.id
+            $id | Add-Member -NotePropertyName mountedhostname -NotePropertyValue $id.mountedhost.hostname
+            $id | Add-Member -NotePropertyName childappname -NotePropertyValue $id.childapp.appname
+            $AGMArray += [pscustomobject]@{
+                imagename = $id.backupname
+                apptype = $id.apptype
+                hostname = $id.hostname
+                appname = $id.appname
+                appid = $id.appid
+                mountedhostname = $id.mountedhostname
+                childappname = $id.childappname
+                appliancename = $id.appliancename
+                consumedsize = $id.consumedsize
+                label = $id.label
+            }
+        }
+        $AGMArray | FT -AutoSize
+    }
+    else
+    {
+        $backup
+    }
+}
+
+
+Function Get-AGMRunningJobs 
+{
+    <#
+    .SYNOPSIS
+    Displays all running jobs
+
+    .EXAMPLE
+    Get-AGMRunningJobs
+    Displays all running jobs
+
+    .DESCRIPTION
+    A function to find running jobs
+
+    #>
+
+    $fv = "status=running"
+       
+    $outputgrab = Get-AGMJob -filtervalue "$fv" 
+    if ($outputgrab.id)
+    {
+        $AGMArray = @()
+
+        Foreach ($id in $outputgrab)
+        { 
+            $id | Add-Member -NotePropertyName appliancename -NotePropertyValue $id.appliance.name
+            $AGMArray += [pscustomobject]@{
+                jobname = $id.jobname
+                jobclass = $id.jobclass
+                apptype = $id.apptype
+                hostname = $id.hostname
+                appname = $id.appname
+                appid = $id.appid
+                appliancename = $id.appliancename
+                startdate = $id.startdate
+                progress = $id.progress
+                targethost = $id.targethost
+                duration = Convert-AGMDuration $id.duration
+            }
+        }
+        $AGMArray | FT -AutoSize
+    }
+    else
+    {
+        $outputgrab
+    }
+}

@@ -516,6 +516,9 @@ Function Convert-ToUnixDate ([datetime]$InputEpoch)
 Function Convert-AGMDuration ($duration)
 {
     $convertedtime =  [timespan]::fromseconds($duration/1000000)
-    $truehours = $convertedtime.days * 24 + $convertedtime.hours
-    [string]$truehours + $convertedtime.ToString("\:mm\:ss")
+    [string]$totalhours = $convertedtime.days * 24 + $convertedtime.hours
+
+    if ($totalhours -eq "0")
+    { $totalhours = "00" }
+    $totalhours + $convertedtime.ToString("\:mm\:ss")
 }
