@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to AGMPowerCLI will be documented in this file
 
+## [0.0.0.5] 2020-06-24
+Improved help for some functions
+Added the following functions:
+
+'Get-AGMActiveImage',
+'Get-AGMDBMHostID',
+'New-AGMMSSQLMount',
+'Get-AGMRunningJobs',
+'Remove-AGMMount',
+
+
 ## [0.0.0.4] 2020-06-22
 Improved help for some functions
 Added the following functions:
