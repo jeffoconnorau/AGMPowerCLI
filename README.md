@@ -251,15 +251,10 @@ createdate
 All date fields are returned by AGM as EPOCH time (an offset from Jan 1, 1970).  The Module transforms these using the timezone discussed above.   If an EPOCH time is shown (which will be a long number), then this field has been missed and needs to be added to the transform effort.
 
 
-## Out-GridView for Mac
-
-We have found that Out-GridView on Mac does not work for most SARG commands.   This is a bug in OGV and not the report,  as OGV with PS7 on Windows works fine.   As an alternative download and use Out-HTMLview  on Mac
-
-
 
 ## What about Self Signed Certs?
 
-At this time you only have the choice to ignore the cert.   Clearly you can manually import the cert and trust it, or you can install a trusted cert on the Appliance to avoid the issue altogether.
+At this time you only have the choice to ignore the cert.   Clearly you can manually import the cert and trust it, or you can install a trusted cert on your AGM to avoid the issue altogether.
 
 
 
@@ -267,25 +262,25 @@ At this time you only have the choice to ignore the cert.   Clearly you can manu
 
 # Detecting errors and failures
 
-One design goal of ActPowerCLI is for all user messages to be easy to understand and formatted nicely.   However when a command fails, the return code shown by $? will not indicate this.  For instance in these two examples I try to connect and check $? each time.  However the result is the same for both cases ($? being 'True', as opposed to 'False', meaning the last command was successfully run).
+One design goal of AGMPowerCLI is for all user messages to be easy to understand and formatted nicely.   However when a command fails, the return code shown by $? will not indicate this.  For instance in these two examples I try to connect and check $? each time.  However the result is the same for both cases ($? being 'True', as opposed to 'False', meaning the last command was successfully run).
 
 Successful login:
 ```
-PS /Users/anthony/git/ActPowerCLI> Connect-AGM 172.24.1.180 av passw0rd -i
+PS /Users/anthony> Connect-AGM 172.24.1.180 av passw0rd -i
 Login Successful!
-PS /Users/anthony/git/ActPowerCLI> $?
+PS /Users/anthony> $?
 True
 ```
 
 Unsuccessful login:
 ```
-PS /Users/anthony/git/ActPowerCLI> Connect-AGM 172.24.1.180 av password -i
+PS /Users/anthony> Connect-AGM 172.24.1.180 av password -i
 
 err_code errormessage
 -------- ------------
    10011 Login failed
 
-PS /Users/anthony/git/ActPowerCLI> $?
+PS /Users/anthony> $?
 True
 ```
 
@@ -295,21 +290,21 @@ Lets repeat the same exercise but using -q for quiet login
 In a successful login the variable $loginattempt is empty
 
 ```
-PS /Users/anthony/git/ActPowerCLI> $loginattempt = Connect-AGM 172.24.1.180 av passw0rd -i -q
-PS /Users/anthony/git/ActPowerCLI> $loginattempt
+PS /Users/anthony> $loginattempt = Connect-AGM 172.24.1.180 av passw0rd -i -q
+PS /Users/anthony> $loginattempt
 ```
 
 But an unsuccessful login can be 'seen'.  
 
 ```
-PS /Users/anthony/git/ActPowerCLI> $loginattempt = Connect-AGM 172.24.1.180 av password -i -q
-PS /Users/anthony/git/ActPowerCLI> $loginattempt
+PS /Users/anthony> $loginattempt = Connect-AGM 172.24.1.180 av password -i -q
+PS /Users/anthony> $loginattempt
 
 err_code errormessage
 -------- ------------
    10011 Login failed
 
-PS /Users/anthony/git/ActPowerCLI> $loginattempt.errormessage
+PS /Users/anthony> $loginattempt.errormessage
 java.lang.SecurityException: Login failed.
 ```
 
@@ -338,3 +333,4 @@ We can then read for this exit code like this:
 PS /Users/anthony> $LASTEXITCODE
 1
 ```
+
