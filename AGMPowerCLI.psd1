@@ -154,7 +154,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @(Actifio,AGM,Sky,CDS,CDX,VDP,Virtual Data Pipeline)
+        Tags = @("Actifio","AGM","Sky","CDS","CDX","VDP")
 
         # A URL to the license for this module.
         # LicenseUri = ''
