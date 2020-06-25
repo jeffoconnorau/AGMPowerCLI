@@ -204,10 +204,51 @@ function Get-AGMApplicationBackup ([Parameter(Mandatory=$true)][int]$id,[int]$li
     }
 }
 
+function Get-AGMApplicationInstanceMember ([Parameter(Mandatory=$true)][int]$id,[int]$limit,[string]$sort)
+{
+    $datefields = "backupdate,modifydate,consistencydate,beginpit,endpit"
+     # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
+    if ($id)
+    {
+        Get-AGMAPIData -endpoint /application/$id/instancemembershipdetails -datefields $datefields -limit $limit -sort $sort
+    }
+}
+
+function Get-AGMApplicationMember ([Parameter(Mandatory=$true)][int]$id,[int]$limit,[string]$sort)
+{
+    $datefields = "backupdate,modifydate,consistencydate,beginpit,endpit"
+     # if user doesn't ask for a limit, send 0 so we know to ignore it
+    if (!($limit))
+    { 
+        $limit = "0"
+    }
+    if (!($sort))
+    {
+        $sort = ""
+    }
+    if ($id)
+    {
+        Get-AGMAPIData -endpoint /application/$id/member -datefields $datefields -limit $limit -sort $sort
+    }
+}
+
 function Get-AGMApplicationTypes 
 {
     Get-AGMAPIData -endpoint /application/types
 }
+
+
+
+
+
 
 
 function Get-AGMApplicationWorkflow ([Parameter(Mandatory=$true)][int]$id,[int]$limit,[string]$sort)

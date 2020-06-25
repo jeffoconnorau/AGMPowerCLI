@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.5'
+ModuleVersion = '0.0.0.6'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -77,6 +77,8 @@ FunctionsToExport = @(
     'Get-AGMApplicationActiveImage',
     'Get-AGMApplicationAppClass',
     'Get-AGMApplicationBackup',
+    'Get-AGMApplicationInstanceMember',
+    'Get-AGMApplicationMember',
     'Get-AGMApplicationTypes',
     'Get-AGMApplicationWorkflow',
     'Get-AGMApplicationWorkflowStatus',

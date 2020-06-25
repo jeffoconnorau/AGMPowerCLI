@@ -316,7 +316,13 @@ Function Test-AGMJSON()
         }
         else
         {
-            $args | ConvertFrom-JSON
+            $testoutput = $args | ConvertFrom-JSON 
+            # error messages from can Sky have multiple lines, which PS doesn't want to print, so we strip them out 
+            if ($testoutput.err_message)
+            {
+                $testoutput.err_message = $testoutput.err_message -replace "`n",","
+            }
+            $testoutput
         }
         Return
     }

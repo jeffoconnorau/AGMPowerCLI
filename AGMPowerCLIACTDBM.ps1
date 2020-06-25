@@ -138,7 +138,7 @@ Function Get-AGMDBMImageDetails ([int]$appid)
     {
         $backup = Foreach ($id in $output)
         { 
-            $id | select id, jobclass, consistencydate, endpit
+            $id | select-object backupname, jobclass, consistencydate, endpit 
         }
         $backup
     }
@@ -306,7 +306,7 @@ Function Get-AGMFollowJobStatus ([string]$jobname)
 }
 
 
-Function New-AGMMSSQLMount ([int]$appid,[int]$targethostid,[string]$imagename,[string]$targethostname,[string]$appname,[string]$sqlinstance,[string]$dbname,[string]$label,[switch][alias("m")]$monitor,[switch][alias("w")]$wait) 
+Function New-AGMMSSQLMount ([int]$appid,[int]$targethostid,[string]$imagename,[string]$targethostname,[string]$appname,[string]$sqlinstance,[string]$dbname,[string]$recoverypoint,[string]$label,[string]$consistencygroupname,[string]$dbnamelist,[string]$dbnameprefix,[string]$dbnamesuffix,[switch][alias("m")]$monitor,[switch][alias("n")]$norecover,[switch][alias("w")]$wait) 
 {
     <#
     .SYNOPSIS
@@ -327,6 +327,10 @@ Function New-AGMMSSQLMount ([int]$appid,[int]$targethostid,[string]$imagename,[s
     .EXAMPLE
     New-AGMMSSQLMount -appid 5552336 -targethostname demo-sql-4 -label "TDM Mount" -sqlinstance DEMO-SQL-4 -dbname avtest -w
     Mounts the latest snapshot from AppID 5552336 to host named demo-sql-4, creating a new DB called avtest on SQL Instance DEMO-SQL-4
+
+    .EXAMPLE
+    New-AGMMSSQLMount -appid 5534398 -targethostname demo-sql-5 -label "AV instance mount" -sqlinstance DEMO-SQL-5 -consistencygroupname avcg -dbnamelist "smalldb1,smalldb2" -dbnameprefix "nonprod_" -dbnamesuffix "_av"
+    Mounts the latest snapshot from AppID 5534398 to host named demo-sql-5, creating two new DBs called nonprod_smalldb1_av and nonprod_smalldb2_av on SQL Instance DEMO-SQL-5
 
     .DESCRIPTION
     A function to mount MS SQL Image
@@ -363,6 +367,7 @@ Function New-AGMMSSQLMount ([int]$appid,[int]$targethostid,[string]$imagename,[s
         }
     }
 
+
     if (!($appid))
     {
         [int]$appid = Read-Host "AppID"
@@ -371,6 +376,8 @@ Function New-AGMMSSQLMount ([int]$appid,[int]$targethostid,[string]$imagename,[s
     {
         [int]$hostid = Read-Host "TargetHostID"
     }
+    
+    # learn about the image
     if ($imagename)
     {
         $imagegrab = Get-AGMImage -filtervalue backupname=$imagename
@@ -381,7 +388,9 @@ Function New-AGMMSSQLMount ([int]$appid,[int]$targethostid,[string]$imagename,[s
         }
         else 
         {
-            $backupid = $backupgrab.id    
+            $backupid = $imagegrab.id
+            $consistencydate = $imagegrab.consistencydate
+            $endpit = $imagegrab.endpit
         }
     }
     else 
@@ -395,12 +404,69 @@ Function New-AGMMSSQLMount ([int]$appid,[int]$targethostid,[string]$imagename,[s
         else {
             $imagename = $imagegrab.backupname
             $backupid = $imagegrab.id
+            $consistencydate = $imagegrab.consistencydate
+            $endpit = $imagegrab.endpit
         }
     }
+
+    # recovery point handling
+    if (!($recoverypoint))
+    {
+        $recoverytime = Convert-ToUnixDate $consistencydate 
+    }
+    else
+    {
+        if ([datetime]$recoverypoint -lt $consistencydate)
+        {
+            Get-AGMErrorMessage -messagetoprint "Specified recovery point $recoverypoint is earlier than image consistency date $consistencydate.  Specify an earlier image."
+            return
+        }
+        elseif (!($endpit))
+        {
+            Get-AGMErrorMessage -messagetoprint "A recovery point was specified but $imagename has no ENDPIT data."
+            return
+        }
+        elseif ([datetime]$recoverypoint -gt $endpit)
+        {
+            Get-AGMErrorMessage -messagetoprint "Specified recovery point $recoverypoint is later than available logs that go to $endpit"
+            return
+        }
+        else
+        {
+            $recoverytime = Convert-ToUnixDate $recoverypoint
+        }
+    }
+
+    # reocvery or not
+    if ($norecover)
+    { 
+        $recover = "false" 
+    }
+    else 
+    {
+        $recover = "true"    
+    }
+
+    
     if (!($label))
     {
         $label = ""
     }
+
+    if ($dbnamelist)
+    {
+
+        $selectedobjects = @(
+            foreach ($db in $dbnamelist.Split(","))
+            {
+            @{
+                restorableobject = $db
+            }
+        }
+        )
+    }
+
+
     
     if ( ($sqlinstance) -and ($dbname) )
     {
@@ -419,7 +485,7 @@ Function New-AGMMSSQLMount ([int]$appid,[int]$targethostid,[string]$imagename,[s
                 },
                 @{
                     name = 'recover'
-                    value = 'true'
+                    value = $recover
                 },
                 @{
                     name = 'userlogins'
@@ -434,6 +500,58 @@ Function New-AGMMSSQLMount ([int]$appid,[int]$targethostid,[string]$imagename,[s
                     value = 'no'
                 }
             )
+            recoverytime = [string]$recoverytime;
+            appaware = "true";
+            migratevm = "false";
+        }
+    }
+    elseif ( ($sqlinstance) -and ($consistencygroupname) )
+    {
+        if (!($dbnamelist))
+        {
+            Get-AGMErrorMessage -messagetoprint "ConsistencyGroupName was specified but dbnamelist was not.   Please specify dbnamelist to identify which DBs to mount"
+            return
+        }
+        $body = [ordered]@{
+            label = $label;
+            image = $imagename;
+            host = @{id=$hostid};
+            selectedobjects = $selectedobjects
+            provisioningoptions = @(
+                @{
+                    name = 'ConsistencyGroupName'
+                    value = $consistencygroupname
+                },
+                @{
+                    name = 'dbnameprefix'
+                    value = $dbnameprefix
+                },
+                @{
+                    name = 'dbnamesuffix'
+                    value = $dbnamesuffix
+                },
+                @{
+                    name = 'sqlinstance'
+                    value = $sqlinstance
+                },
+                @{
+                    name = 'recover'
+                    value = $recover
+                },
+                @{
+                    name = 'userlogins'
+                    value = 'false'
+                },
+                @{
+                    name = 'recoverymodel'
+                    value = 'Same as source'
+                },
+                @{
+                    name = 'overwritedatabase'
+                    value = 'no'
+                }
+            )
+            recoverytime = [string]$recoverytime;
             appaware = "true";
             migratevm = "false";
         }
@@ -453,7 +571,6 @@ Function New-AGMMSSQLMount ([int]$appid,[int]$targethostid,[string]$imagename,[s
     {
         $wait = "y"
     }
-
 
     Post-AGMAPIData  -endpoint /backup/$backupid/mount -body $json
     if ($wait)

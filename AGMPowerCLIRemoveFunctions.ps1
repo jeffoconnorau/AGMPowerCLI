@@ -231,8 +231,26 @@ function Remove-AGMMount([string]$imagename,[switch][alias("d")]$delete,[switch]
         }
     }
 
+    if ($delete)
+    { 
+        $deleterequest="true"
+    }
+    else 
+    {
+        $deleterequest="false"
+    }
+    if ($force)
+    { 
+        $forcerequest="true"
+    }
+    else 
+    {
+        $forcerequest="false"
+    }
 
-    $body = @{delete=$delete;force=$force}
+
+    $body = @{delete=$deleterequest;force=$forcerequest}
     $json = $body | ConvertTo-Json
+
     Post-AGMAPIData -endpoint /backup/$id/unmount -body $json
 }
