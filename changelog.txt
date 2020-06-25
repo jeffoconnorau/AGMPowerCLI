@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to AGMPowerCLI will be documented in this file
 
+## [0.0.0.6] 2020-06-25
+Improved help for some functions
+Fixed issue where mounts were not being deleted
+Improved error handling when error comes from appliance
+Enhanced SQL Mount to handle Instances, CGs and recovery times
+Added the following functions:
+
+    'Get-AGMApplicationInstanceMember',
+    'Get-AGMApplicationMember',
+
+
 ## [0.0.0.5] 2020-06-24
 Improved help for some functions
 Added the following functions:
