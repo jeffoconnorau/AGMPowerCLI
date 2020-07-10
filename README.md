@@ -41,56 +41,66 @@ To uninstall all older versions run this command:
 $Latest = Get-InstalledModule AGMPowerCLI; Get-InstalledModule AGMPowerCLI -AllVersions | ? {$_.Version -ne $Latest.Version} | Uninstall-Module
 ```
 
-#### Install from GitHub
+#### Manual install
 
-If you cannot access Powershell gallery then use these instructions:
+Serious corporate servers will not allow downloads from PowerShell gallery or even access to GitHub from Production Servers, so for these we have the following process:
 
-The commands are basically the same for each OS.
-To upgrade simply run the two Invoke-WebRequest commands.  If you get permission denied because the existing files are read only, delete the old files first.
+1.  From GitHub, use the Green Code download button to download the AGMPowerCLI-Beta-main repo as a zip file
+1.  Copy the Zip file to the server where you want to install it
+1.  For Windows, Right select on the zip file, choose  Properties and then use the Unblock button next to the message:  "This file came from another computer and might be blocked to help protect  your computer."
+1.  For Windows, now right select and use Extract All to extract the contents of the zip file to a folder.  It doesn't matter where you put the folder.  For Mac it should automatically unzip.  For Linux use the unzip command to unzip the folder.
+1.  Now start PWSH and change directory to the  AGMPowerCLI-Beta-main directory that should contain our module files.   
+1.  There is an installer, Install-AGMPowerCLI.ps1 so run that with ./Install-AGMPowerCLI.ps1
+If you find multiple installs, we strongly recommend you delete them all and run the installer again to have just one install.
 
-#####  Determine where to place AGMPowerCLI if needed
 
-Find out where we should place the AGMPowerCLI PowerShell module in the environment by querying the PSModulePath environment variable:
+If the install fails with:
 ```
-Get-ChildItem Env:\PSModulePath | format-list
+PS C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main> .\Install-
+AGMPowerCLI.ps1
+.\Install-AGMPowerCLI.ps1: File C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main\Install-AGMPowerCLI.ps1 cannot be loaded. 
+The file C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main\Install-AGMPowerCLI.ps1 is not digitally signed. 
+You cannot run this script on the current system. For more information about running scripts and setting execution policy, see about_Execution_Policies at https://go.microsoft.com/fwlink/?LinkID=135170.
 ```
-Try to avoid installing AGMPowerCLI into multiple folders.  You can check for existing installs with this command:
+Then  run this command:
 ```
-(Get-Module -ListAvailable AGMPowerCLI).path
+Get-ChildItem .\Install-AGMPowerCLI.ps1 | Unblock-File
 ```
+Then re-run the installer.  The installer will unblock all the files.
 
-##### Linux OS Install directions
+Here is a typical install:
 ```
-pwsh
-mkdir /opt/microsoft/powershell/7/Modules/AGMPowerCLI
-cd /opt/microsoft/powershell/7/Modules/AGMPowerCLI
-```
+Could not find an existing AGMPowerCLI Module installation.
+Where would you like to install it?
 
-##### Mac OS Install directions
-```
-pwsh
-mkdir ~/.local/share/powershell/Modules/AGMPowerCLI
-cd ~/.local/share/powershell/Modules/AGMPowerCLI
-```
+1: C:\Users\av\Documents\PowerShell\Modules
+2: C:\Program Files\PowerShell\Modules
+3: c:\program files\powershell\7\Modules
+4: C:\Windows\system32\WindowsPowerShell\v1.0\Modules\
+5: C:\Program Files (x86)\Microsoft SQL Server\120\Tools\PowerShell\Modules\
 
-##### Windows OS Install directions
+Please select an installation path: 2
 
-```
-pwsh
-mkdir "C:\Program Files\PowerShell\7\Modules\AGMPowerCLI"
-cd "C:\Program Files\PowerShell\7\Modules\AGMPowerCLI"
-```
+Installation successful.
 
-#####  File download:
-Now run these commands:
-```
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psd1 -OutFile AGMPowerCLI.psd1
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLI.psm1 -OutFile AGMPowerCLI.psm1      
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIConnectFunctions.ps1	 -OutFile AGMPowerCLIConnectFunctions.ps1	
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIGetFunctions.ps1 -OutFile AGMPowerCLIGetFunctions.ps1
-Invoke-WebRequest -SkipCertificateCheck -Uri https://raw.githubusercontent.com/Actifio/AGMPowerCLI-Beta/main/AGMPowerCLIPrivateFunctions.ps1 -OutFile AGMPowerCLIPrivateFunctions.ps1           
-```
+AGMPowerCLI Module installation location(s):
 
+Name        Version ModuleBase
+----        ------- ----------
+AGMPowerCLI 0.0.0.6 C:\Program Files\PowerShell\Modules\AGMPowerCLI
+
+PS C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main> Connect-AG
+M 10.65.5.38 av passw0rd -i
+Login Successful!
+PS C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main> Get-AGMVer
+sion
+
+product summary
+------- -------
+AGM     10.0.1.4673
+
+PS C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main>
+```
 
 ### 2)  Get some help
 
