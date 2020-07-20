@@ -172,7 +172,8 @@ PrivateData = @{
         IconUri = 'https://i.imgur.com/QAaK5Po.jpg'
 
         # ReleaseNotes of this module
-        # ReleaseNotes = ''
+        ReleaseNotes = '## [0.0.0.7] 2020-07-20
+        Split modules so non-base functions are in AGMPowerLib'
 
         # Prerelease string of this module
         # Prerelease = ''
