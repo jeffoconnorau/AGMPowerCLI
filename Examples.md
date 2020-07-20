@@ -1,3 +1,8 @@
+# AGMPowerLib
+
+All this examples use commands supplied by AGMPowerLib, so you need to have this module installed as well.
+
+
 # SQL Test and Dev Image usage
 
 In this 'story' a user wants to mount the latest snapshot of a SQL DB to a host
@@ -22,7 +27,7 @@ Login Successful!
 The user finds the appID for the source DB
 
 ```
-PS /Users/anthony> Get-AGMDBMApplicationID smalldb
+PS /Users/anthony> Get-AGMLibApplicationID smalldb
 
 id      friendlytype hostname appname appliancename applianceip  appliancetype managed
 --      ------------ -------- ------- ------------- -----------  ------------- -------
@@ -33,7 +38,7 @@ id      friendlytype hostname appname appliancename applianceip  appliancetype m
 The user validates the name of the target host:
 
 ```
-PS /Users/anthony> Get-AGMDBMHostID demo-sql-4
+PS /Users/anthony> Get-AGMLibHostID demo-sql-4
 
 id       hostname   osrelease                                    appliancename applianceip  appliancetype
 --       --------   ---------                                    ------------- -----------  -------------
@@ -54,14 +59,14 @@ DEMO-SQL-4
 The user runs a mount command specifying the source appid, target host and SQL Instance and DB name on the target:
 
 ```
-PS /Users/anthony> New-AGMMSSQLMount -appid 5552336 -targethostname demo-sql-4 -label "test and dev made easy" -sqlinstance DEMO-SQL-4 -dbname avtest
+PS /Users/anthony> New-AGMLibMSSQLMount -appid 5552336 -targethostname demo-sql-4 -label "test and dev made easy" -sqlinstance DEMO-SQL-4 -dbname avtest
 
 ```
 
 The user finds the running job:
 
 ```
-PS /Users/anthony> Get-AGMRunningJobs
+PS /Users/anthony> Get-AGMLibRunningJobs
 
 jobname      jobclass   apptype         hostname                    appname               appid    appliancename startdate           progress targethost
 -------      --------   -------         --------                    -------               -----    ------------- ---------           -------- ----------
@@ -71,7 +76,7 @@ Job_24358189 mount      SqlServerWriter hq-sql                      smalldb     
 The user tracks the job to success:
 
 ```
-PS /Users/anthony> Get-AGMFollowJobStatus Job_24358189
+PS /Users/anthony> Get-AGMLibFollowJobStatus Job_24358189
 
 jobname      status  progress queuedate           startdate           duration
 -------      ------  -------- ---------           ---------           --------
@@ -86,7 +91,7 @@ Job_24358189 succeeded         2020-06-24 14:50:08         00:01:36
 The user validates the mount exists:
 
 ```
-PS /Users/anthony> Get-AGMActiveImage
+PS /Users/anthony> Get-AGMLibActiveImage
 
 imagename      apptype         hostname        appname appid    mountedhostname childappname appliancename consumedsize label
 ---------      -------         --------        ------- -----    --------------- ------------ ------------- ------------ -----
@@ -103,7 +108,7 @@ PS /Users/anthony> Remove-AGMMount Image_24358189 -d
 
 The user confirms if the mount created a child app
 ```
-PS /Users/anthony> Get-AGMDBMApplicationID avtest
+PS /Users/anthony> Get-AGMLibApplicationID avtest
 
 id       friendlytype hostname   appname appliancename applianceip  appliancetype managed
 --       ------------ --------   ------- ------------- -----------  ------------- -------
@@ -122,7 +127,7 @@ In this 'story' a user wants to mount a specific snapshot of a SQL DB to a host 
 The user finds the appID for the source DB
 
 ```
-PS /Users/anthony> Get-AGMDBMApplicationID smalldb
+PS /Users/anthony> Get-AGMLibApplicationID smalldb
 
 id      friendlytype hostname appname appliancename applianceip  appliancetype managed
 --      ------------ -------- ------- ------------- -----------  ------------- -------
@@ -133,7 +138,7 @@ id      friendlytype hostname appname appliancename applianceip  appliancetype m
 We now get a list of images:
 
 ```
-PS /Users/anthony> Get-AGMDBMImageDetails 5552336
+PS /Users/anthony> Get-AGMLibImageDetails 5552336
 
 backupname            jobclass     consistencydate     endpit
 ----------            --------     ---------------     ------
@@ -145,7 +150,7 @@ We have two snapshots and logs as well.
 The user runs a mount command specifying the source appid, target host and SQL Instance and DB name on the target as well as a recovery point in ISO 860 format and image name.  However they specify the wrong date, one earlier than the consistency point:
 
 ```
-PS /Users/anthony> New-AGMMSSQLMount -imagename Image_24351142 -appid 5552336 -targethostname demo-sql-4 -label "test and dev made easy" -sqlinstance DEMO-SQL-4 -dbname avtest -recoverypoint "2020-06-23 16:00"
+PS /Users/anthony> New-AGMLibMSSQLMount -imagename Image_24351142 -appid 5552336 -targethostname demo-sql-4 -label "test and dev made easy" -sqlinstance DEMO-SQL-4 -dbname avtest -recoverypoint "2020-06-23 16:00"
 
 errormessage
 ------------
@@ -154,7 +159,7 @@ Specified recovery point 2020-06-23 16:00 is earlier than image consistency date
 ```
 They fix the date and successfully run the command:
 ```
-PS /Users/anthony> New-AGMMSSQLMount -imagename Image_24351142 -appid 5552336 -targethostname demo-sql-4 -label "test and dev made easy" -sqlinstance DEMO-SQL-4 -dbname avtest -recoverypoint "2020-06-24 16:00"
+PS /Users/anthony> New-AGMLibMSSQLMount -imagename Image_24351142 -appid 5552336 -targethostname demo-sql-4 -label "test and dev made easy" -sqlinstance DEMO-SQL-4 -dbname avtest -recoverypoint "2020-06-24 16:00"
 ```
 
 
@@ -163,7 +168,7 @@ PS /Users/anthony> New-AGMMSSQLMount -imagename Image_24351142 -appid 5552336 -t
 In this 'story' a user wants to mount two databases from the latest snapshot of a SQL Instance to a host.  Most aspects of the story are the same as above, however they need some more information to run their mount command.   They learn the App ID of the SQL Instance:
 
 ```
-PS /Users/anthony> Get-AGMDBMApplicationID  HQ-SQL
+PS /Users/anthony> Get-AGMLibApplicationID  HQ-SQL
 
 id      friendlytype hostname appname appliancename applianceip  appliancetype managed
 --      ------------ -------- ------- ------------- -----------  ------------- -------
@@ -204,5 +209,5 @@ id       appname            apptype         srcid    sensitivity systemdb ispart
 So now we know the names of the DBs inside our SQL instance, we just need to chose a Consistency group name  to hold them and any prefixe and sufffixes we want to use.  We then run our mount command like this:
 
 ```
-PS /Users/anthony>  New-AGMMSSQLMount -appid 5534398 -targethostname demo-sql-5 -label "AV instance mount" -sqlinstance DEMO-SQL-5 -consistencygroupname avcg -dbnamelist "smalldb1,smalldb2" -dbnameprefix "testdev_" -dbnamesuffix "_av"
+PS /Users/anthony>  New-AGMLibMSSQLMount -appid 5534398 -targethostname demo-sql-5 -label "AV instance mount" -sqlinstance DEMO-SQL-5 -consistencygroupname avcg -dbnamelist "smalldb1,smalldb2" -dbnameprefix "testdev_" -dbnamesuffix "_av"
 ```
