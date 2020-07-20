@@ -7,6 +7,9 @@ It is currently:
 * considered beta
 * may be changed dramatically or even withdrawn
 
+It has a partner module:  ActPowerLib
+While this partner module is optional, it is strongly recommended.
+
 
 ### What versions of PowerShell will this module work with?
 
@@ -151,14 +154,14 @@ You will need to store the certificate during first login if you don't use **-ig
 
 Note you can use **-quiet** to supress messages.   This is handy when scripting.
 
-### 5)  Find out the current version of AGMPowerCLI:
+### 5)  Run your first command:
 
 ```
-(Get-Module AGMPowerCLI).Version
+PS /Users/anthony/git/AGMPowerLib> Get-AGMVersion
 
-Major  Minor  Build  Revision
------  -----  -----  --------
-0      0      0      1
+product summary
+------- -------
+AGM     10.0.1.4673
 ```
 
 ### 6) Example commands
