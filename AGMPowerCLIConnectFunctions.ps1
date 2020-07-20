@@ -20,6 +20,10 @@ function Connect-AGM
     This will connect to AGM with a username of "admin" to the IP address 172.24.1.117.
     The password will be provided by using a previously created password file using Save-AGMPassword
 
+    .EXAMPLE
+    Connect-AGM 172.24.1.117 admin password -i
+    This will connect to AGM with a username of "admin" to the IP address 172.24.1.117.  It unsecurely supplies the password and bypasses the SSL certificate check by specifying -i
+
     #>
 
     
@@ -192,7 +196,7 @@ function Disconnect-AGM
     .NOTES
     Written by Anthony Vandewerdt
 
-        .EXAMPLE
+    .EXAMPLE
     Disconnect-AGM
     
 
@@ -202,7 +206,11 @@ function Disconnect-AGM
     Param([switch][alias("q")]$quiet,[switch][alias("p")]$printsession)
 
 
-    Test-AGMConnection
+    if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
+    {
+        Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM"
+        return
+    }
     
     $RestError = $null
     Try
@@ -250,11 +258,10 @@ Function Save-AGMPassword([string]$filename)
 {
 	<#
 	.SYNOPSIS
-	Save credentials so that scripting is easy and interactive login is no longer 
-	needed.
+	Save credentials so that scripting is easy and interactive login is no longer needed.
 
 	.EXAMPLE
-	Save-AGMPassword -filename ./5b-admin-pass
+	Save-AGMPassword -filename admin-pass.key
 	Save the password for use later.
 
 	.DESCRIPTION
@@ -308,6 +315,29 @@ Function Save-AGMPassword([string]$filename)
 function Set-AGMAPILimit([Parameter(Mandatory = $true)]
 [ValidateRange("NonNegative")][int]$userapilimit )
 {
+     <#  
+    .SYNOPSIS
+    Offers a way to globally limit the number of objects returned by any API get request.
+
+    .DESCRIPTION
+    The AGM GUI by default displays a fixed number of objects per page,  limiting the amount of data fetched when a page is displayed.
+    By default the PowerShell module will get every object available for the Get being used, unless the user specifies a limit with that get command.
+    For object types like job history this can result in possibly millions of objects (jobs) being returned.
+    So if you are exploring the API then setting a global limit can allow you to issue gets without concern about how many objects will be fetched.
+
+    .NOTES
+    Written by Anthony Vandewerdt
+
+    .EXAMPLE
+    Set-AGMAPILimit 10
+    This means that every Get command supplied by the base module will only return 10 objects maxium, unless the -limit option is used
+ 
+    .EXAMPLE
+    Set-AGMAPILimit 0
+    This resets the global limit to 0 which is unlimited, meaning AGM will return every object that it has for the relevant Get.
+
+    #>
+
     $global:agmmaxapilimit = $userapilimit
 }
 
@@ -315,6 +345,29 @@ function Set-AGMAPILimit([Parameter(Mandatory = $true)]
 # offer a way to control timezone used in output.  By default we use User local time for all data
 function Set-AGMTimeZoneHandling ([switch][alias("l")]$local,[switch][alias("u")]$utc)
 {
+     <#  
+    .SYNOPSIS
+    Offers a way to change which timezone timestamps are shown in.
+
+    .DESCRIPTION
+    By default the PowerShell module shows all timestamp in the local timezone of the powershell session.   
+    You can validate which timezone that is with:  Get-TimeZone
+    You can validate whether the AGM Module is using local or UTC with:  Get-AGMTimeZoneHandling
+
+    .NOTES
+    Written by Anthony Vandewerdt
+
+    .EXAMPLE
+    Set-AGMTimeZoneHandling -l
+    Show all timestamps in the local timezone of the PowerShell session.
+ 
+    .EXAMPLE
+    Set-AGMTimeZoneHandling -u
+    Show all timestamps in UTC (GMT).
+
+    #>
+
+
     if ($utc)
     {
         $GLOBAL:AGMTimezone = "UTC"
@@ -327,6 +380,25 @@ function Set-AGMTimeZoneHandling ([switch][alias("l")]$local,[switch][alias("u")
 
 function Get-AGMTimeZoneHandling 
 {
+    <#  
+    .SYNOPSIS
+    Offers a way to display how timezones are being handled.
+
+    .DESCRIPTION
+    By default the PowerShell module shows all timestamp in the local timezone of the powershell session.   
+    You can validate which timezone that is with:  Get-TimeZone
+    You can change whether the AGM Module is using local or UTC with:  Set-AGMTimeZoneHandling
+
+    .NOTES
+    Written by Anthony Vandewerdt
+
+    .EXAMPLE
+    Get-AGMTimeZoneHandling
+    Show whether the AGM Module is using local or UTC
+ 
+    #>
+
+
     if (!($AGMTimezone))
     {
         Get-AGMErrorMessage -messagetoprint "Timezone handling has not been set-up.  Run Set-AGMTimeZoneHandling or Connect-Act";

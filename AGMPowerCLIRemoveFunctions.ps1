@@ -6,11 +6,11 @@ function Remove-AGMApplication ([Parameter(Mandatory=$true)][int]$appid)
 
     .EXAMPLE
     Remove-AGMApplication
-    You will be prompted for App ID
+    You will be prompted for an Application ID
 
     .EXAMPLE
     Remove-AGMApplication 2133445
-    Deletes AppID 2133445
+    Deletes Application ID 2133445
 
 
     .DESCRIPTION

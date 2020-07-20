@@ -178,11 +178,23 @@ function Get-AGMApplicationActiveImage ([Parameter(Mandatory=$true)][int]$id,[in
     }
 }
 
-function Get-AGMApplicationAppClass ([Parameter(Mandatory=$true)][int]$id)
+function Get-AGMApplicationAppClass ([Parameter(Mandatory=$true)][int]$id,[string]$operation,[int]$hostid)
 {
-    if ($id)
+    if ($hostid)
     {
-        Get-AGMAPIData -endpoint /application/$id/appclass
+        $extrarequests = "&hostid=" + $hostid
+    }
+    if ($operation)
+    { 
+        $extrarequests = $extrarequests + "&operation=" + $operation
+    }
+    if ($extrarequests)
+    {
+        Get-AGMAPIData -endpoint /application/$id/appclass -extrarequests $extrarequests
+    }
+    else 
+    {
+        Get-AGMAPIData -endpoint /application/$id/appclass         
     }
 }
 

@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.6'
+ModuleVersion = '0.0.0.7'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -70,8 +70,16 @@ PowerShellVersion = '7.0'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
+    'Get-AGMAPIData',
+    'Post-AGMAPIData',
+    'Put-AGMAPIData',
     'Connect-AGM',
     'Disconnect-AGM',
+    'Convert-FromUnixDate',
+    'Convert-ToUnixDate',
+    'Convert-AGMDuration',
+    'Get-AGMErrorMessage',
+    'Test-AGMJSON',
     'Get-AGMAppliance',
     'Get-AGMApplication',
     'Get-AGMApplicationActiveImage',
@@ -113,15 +121,10 @@ FunctionsToExport = @(
     'Save-AGMPassword',
     'Set-AGMAPILimit',
     'Set-AGMTimeZoneHandling',
-    'Get-AGMActiveImage',
-    'Get-AGMLatestImage',
-    'Get-AGMDBMApplicationID',
-    'Get-AGMDBMHostID',
-    'Get-AGMDBMImageDetails',
-    'New-AGMDBMImage',
-    'New-AGMMSSQLMount',
-    'Get-AGMFollowJobStatus',
-    'Get-AGMRunningJobs',
+    'Set-AGMOrgApplication',
+    'Set-AGMOrgHost',
+    'Set-AGMOrgLogicalGroup',
+    'New-AGMMount',
     'New-AGMOrg',
     'New-AGMRole',
     'Remove-AGMApplication',
@@ -130,7 +133,8 @@ FunctionsToExport = @(
     'Remove-AGMMount',
     'Remove-AGMOrg',
     'Remove-AGMRole',
-    'Remove-AGMUser')
+    'Remove-AGMUser',
+    'Update-AGMOrg')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = '*'
@@ -159,13 +163,13 @@ PrivateData = @{
         Tags = @("Actifio","AGM","Sky","CDS","CDX","VDP")
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/Actifio/AGMPowerCLI-Beta/blob/main/LICENSE'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/Actifio/AGMPowerCLI-Beta'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://i.imgur.com/QAaK5Po.jpg'
 
         # ReleaseNotes of this module
         # ReleaseNotes = ''
