@@ -15,7 +15,7 @@ function GetPSModulePath
     }
     else 
     {
-        return $env:PSModulePath.Split(';')
+        return $env:PSModulePath.Split(';') -notmatch "WindowsPowerShell"
     }
 
 }
@@ -100,13 +100,18 @@ if ( $hostVersionInfo -lt "7" )
     break
 }
 
+Import-LocalizedData -BaseDirectory .\ -FileName AGMPowerCLI.psd1 -BindingVariable ActModuleData
+Write-host 'Detected PowerShell version:   ' $hostVersionInfo
+Write-host 'Downloaded ActPowerCLI version:' $ActModuleData.ModuleVersion
+Write-host ""
+
 [Array]$ActInstall = GetAGMPowerCLIInstall
 if ($ActInstall.Length -gt 0)
 {
     Write-Host 'Found an existing AGMPowerCLI Module installation in the following locations:' 
     ReportAGMPowerCLI | Format-Table
     write-host ""
-    Write-host "Upgrade or uninstall menu (choose a folder to upgrade or the delete option):"
+    Write-host "Upgrade or delete menu (choose a folder to upgrade to"$ActModuleData.ModuleVersion"or choose the delete option):"
     $ActInstall += @{
         Name       = 'Delete All'
         Version    = 0.0.0.0
@@ -132,7 +137,7 @@ if ($ActInstall.Length -gt 0)
     else
     {
     Write-Host "Could not find an existing AGMPowerCLI Module installation."
-    Write-Host "Where would you like to install it?"
+    Write-Host "Where would you like to install AGMPowerCLI version"$ActModuleData.ModuleVersion
     Write-Host ""
     $InstallPath = InstallMenu -InstallPathList (GetPSModulePath) -InstallAction installation
     $InstallPath = $InstallPath + '\AGMPowerCLI\'
