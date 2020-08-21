@@ -151,15 +151,27 @@ function Connect-AGM
         if ($loginfailedsniff.err_code -eq "10011")
         {
             $agmerror = @()
-            $agmerrorcol = "" | Select err_code,errormessage
+            $agmerrorcol = "" | Select-Object err_code,errormessage
             [int]$agmerrorcol.err_code = "10011"
-            $agmerrorcol.errormessage = "Login failed"
+            $agmerrorcol.errormessage = "Login failed.  Check your username and password."
             $agmerror = $agmerror + $agmerrorcol
             $agmerror
+            return
+        }
+        elseif ($loginfailedsniff.errorcode -eq "10017")
+        {
+            $agmerror = @()
+            $agmerrorcol = "" | Select-Object err_code,errormessage
+            [int]$agmerrorcol.err_code = "10017"
+            $agmerrorcol.errormessage = "Login failed.  You appear to be logging into a VDP Appliance, rather than an AGM."
+            $agmerror = $agmerror + $agmerrorcol
+            $agmerror
+            return
         }
         else
         {
             $loginfailedsniff
+            return
         }
     }
     else

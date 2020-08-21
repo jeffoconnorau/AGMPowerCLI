@@ -59,6 +59,41 @@ function Remove-AGMImage ([string]$imagename)
     Post-AGMAPIData -endpoint /backup/$id/expire 
 }
 
+Function Remove-AGMMigrate ([string]$imageid) 
+{
+    <#
+    .SYNOPSIS
+    Removes a migration job 
+
+    .EXAMPLE
+    Remove-AGMMigrate 
+    You will be prompted for ImageID
+
+    .EXAMPLE
+    Remove-AGMMigrate -imageid 56072427 
+
+    Removes migration  for Image ID 56072427
+
+    .DESCRIPTION
+    A function to remove migration jobs 
+
+    #>
+
+    if (!($imageid))
+    {
+        $imageid = Read-host "Image ID"
+    }
+    if (!($imageid))
+    {
+        Get-AGMErrorMessage -messagetoprint "No Image ID was supplied"
+        return
+    }
+    $body = [ordered]@{}
+    $body += @{ action = "migratecancel" }
+    $json = $body | ConvertTo-Json
+
+    Post-AGMAPIData  -endpoint /backup/$imageid/migrate  -body $json
+}
 
 function Remove-AGMOrg ([Parameter(Mandatory=$true)][int]$id)
 {
@@ -107,6 +142,53 @@ function Remove-AGMRole ([Parameter(Mandatory=$true)][int]$id)
 
     Post-AGMAPIData -endpoint /role/$id -method "delete"
 }
+
+function Remove-AGMSLA ([int]$id,[int]$slaid,[int]$appid)
+{
+    <#
+    .SYNOPSIS
+    Deletes a nominated SLA
+
+    .EXAMPLE
+    Remove-AGMSLA
+    You will be prompted for an SLA ID
+
+    .EXAMPLE
+    Remove-AGMSLA -id 2133445
+    Deletes SLAID 2133445
+
+    .EXAMPLE
+    Remove-AGMSLA -slaid 2133445
+    Deletes SLAID 2133445
+
+    .EXAMPLE
+    Remove-AGMSLA -appid 1234
+    Deletes the SLA for AppID 1234
+
+    .DESCRIPTION
+    A function to delete SLAs
+
+    #>
+
+    if ($id)
+    {
+        $slaid = $id
+    }
+
+    if ( ($appid) -and (!($slaid)) )
+    {
+        $slaid = (Get-AGMSLA -filtervalue appid=$appid).id
+    }
+
+    if (!($slaid))
+    {
+        [int]$slaid = Read-Host "SLA ID to remove"
+    }
+
+    Post-AGMAPIData -endpoint /sla/$slaid -method "delete"
+}
+
+
 
 function Remove-AGMUser([Parameter(Mandatory=$true)][int]$id)
 {

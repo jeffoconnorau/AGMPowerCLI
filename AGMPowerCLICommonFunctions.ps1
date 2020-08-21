@@ -254,9 +254,12 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                 if ($options)
                 {
                     $grab = $resp | ConvertTo-JSON | ConvertFrom-Json -AsHashtable
-                    $grab1 = $grab.Values.filterablefields.Split("@{field=") | select -skip 1 
-                    $grab2 = $grab1 -notmatch '^\s*$'
-                    $grab2 -replace "}"
+                    if ($grab.Values)
+                    {
+                        $grab1 = $grab.Values.filterablefields.Split("@{field=") | select -skip 1 
+                        $grab2 = $grab1 -notmatch '^\s*$'
+                        $grab2 -replace "}"
+                    }
                 }
                 else 
                 {

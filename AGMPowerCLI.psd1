@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.7'
+ModuleVersion = '0.0.0.8'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -96,6 +96,7 @@ FunctionsToExport = @(
     'Get-AGMEvent',
     'Get-AGMHost',
     'Get-AGMImage',
+    'Get-AGMImageSystemStateOptions',
     'Get-AGMJob',
     'Get-AGMJobCountSummary',
     'Get-AGMJobHistory',
@@ -118,22 +119,27 @@ FunctionsToExport = @(
     'Get-AGMVersion',
     'Get-AGMVersionDetail',
     'Get-AGMWorkflow',
+    'New-AGMMount',
+    'New-AGMOrg',
+    'New-AGMRole',
+    'New-AGMSLA',
     'Save-AGMPassword',
     'Set-AGMAPILimit',
     'Set-AGMTimeZoneHandling',
     'Set-AGMOrgApplication',
     'Set-AGMOrgHost',
     'Set-AGMOrgLogicalGroup',
-    'New-AGMMount',
-    'New-AGMOrg',
-    'New-AGMRole',
+    'Set-AGMSLA',
     'Remove-AGMApplication',
     'Remove-AGMImage',
     'Remove-AGMJob',
+    'Remove-AGMMigrate',
     'Remove-AGMMount',
     'Remove-AGMOrg',
     'Remove-AGMRole',
+    'Remove-AGMSLA',
     'Remove-AGMUser',
+    'Start-AGMMigrate',
     'Update-AGMOrg')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -172,7 +178,12 @@ PrivateData = @{
         IconUri = 'https://i.imgur.com/QAaK5Po.jpg'
 
         # ReleaseNotes of this module
-        ReleaseNotes = '## [0.0.0.7] 2020-07-20
+        ReleaseNotes = '
+        ## [0.0.0.8] 2020-08-21
+        Added New-AGMSLA, Remove-AGMSLA, Set-AGMSLA, Remove-AGMMigrate, Start-AGMMigrate, Get-AGMImageSystemStateOptions
+        Better handle case where -o does not fetch correctly formated filtervalues
+        
+        ## [0.0.0.7] 2020-07-20
         Split modules so non-base functions are in AGMPowerLib'
 
         # Prerelease string of this module

@@ -489,6 +489,23 @@ function Get-AGMImage ([string]$filtervalue,[string]$keyword,[switch][alias("o")
     }
 }
 
+function Get-AGMImageSystemStateOptions ([string]$imageid,[string]$id,[string]$target)
+{
+    if ($id) { $imageid = $id }
+    if (!($imageid))
+    {
+        [int]$id = Read-Host "ImageID"
+    }
+    if (!($target))
+    {
+        Get-AGMAPIData -endpoint /backup/$imageid/systemstateoptions
+    }
+    else 
+    {
+        Get-AGMAPIData -endpoint /backup/$imageid/systemstateoptions/$target     
+    }
+}
+
 #job
 
 function Get-AGMJob ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
