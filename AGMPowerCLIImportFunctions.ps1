@@ -1,4 +1,4 @@
-Function Import-AGMOnVault ([int]$diskpool,[int]$applianceid,[int]$appid,[switch][alias("f")]$forget,[switch][alias("o")]$ownershiptakeover,[string]$jsonbody,[string]$label) 
+Function Import-AGMOnVault ([int]$diskpoolid,[int]$applianceid,[int]$appid,[switch][alias("f")]$forget,[switch][alias("o")]$ownershiptakeover,[string]$jsonbody,[string]$label) 
 {
     <#
     .SYNOPSIS
@@ -6,24 +6,24 @@ Function Import-AGMOnVault ([int]$diskpool,[int]$applianceid,[int]$appid,[switch
     There is no Forget-AGMOnvault command.   You can do import and forget from this function. 
 
     .EXAMPLE
-    Import-AGMOnVault -diskpool 20060633 -applianceid 1415019931 
+    Import-AGMOnVault -diskpoolid 20060633 -applianceid 1415019931 
 
-    Imports all OnVault images from disk pool 20060633 onto appliance ID 1415019931
-
-    .EXAMPLE
-    Import-AGMOnVault -diskpool 20060633 -applianceid 1415019931 -appid 4788
-    
-    Imports all OnVault images from disk pool 20060633 and appid 4788 onto appliance ID 1415019931
+    Imports all OnVault images from disk pool ID 20060633 onto Appliance ID 1415019931
 
     .EXAMPLE
-    Import-AGMOnVault -diskpool 20060633 -applianceid 1415019931 -appid 4788 -owner
+    Import-AGMOnVault -diskpoolid 20060633 -applianceid 1415019931 -appid 4788
     
-    Imports all OnVault images from disk pool 20060633 and appid 4788 onto appliance ID 1415019931 and takes ownership
+    Imports all OnVault images from disk pool ID 20060633 and App ID 4788 onto Appliance ID 1415019931
 
     .EXAMPLE
-    Import-AGMOnVault -diskpool 20060633 -applianceid 1415019931 -appid 4788 -forget
+    Import-AGMOnVault -diskpoolid 20060633 -applianceid 1415019931 -appid 4788 -owner
     
-    Forgets all OnVault images imported from disk pool 20060633 and appid 4788 onto appliance ID 1415019931
+    Imports all OnVault images from disk pool ID 20060633 and App ID 4788 onto Appliance ID 1415019931 and takes ownership
+
+    .EXAMPLE
+    Import-AGMOnVault -diskpoolid 20060633 -applianceid 1415019931 -appid 4788 -forget
+    
+    Forgets all OnVault images imported from disk pool ID 20060633 and App ID 4788 onto Appliance ID 1415019931
 
     .DESCRIPTION
     A function to import OnVault images
@@ -33,14 +33,14 @@ Function Import-AGMOnVault ([int]$diskpool,[int]$applianceid,[int]$appid,[switch
 
     #>
 
-    if (!($diskpool))
+    if (!($diskpoolid))
     {
-        [int]$diskpool = Read-Host "Diskpool to import from"
+        [int]$diskpoolid = Read-Host "Diskpool ID to import from"
     }
 
     if (!($applianceid))
     {
-        [int]$applianceid = Read-Host "ApplianceID to import into"
+        [int]$applianceid = Read-Host "Appliance ID to import into"
     }
 
     if ($ownershiptakeover)
@@ -64,10 +64,12 @@ Function Import-AGMOnVault ([int]$diskpool,[int]$applianceid,[int]$appid,[switch
 
     if($appid)
     {   
-        Post-AGMAPIData  -endpoint /diskpool/$diskpool/vaultclusters/$applianceid/$appid?action=$action&owner=$owner&nowait=true
+        $endpoint = "/diskpool/$diskpoolid/vaultclusters/$applianceid/$appid" + "?action=$action&owner=$owner&nowait=true"
+        Post-AGMAPIData  -endpoint $endpoint
     }
     else 
     {
-        Post-AGMAPIData  -endpoint /diskpool/$diskpool/vaultclusters/$applianceid?action=$action&owner=$owner&nowait=true
+        $endpoint = "/diskpool/$diskpoolid/vaultclusters/$applianceid" + "?action=$action&owner=$owner&nowait=true"
+        Post-AGMAPIData  -endpoint $endpoint
     }
 }
