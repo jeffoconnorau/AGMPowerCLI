@@ -182,6 +182,7 @@ PrivateData = @{
         ReleaseNotes = '
         ## [0.0.0.9] 2020-08-24
         Added Import-AGMOnVault   
+        Support not equals filter method
 
         ## [0.0.0.8] 2020-08-21
         Added New-AGMSLA, Remove-AGMSLA, Set-AGMSLA, Remove-AGMMigrate, Start-AGMMigrate, Get-AGMImageSystemStateOptions
