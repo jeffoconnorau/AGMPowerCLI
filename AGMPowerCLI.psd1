@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.8'
+ModuleVersion = '0.0.0.9'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -119,6 +119,7 @@ FunctionsToExport = @(
     'Get-AGMVersion',
     'Get-AGMVersionDetail',
     'Get-AGMWorkflow',
+    'Import-AGMOnVault',
     'New-AGMMount',
     'New-AGMOrg',
     'New-AGMRole',
@@ -179,6 +180,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.9] 2020-08-24
+        Added Import-AGMOnVault   
+
         ## [0.0.0.8] 2020-08-21
         Added New-AGMSLA, Remove-AGMSLA, Set-AGMSLA, Remove-AGMMigrate, Start-AGMMigrate, Get-AGMImageSystemStateOptions
         Better handle case where -o does not fetch correctly formated filtervalues

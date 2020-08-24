@@ -50,13 +50,14 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
         {
             # remove any whitespace at the end
             $trimm = $line.TrimEnd()
-            $secondwordequals = $trimm.Split("=") | Select -skip 1
-            $secondwordgreater = $trimm.Split(">") | Select -skip 1
-            $secondwordlesser = $trimm.Split("<") | Select -skip 1
-            $secondwordfuzzy = $trimm.Split("~") | Select -skip 1
+            $secondwordequals = $trimm.Split("=") | Select-Object -skip 1
+            $secondwordnotequal = $trimm.Split("!") | Select-Object -skip 1
+            $secondwordgreater = $trimm.Split(">") | Select-Object -skip 1
+            $secondwordlesser = $trimm.Split("<") | Select-Object -skip 1
+            $secondwordfuzzy = $trimm.Split("~") | Select-Object -skip 1
             if ($secondwordequals)
             {
-                $firstword = $trimm.Split("=") | Select -First 1
+                $firstword = $trimm.Split("=") | Select-Object -First 1
                 if ($datefields)
                 {
                     foreach ($field in $datefields.Split(","))
@@ -69,9 +70,24 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                 }
                 $fv = $fv + "&filter=" + $firstword + ":==" + [System.Web.HttpUtility]::UrlEncode($secondwordequals)
             }
+            elseif ($secondwordnotequal)
+            {
+                $firstword = $trimm.Split("!") | Select-Object -First 1
+                if ($datefields)
+                {
+                    foreach ($field in $datefields.Split(","))
+                    {
+                        if ($field -eq $firstword)
+                        {
+                            $secondwordgreater = Convert-ToUnixDate $secondwordgreater
+                        }
+                    }
+                }
+                $fv = $fv + "&filter=" + $firstword + ":!=" + [System.Web.HttpUtility]::UrlEncode($secondwordnotequal)
+            }
             elseif ($secondwordgreater)
             {
-                $firstword = $trimm.Split(">") | Select -First 1
+                $firstword = $trimm.Split(">") | Select-Object -First 1
                 if ($datefields)
                 {
                     foreach ($field in $datefields.Split(","))
@@ -86,7 +102,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             }
             elseif ($secondwordlesser)
             {
-                $firstword = $trimm.Split("<") | Select -First 1
+                $firstword = $trimm.Split("<") | Select-Object -First 1
                 if ($datefields)
                 {
                     foreach ($field in $datefields.Split(","))
@@ -101,7 +117,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             }
             elseif ($secondwordfuzzy)
             {
-                $firstword = $trimm.Split("~") | Select -First 1
+                $firstword = $trimm.Split("~") | Select-Object -First 1
                 if ($datefields)
                 {
                     foreach ($field in $datefields.Split(","))
@@ -146,7 +162,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
         $commasplit = $sort.Split(",") 
         foreach ($line in $commasplit)
         {
-            $order = $line.Split(":") | select -skip 1
+            $order = $line.Split(":") | Select-Object -skip 1
             if (!($order))
             {
                 Get-AGMErrorMessage -messagetoprint "Please specify a sort order of asc or desc after a full colon, e.g.  appname:asc or appname:desc"
@@ -256,7 +272,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                     $grab = $resp | ConvertTo-JSON | ConvertFrom-Json -AsHashtable
                     if ($grab.Values)
                     {
-                        $grab1 = $grab.Values.filterablefields.Split("@{field=") | select -skip 1 
+                        $grab1 = $grab.Values.filterablefields.Split("@{field=") | Select-Object -skip 1 
                         $grab2 = $grab1 -notmatch '^\s*$'
                         $grab2 -replace "}"
                     }
@@ -392,7 +408,7 @@ function Get-AGMErrorMessage ([string]$messagetoprint,[int]$errcode)
     #>
 
     $acterror = @()
-    $acterrorcol = "" | Select errormessage
+    $acterrorcol = "" | Select-Object errormessage
     $acterrorcol.errormessage = "$messagetoprint"
     $acterror = $acterror + $acterrorcol
     $acterror
