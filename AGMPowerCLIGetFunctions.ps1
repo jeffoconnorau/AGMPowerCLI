@@ -508,7 +508,7 @@ function Get-AGMImageSystemStateOptions ([string]$imageid,[string]$id,[string]$t
 
 #job
 
-function Get-AGMJob (string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[[int]$limit,[string]$sort)
+function Get-AGMJob ([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "queuedate,expirationdate,startdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
