@@ -1,6 +1,6 @@
 #appliance
 
-function Get-AGMAppliance ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMAppliance ([string]$id,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
 
     <#
@@ -79,7 +79,7 @@ function Get-AGMAppliance ([string]$filtervalue,[switch][alias("o")]$options,[st
 
 # Application
 
-function Get-AGMApplication ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMApplication ([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
 
     <#
@@ -160,7 +160,7 @@ function Get-AGMApplication ([string]$filtervalue,[string]$keyword,[switch][alia
     }
 }
 
-function Get-AGMApplicationActiveImage ([Parameter(Mandatory=$true)][int]$id,[int]$limit,[string]$sort)
+function Get-AGMApplicationActiveImage ([Parameter(Mandatory=$true)][string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "backupdate,modifydate,consistencydate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -178,7 +178,7 @@ function Get-AGMApplicationActiveImage ([Parameter(Mandatory=$true)][int]$id,[in
     }
 }
 
-function Get-AGMApplicationAppClass ([Parameter(Mandatory=$true)][int]$id,[string]$operation,[int]$hostid)
+function Get-AGMApplicationAppClass ([Parameter(Mandatory=$true)][string]$id,[string]$operation,[string]$hostid)
 {
     if ($hostid)
     {
@@ -198,7 +198,7 @@ function Get-AGMApplicationAppClass ([Parameter(Mandatory=$true)][int]$id,[strin
     }
 }
 
-function Get-AGMApplicationBackup ([Parameter(Mandatory=$true)][int]$id,[int]$limit,[string]$sort)
+function Get-AGMApplicationBackup ([Parameter(Mandatory=$true)][string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "backupdate,modifydate,consistencydate,beginpit,endpit"
      # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -216,7 +216,7 @@ function Get-AGMApplicationBackup ([Parameter(Mandatory=$true)][int]$id,[int]$li
     }
 }
 
-function Get-AGMApplicationInstanceMember ([Parameter(Mandatory=$true)][int]$id,[int]$limit,[string]$sort)
+function Get-AGMApplicationInstanceMember ([Parameter(Mandatory=$true)][string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "backupdate,modifydate,consistencydate,beginpit,endpit"
      # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -234,7 +234,7 @@ function Get-AGMApplicationInstanceMember ([Parameter(Mandatory=$true)][int]$id,
     }
 }
 
-function Get-AGMApplicationMember ([Parameter(Mandatory=$true)][int]$id,[int]$limit,[string]$sort)
+function Get-AGMApplicationMember ([Parameter(Mandatory=$true)][string]$id,[int]$limit,[string]$sort)
 {
     $datefields = "backupdate,modifydate,consistencydate,beginpit,endpit"
      # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -263,7 +263,7 @@ function Get-AGMApplicationTypes
 
 
 
-function Get-AGMApplicationWorkflow ([Parameter(Mandatory=$true)][int]$id,[int]$limit,[string]$sort)
+function Get-AGMApplicationWorkflow ([Parameter(Mandatory=$true)][string]$id,[int]$limit,[string]$sort)
 {
     if (!($sort))
     {
@@ -275,7 +275,7 @@ function Get-AGMApplicationWorkflow ([Parameter(Mandatory=$true)][int]$id,[int]$
     }
 }
 
-function Get-AGMApplicationWorkflowStatus ([Parameter(Mandatory=$true)][int]$id,[Parameter(Mandatory=$true)][int]$workflowid)
+function Get-AGMApplicationWorkflowStatus ([Parameter(Mandatory=$true)][string]$id,[Parameter(Mandatory=$true)][string]$workflowid)
 {
     if (($id) -and ($workflowid))
     {
@@ -318,7 +318,7 @@ function Get-AGMAudit ([string]$filtervalue,[switch][alias("o")]$options,[string
 
 # Consistency group
 
-function Get-AGMConsistencyGroup ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMConsistencyGroup ([string]$id,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "syncdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -350,7 +350,7 @@ function Get-AGMConsistencyGroup ([string]$filtervalue,[switch][alias("o")]$opti
 
 # Disk pool
 
-function Get-AGMDiskPool([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMDiskPool([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "modifydate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -386,7 +386,7 @@ function Get-AGMDiskPool([string]$filtervalue,[string]$keyword,[switch][alias("o
 
 # Event
 
-function Get-AGMEvent ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMEvent ([string]$id,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "eventdate,syncdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -418,7 +418,7 @@ function Get-AGMEvent ([string]$filtervalue,[switch][alias("o")]$options,[string
 
 #host 
 
-function Get-AGMHost ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMHost ([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "modifydate,syncdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -454,7 +454,7 @@ function Get-AGMHost ([string]$filtervalue,[string]$keyword,[switch][alias("o")]
 
 #Image (backup) 
 
-function Get-AGMImage ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMImage ([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "backupdate,modifydate,consistencydate,expiration,beginpit,endpit"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -494,7 +494,7 @@ function Get-AGMImageSystemStateOptions ([string]$imageid,[string]$id,[string]$t
     if ($id) { $imageid = $id }
     if (!($imageid))
     {
-        [int]$id = Read-Host "ImageID"
+        [string]$id = Read-Host "ImageID"
     }
     if (!($target))
     {
@@ -508,7 +508,7 @@ function Get-AGMImageSystemStateOptions ([string]$imageid,[string]$id,[string]$t
 
 #job
 
-function Get-AGMJob ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMJob (string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[[int]$limit,[string]$sort)
 {
     $datefields = "queuedate,expirationdate,startdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -628,7 +628,7 @@ function Get-AGMLDAPGroup
 
 # Logical group
 
-function Get-AGMLogicalGroup ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMLogicalGroup ([string]$id,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "modifydate,syncdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -660,7 +660,7 @@ function Get-AGMLogicalGroup ([string]$filtervalue,[switch][alias("o")]$options,
 
 
 
-function Get-AGMLogicalGroupMember ([Parameter(Mandatory=$true)][int]$id)
+function Get-AGMLogicalGroupMember ([Parameter(Mandatory=$true)][string]$id)
 {
     if ($id)
     {
@@ -671,7 +671,7 @@ function Get-AGMLogicalGroupMember ([Parameter(Mandatory=$true)][int]$id)
 
 #org
 
-function Get-AGMOrg ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMOrg ([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "modifydate,createdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -708,7 +708,7 @@ function Get-AGMOrg ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$
 
 #right
 
-function Get-AGMRight ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMRight ([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     # if user doesn't ask for a limit, send 0 so we know to ignore it
     if (!($limit))
@@ -743,7 +743,7 @@ function Get-AGMRight ([string]$filtervalue,[string]$keyword,[switch][alias("o")
 
 #role
 
-function Get-AGMRole ([string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMRole ([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "createdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -798,7 +798,7 @@ function Get-AGMSession  ([String]$sessionid)
 
 #sla
 
-function Get-AGMSLA ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMSLA ([string]$id,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "modifydate,syncdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -829,7 +829,7 @@ function Get-AGMSLA ([string]$filtervalue,[switch][alias("o")]$options,[string]$
 }
 
 #SLP 
-function Get-AGMSLP ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMSLP ([string]$id,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "modifydate,syncdate,createdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
@@ -861,7 +861,7 @@ function Get-AGMSLP ([string]$filtervalue,[switch][alias("o")]$options,[string]$
 }
 
 #SLT 
-function Get-AGMSLT ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMSLT ([string]$id,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     # if user doesn't ask for a limit, send 0 so we know to ignore it
     if (!($limit))
@@ -895,7 +895,7 @@ function Get-AGMSLTPolicy ([string]$id,[int]$limit)
 {
     if ( (!($id)) -and (!($options)) )
     {
-        [int]$id = Read-Host "SLTID"
+        [string]$id = Read-Host "SLTID"
     }
     # if user doesn't ask for a limit, send 0 so we know to ignore it
     if (!($limit))
@@ -914,7 +914,7 @@ function Get-AGMUpgradeHistory
 
 #user
 
-function Get-AGMUser ([string]$filtervalue,[switch][alias("o")]$options,[string]$id,[int]$limit,[string]$sort)
+function Get-AGMUser ([string]$id,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     $datefields = "createdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it

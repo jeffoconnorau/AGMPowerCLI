@@ -1,4 +1,4 @@
-Function New-AGMMount ([int]$imageid,[int]$targethostid,[string]$jsonbody,[string]$label) 
+Function New-AGMMount ([string]$imageid,[string]$targethostid,[string]$jsonbody,[string]$label) 
 {
     <#
     .SYNOPSIS
@@ -23,12 +23,12 @@ Function New-AGMMount ([int]$imageid,[int]$targethostid,[string]$jsonbody,[strin
 
     if (!($imageid))
     {
-        [int]$imageid = Read-Host "ImageID to mount"
+        [string]$imageid = Read-Host "ImageID to mount"
     }
 
     if ( (!($jsonbody)) -and (!($targethostid)) )
     {
-        [int]$targethostid = Read-Host "Target host ID to mount $imageid to"
+        [string]$targethostid = Read-Host "Target host ID to mount $imageid to"
         if (!($label))
         {
             [string]$label = Read-Host "Label to apply to newly mounted image"
@@ -48,7 +48,7 @@ Function New-AGMMount ([int]$imageid,[int]$targethostid,[string]$jsonbody,[strin
 
 
 
-Function New-AGMSLA ([int]$appid,[int]$slpid,[int]$sltid,[string]$jsonbody,[string]$scheduler) 
+Function New-AGMSLA ([string]$appid,[string]$slpid,[string]$sltid,[string]$jsonbody,[string]$scheduler) 
 {
     <#
     .SYNOPSIS

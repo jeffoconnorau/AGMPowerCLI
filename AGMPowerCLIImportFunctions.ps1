@@ -1,4 +1,4 @@
-Function Import-AGMOnVault ([int]$diskpoolid,[int]$applianceid,[int]$appid,[switch][alias("f")]$forget,[switch][alias("o")]$ownershiptakeover,[string]$jsonbody,[string]$label) 
+Function Import-AGMOnVault ([string]$diskpoolid,[string]$applianceid,[string]$appid,[switch][alias("f")]$forget,[switch][alias("o")]$ownershiptakeover,[string]$jsonbody,[string]$label) 
 {
     <#
     .SYNOPSIS
@@ -35,12 +35,12 @@ Function Import-AGMOnVault ([int]$diskpoolid,[int]$applianceid,[int]$appid,[swit
 
     if (!($diskpoolid))
     {
-        [int]$diskpoolid = Read-Host "Diskpool ID to import from"
+        [string]$diskpoolid = Read-Host "Diskpool ID to import from"
     }
 
     if (!($applianceid))
     {
-        [int]$applianceid = Read-Host "Appliance ID to import into"
+        [string]$applianceid = Read-Host "Appliance ID to import into"
     }
 
     if ($ownershiptakeover)

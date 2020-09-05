@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.9'
+ModuleVersion = '0.0.0.10'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -140,6 +140,7 @@ FunctionsToExport = @(
     'Remove-AGMRole',
     'Remove-AGMSLA',
     'Remove-AGMUser',
+    'Restore-AGMApplication',
     'Start-AGMMigrate',
     'Update-AGMOrg')
 
@@ -180,6 +181,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.10] 2020-09-5
+        Added Restore-AGMApplication
+        Changed most variables from int to string as their size can exceed int very easily
+
         ## [0.0.0.9] 2020-08-24
         Added Import-AGMOnVault   
         Support not equals filter method

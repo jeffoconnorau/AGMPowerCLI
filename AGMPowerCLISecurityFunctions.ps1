@@ -141,7 +141,7 @@ function New-AGMOrg ([string]$orgname,[string]$description,[string]$jsonbody,[st
     Post-AGMAPIData -endpoint /org -body $jsonbody -datefields $datefields
 }
 
-function Update-AGMOrg ([int]$orgid,[string]$orgname,[string]$description,[string]$jsonbody)
+function Update-AGMOrg ([string]$orgid,[string]$orgname,[string]$description,[string]$jsonbody)
 {
     <#  
     .SYNOPSIS
@@ -167,7 +167,7 @@ function Update-AGMOrg ([int]$orgid,[string]$orgname,[string]$description,[strin
     $datefields = "modifydate,createdate"
     if (!($orgid))
     {
-        [int]$orgid = Read-Host "OrgID to update"
+        [string]$orgid = Read-Host "OrgID to update"
     }
     if (!($jsonbody))
     { 
@@ -222,7 +222,7 @@ function New-AGMRole ([string]$rolename,[string]$description,[string]$jsonbody)
 
 
 
-function Set-AGMOrgApplication ([string]$orglist,[int]$appid,[string]$jsonbody)
+function Set-AGMOrgApplication ([string]$orglist,[string]$appid,[string]$jsonbody)
 {
     <#  
     .SYNOPSIS
@@ -251,7 +251,7 @@ function Set-AGMOrgApplication ([string]$orglist,[int]$appid,[string]$jsonbody)
     $datefields = "modifydate,syncdate"
     if (!($appid))
     {
-        [int]$appid = Read-Host "AppID to update"
+        [string]$appid = Read-Host "AppID to update"
     }
     if (!($jsonbody))
     { 
@@ -282,7 +282,7 @@ function Set-AGMOrgApplication ([string]$orglist,[int]$appid,[string]$jsonbody)
     Put-AGMAPIData -endpoint /application/$appid -body $jsonbody -datefields $datefields
 }
 
-function Set-AGMOrgHost ([string]$orglist,[int]$hostid,[string]$jsonbody)
+function Set-AGMOrgHost ([string]$orglist,[string]$hostid,[string]$jsonbody)
 {
     <#  
     .SYNOPSIS
@@ -317,7 +317,7 @@ function Set-AGMOrgHost ([string]$orglist,[int]$hostid,[string]$jsonbody)
     $datefields = "modifydate,syncdate"
     if (!($hostid))
     {
-        [int]$hostid = Read-Host "Host ID to update"
+        [string]$hostid = Read-Host "Host ID to update"
     }
     if (!($jsonbody))
     { 
@@ -347,7 +347,7 @@ function Set-AGMOrgHost ([string]$orglist,[int]$hostid,[string]$jsonbody)
     Put-AGMAPIData -endpoint /host/$hostid -body $jsonbody -datefields $datefields
 }
 
-function Set-AGMOrgLogicalGroup ([string]$orglist,[int]$groupid,[string]$jsonbody) 
+function Set-AGMOrgLogicalGroup ([string]$orglist,[string]$groupid,[string]$jsonbody) 
 {
     <#  
     .SYNOPSIS
@@ -381,7 +381,7 @@ function Set-AGMOrgLogicalGroup ([string]$orglist,[int]$groupid,[string]$jsonbod
     $datefields = "modifydate,syncdate"
     if (!($groupid))
     {
-        [int]$groupid = Read-Host "Logical Group ID to update"
+        [string]$groupid = Read-Host "Logical Group ID to update"
     }
     if (!($jsonbody))
     { 

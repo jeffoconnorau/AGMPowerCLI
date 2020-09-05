@@ -1,4 +1,4 @@
-function Remove-AGMApplication ([Parameter(Mandatory=$true)][int]$appid)
+function Remove-AGMApplication ([Parameter(Mandatory=$true)][string]$appid)
 {
     <#
     .SYNOPSIS
@@ -95,7 +95,7 @@ Function Remove-AGMMigrate ([string]$imageid)
     Post-AGMAPIData  -endpoint /backup/$imageid/migrate  -body $json
 }
 
-function Remove-AGMOrg ([Parameter(Mandatory=$true)][int]$id)
+function Remove-AGMOrg ([Parameter(Mandatory=$true)][string]$id)
 {
     <#
     .SYNOPSIS
@@ -119,7 +119,7 @@ function Remove-AGMOrg ([Parameter(Mandatory=$true)][int]$id)
     Post-AGMAPIData -endpoint /org/$id -method "delete"
 }
 
-function Remove-AGMRole ([Parameter(Mandatory=$true)][int]$id)
+function Remove-AGMRole ([Parameter(Mandatory=$true)][string]$id)
 {
     <#
     .SYNOPSIS
@@ -143,7 +143,7 @@ function Remove-AGMRole ([Parameter(Mandatory=$true)][int]$id)
     Post-AGMAPIData -endpoint /role/$id -method "delete"
 }
 
-function Remove-AGMSLA ([int]$id,[int]$slaid,[int]$appid)
+function Remove-AGMSLA ([string]$id,[string]$slaid,[string]$appid)
 {
     <#
     .SYNOPSIS
@@ -182,7 +182,7 @@ function Remove-AGMSLA ([int]$id,[int]$slaid,[int]$appid)
 
     if (!($slaid))
     {
-        [int]$slaid = Read-Host "SLA ID to remove"
+        [string]$slaid = Read-Host "SLA ID to remove"
     }
 
     Post-AGMAPIData -endpoint /sla/$slaid -method "delete"
@@ -190,7 +190,7 @@ function Remove-AGMSLA ([int]$id,[int]$slaid,[int]$appid)
 
 
 
-function Remove-AGMUser([Parameter(Mandatory=$true)][int]$id)
+function Remove-AGMUser([Parameter(Mandatory=$true)][string]$id)
 {
     <#
     .SYNOPSIS

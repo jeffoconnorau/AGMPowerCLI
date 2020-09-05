@@ -1,4 +1,4 @@
-Function Set-AGMSLA ([int]$id,[int]$slaid,[int]$appid,[string]$dedupasync,[string]$expiration,[string]$logexpiration,[string]$scheduler) 
+Function Set-AGMSLA ([string]$id,[string]$slaid,[string]$appid,[string]$dedupasync,[string]$expiration,[string]$logexpiration,[string]$scheduler) 
 {
     <#
     .SYNOPSIS
