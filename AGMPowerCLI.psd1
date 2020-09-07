@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.10'
+ModuleVersion = '0.0.0.11'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -181,6 +181,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.11] 2020-09-07
+        Get-AGMApplicationWorkflowStatus was being truncated by item column
+
         ## [0.0.0.10] 2020-09-5
         Added Restore-AGMApplication
         Changed most variables from int to string as their size can exceed int very easily

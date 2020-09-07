@@ -279,7 +279,7 @@ function Get-AGMApplicationWorkflowStatus ([Parameter(Mandatory=$true)][string]$
 {
     if (($id) -and ($workflowid))
     {
-        Get-AGMAPIData -endpoint /application/$id/workflow/$workflowid
+        Get-AGMAPIData -endpoint /application/$id/workflow/$workflowid -itemoverride
     }
 }
 

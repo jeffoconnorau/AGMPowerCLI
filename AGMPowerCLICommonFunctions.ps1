@@ -1,4 +1,4 @@
-Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,[int]$timeout,[string]$endpoint,[string]$extrarequests,[switch][alias("o")]$options,[string]$datefields,[int]$limit,[string]$sort)
+Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,[int]$timeout,[string]$endpoint,[string]$extrarequests,[switch][alias("o")]$options,[switch]$itemoverride,[string]$datefields,[int]$limit,[string]$sort)
 {
     <#  
     .SYNOPSIS
@@ -265,7 +265,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             }
             else
             {
-            if (!($resp.items))
+            if ( (!($resp.items)) -or ($itemoverride -eq $true) )
             {
                 if ($options)
                 {
