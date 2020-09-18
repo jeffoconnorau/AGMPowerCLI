@@ -403,7 +403,7 @@ Function Save-AGMPassword([string]$filename)
 
 # offer a way to limit the maximum number of results in a single lookup
 function Set-AGMAPILimit([Parameter(Mandatory = $true)]
-[ValidateRange("NonNegative")][int]$userapilimit )
+[ValidateRange(0, [int]::MaxValue)][int]$userapilimit )
 {
      <#  
     .SYNOPSIS
@@ -429,6 +429,11 @@ function Set-AGMAPILimit([Parameter(Mandatory = $true)]
     #>
 
     $global:agmmaxapilimit = $userapilimit
+}
+
+function Get-AGMAPILimit
+{
+    $agmmaxapilimit
 }
 
 

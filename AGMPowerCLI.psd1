@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.12'
+ModuleVersion = '0.0.0.13'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -80,6 +80,7 @@ FunctionsToExport = @(
     'Convert-AGMDuration',
     'Get-AGMErrorMessage',
     'Test-AGMJSON',
+    'Get-AGMAPILimit',
     'Get-AGMAppliance',
     'Get-AGMApplication',
     'Get-AGMApplicationActiveImage',
@@ -181,7 +182,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
-        ## [0.0.0.12] 2020-09-
+        ## [0.0.0.13] 2020-09-18
+        Add Get-AGMAPILimit, fix issue with Set-AGMAPILimit in PS5
+
+        ## [0.0.0.12] 2020-09-18
         Allow this module to be run by PS5
 
         ## [0.0.0.11] 2020-09-07
