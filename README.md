@@ -20,9 +20,10 @@ It was written and tested for Windows PowerShell 5 and PowerShell V7 with Linux,
 
 ### 1)    Install or Upgrade AGMPowerCLI
 
-Install from PowerShell Gallery:
+Install from PowerShell Gallery (the ProtocolType only needs to be set for Windows PowerShell 5)
 
 ```
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Install-Module -Name AGMPowerCLI
 ```
 
