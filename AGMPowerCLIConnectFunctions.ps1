@@ -1,3 +1,42 @@
+function psfivecerthandler
+{
+    if (-not ([System.Management.Automation.PSTypeName]'ServerCertificateValidationCallback').Type)
+    {
+    $certCallback = @"  
+    using System;
+    using System.Net;
+    using System.Net.Security;
+    using System.Security.Cryptography.X509Certificates;
+    public class ServerCertificateValidationCallback
+    {
+        public static void Ignore()
+        {
+            if(ServicePointManager.ServerCertificateValidationCallback ==null)
+            {
+                ServicePointManager.ServerCertificateValidationCallback += 
+                    delegate
+                    (
+                        Object obj, 
+                        X509Certificate certificate, 
+                        X509Chain chain, 
+                        SslPolicyErrors errors
+                    )
+                    {
+                        return true;
+                    };
+            }
+        }
+    }
+"@
+    Add-Type $certCallback
+    }
+    [ServerCertificateValidationCallback]::Ignore()
+    
+    # ensure TLS12 is in use.  We set it back when disconnect-act is run
+    $env:CUR_PROTS = [System.Net.ServicePointManager]::SecurityProtocol
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
+}
+
 function Connect-AGM
 {
     <#
@@ -41,9 +80,33 @@ function Connect-AGM
     $agmip = Read-Host "IP or Name of AGM"
     }
 
+# based on the action, do the right thing.
+if ( $certaction -eq "i" -or $certaction -eq "I" )
+{
+    $hostVersionInfo = (get-host).Version.Major
+    if ( $hostVersionInfo -lt "6" )
+    {
+        psfivecerthandler
+    }
+    else 
+    {
+        # set IGNOREACTCERTS so that we ignore self-signed certs
+        $env:IGNOREACTCERTS = "y"
+    }
+}
+
+
     if ($ignorecerts)
     {
-      $global:IGNOREAGMCERTS = "y"
+        $hostVersionInfo = (get-host).Version.Major
+        if ( $hostVersionInfo -lt "6" )
+        {
+            psfivecerthandler
+        }
+        else 
+        {
+            $global:IGNOREAGMCERTS = "y"
+        }
     }
     else
     {
@@ -81,8 +144,15 @@ function Connect-AGM
             # based on the action, do the right thing.
             if ( $certaction -eq "i" -or $certaction -eq "I" )
             {
-                # set IGNOREACTCERTS so that we ignore self-signed certs
-                $global:IGNOREAGMCERTS = "y";
+                $hostVersionInfo = (get-host).Version.Major
+                if ( $hostVersionInfo -lt "6" )
+                {
+                    psfivecerthandler
+                }
+                else 
+                {
+                    $global:IGNOREAGMCERTS = "y"
+                }
             }
             elseif ( $certaction -eq "c" -or $certaction -eq "C" )
             {
@@ -129,7 +199,15 @@ function Connect-AGM
     $RestError = $null
     Try
     {
-        $resp = Invoke-RestMethod -SkipCertificateCheck -Method POST -Uri $Url -Credential $creds  -TimeoutSec 15
+        $hostVersionInfo = (get-host).Version.Major
+        if ( $hostVersionInfo -lt "6" )
+        {
+            $resp = Invoke-RestMethod -Method POST -Uri $Url -Credential $creds  -TimeoutSec 15
+        }
+        else 
+        {
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method POST -Uri $Url -Credential $creds  -TimeoutSec 15
+        }
     }
     Catch
     {
