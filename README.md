@@ -1,5 +1,5 @@
 # AGMPowerCLI
-A Powershell module for Powershell V7 for Actifio Global Manager.
+A Powershell module for Powershell for Actifio Global Manager.
 
 It is currently:
 
@@ -13,7 +13,7 @@ While this partner module is optional, it is strongly recommended.
 
 ### What versions of PowerShell will this module work with?
 
-It was written and tested for PowerShell V7 with Linux, Mac OS and Windows
+It was written and tested for Windows PowerShell 5 and PowerShell V7 with Linux, Mac OS and Windows
 
 ## Usage
 
@@ -129,7 +129,7 @@ Create an encrypted password file using the AGMPowerCLI Save-AGMPassword functio
 Save-AGMPassword -filename "C:\temp\password.key"
 ```
 
-The Save-AGMPassword cmdlet creates an encyrpted password file on Windows, but on Linux and Mac it only creates an encoded password file.  This is not a shortcoming with the new Module since existing function is matched but ideally we should find an encryption method for non-Windows OS.   This is a 'to-do'
+The Save-AGMPassword function creates an encrypted password file on Windows, but on Linux and Mac it only creates an encoded password file.  
 
 ##### Sharing Windows key files
 
@@ -137,12 +137,12 @@ Currently if a Windows key file is created by a specific user, it cannot be used
 ```
 Key not valid for use in specified state.
 ```
-This will cause issues when running saved scripts when two differerent users want to run the same script with the same keyfile.    To work around this issue, please have each user create a keyfile for their own use.   Then when running a shared script, each user should execute the script specifying their own keyfile.  This can be done by using a parameter file for each script.
+This will cause issues when running saved scripts when two different users want to run the same script with the same keyfile.    To work around this issue, please have each user create a keyfile for their own use.   Then when running a shared script, each user should execute the script specifying their own keyfile.  This can be done by using a parameter file for each script.
 
 
 ### 4)  Login to your appliance
 
-To login to an AGM (10.61.5.114) as admin and enter password interactvely:
+To login to an AGM (10.61.5.114) as admin and enter password interactively:
 ```
 Connect-AGM 10.61.5.114 admin -ignorecerts
 ```
@@ -152,7 +152,7 @@ Connect-AGM 10.61.5.114 admin -passwordfile "c:\temp\password.key" -ignorecerts
 ```
 You will need to store the certificate during first login if you don't use **-ignorecerts**
 
-Note you can use **-quiet** to supress messages.   This is handy when scripting.
+Note you can use **-quiet** to suppress messages.   This is handy when scripting.
 
 ### 5)  Run your first command:
 
@@ -166,7 +166,7 @@ AGM     10.0.1.4673
 
 ### 6) Example commands
 
-There are four common options that may be available for a commnad (if shown with Get-Help)
+There are four common options that may be available for a command (if shown with Get-Help)
 
 #### id search
 -id   This will fetch a specific ID
@@ -189,7 +189,7 @@ There are four common options that may be available for a commnad (if shown with
 
 The module has no API limit which means if you run Get-AGMJobHistory you can easily get results in the thousands or millions.   So we added a command to prevent giant lookups by setting a limit on the number of returned objects, although by default this limit is off.  You can set the limit with:   Set-AGMAPILimit
 
-In the example below, we login and search for snapshot jobs and find there are over sixty thousand.  A smart move would be to use more filters (such as date or appname), but we could also limit the number of results using an APIlimit, so we set it to 100 and only get 100 jobs back:
+In the example below, we login and search for snapshot jobs and find there are over sixty thousand.  A smart move would be to use more filters (such as date or appname), but we could also limit the number of results using an API limit, so we set it to 100 and only get 100 jobs back:
 
 ```
 PS /Users/anthony/git/ActPowerCLI> Connect-Act 172.24.1.117 av -passwordfile avpass.key -ignorecerts
@@ -246,7 +246,7 @@ createdate
 ----------
 2020-06-19 00:28:07
 ```
-We then switch the timestamps back to local and validate the output of the same command shows Melebourne local time:
+We then switch the timestamps back to local and validate the output of the same command shows Melbourne local time:
 
 ```
 PS /Users/anthony/git/AGMPowerCLI> Set-AGMTimeZoneHandling -l
@@ -379,7 +379,7 @@ The command does:
 
 1.  Connects to the /org endpoint
 1.  Sends a body composed of well formed JSON that supplies the Org name and Ord Description
-1.  Requests that in the data that gets returned, that the modifydat and createdate fields are concerted from epoch time to ISO8601
+1.  Requests that in the data that gets returned, that the modify date and createdate fields are concerted from epoch time to ISO8601
 
 ```
 Post-AGMAPIData -endpoint /org -body '{ "description": "Melbourne test team","name": "MelTeam1" }' -datefields "modifydate,createdate"
@@ -390,7 +390,7 @@ We could do exactly the same with:
 New-AGMOrg -orgname MelTeam1 -description "Melbourne test team"
 
 ```    
-I this exammple we delete an org (ID 53688920):
+In this example we delete an org (ID 53688920):
 
 ```
 Post-AGMAPIData -endpoint /org/53688920 -method "delete"
