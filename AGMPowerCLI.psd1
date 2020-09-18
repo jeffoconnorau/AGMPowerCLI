@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.11'
+ModuleVersion = '0.0.0.12'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -33,7 +33,7 @@ Copyright = '(c) 2020 Actifio, Inc. All rights reserved'
 Description = 'This is a community generated powershell module for AGM.  This is pre-BETA'
 
 # Minimum version of the PowerShell engine required by this module
-PowerShellVersion = '7.0'
+PowerShellVersion = '5.0'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
@@ -181,6 +181,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.12] 2020-09-
+        Allow this module to be run by PS5
+
         ## [0.0.0.11] 2020-09-07
         Get-AGMApplicationWorkflowStatus was being truncated by item column
 

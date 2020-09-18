@@ -257,7 +257,18 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
         }
             Catch
             {
-                $RestError = $_
+                if ( $((get-host).Version.Major) -gt 5 )
+                {
+                    $RestError = $_
+                }
+                else 
+                {
+                    $result = $_.Exception.Response.GetResponseStream()
+                    $reader = New-Object System.IO.StreamReader($result)
+                    $reader.BaseStream.Position = 0
+                    $reader.DiscardBufferedData()
+                    $RestError = $reader.ReadToEnd();
+                }
             }
             if ($RestError)
             {
@@ -338,7 +349,8 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
         {
             $maxlimitpercommand = $agmmaxapilimit - $apistart
         }
-    } while ($done -eq 0)
+    } 
+    while ($done -eq 0)
 }
 
 # errors can either have JSON and be easy to format or can be text,  we need to sniff
@@ -491,7 +503,18 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
     }
     Catch
     {
-        $RestError = $_
+        if ( $((get-host).Version.Major) -gt 5 )
+        {
+            $RestError = $_
+        }
+        else 
+        {
+            $result = $_.Exception.Response.GetResponseStream()
+            $reader = New-Object System.IO.StreamReader($result)
+            $reader.BaseStream.Position = 0
+            $reader.DiscardBufferedData()
+            $RestError = $reader.ReadToEnd();
+        }
     }
     if ($RestError)
     {
@@ -580,7 +603,18 @@ Function Put-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body)
     }
     Catch
     {
-        $RestError = $_
+        if ( $((get-host).Version.Major) -gt 5 )
+        {
+            $RestError = $_
+        }
+        else 
+        {
+            $result = $_.Exception.Response.GetResponseStream()
+            $reader = New-Object System.IO.StreamReader($result)
+            $reader.BaseStream.Position = 0
+            $reader.DiscardBufferedData()
+            $RestError = $reader.ReadToEnd();
+        }
     }
     if ($RestError)
     {
