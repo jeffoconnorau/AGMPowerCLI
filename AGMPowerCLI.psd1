@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.15'
+ModuleVersion = '0.0.0.16'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -89,7 +89,6 @@ FunctionsToExport = @(
     'Get-AGMApplication',
     'Get-AGMApplicationActiveImage',
     'Get-AGMApplicationAppClass',
-    'Get-AGMApplicationBackup',
     'Get-AGMApplicationInstanceMember',
     'Get-AGMApplicationMember',
     'Get-AGMApplicationTypes',
@@ -103,7 +102,6 @@ FunctionsToExport = @(
     'Get-AGMImage',
     'Get-AGMImageSystemStateOptions',
     'Get-AGMJob',
-    'Get-AGMJobCountSummary',
     'Get-AGMJobHistory',
     'Get-AGMJobStatus',
     'Get-AGMLDAPConfig',
@@ -119,7 +117,6 @@ FunctionsToExport = @(
     'Get-AGMSLP',
     'Get-AGMSLA',
     'Get-AGMTimeZoneHandling',
-    'Get-AGMUpgradeHistory',
     'Get-AGMUser',
     'Get-AGMVersion',
     'Get-AGMVersionDetail',
@@ -186,8 +183,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
-        ## [0.0.0.15] 2020-09-20
+        ## [0.0.0.16] 2020-09-20
         Improved module description for PowerShell Gallery users
+        Added more help information
 
         ## [0.0.0.13] 2020-09-18
         Add Get-AGMAPILimit, fix issue with Set-AGMAPILimit in PS5
