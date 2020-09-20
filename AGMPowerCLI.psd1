@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.14'
+ModuleVersion = '0.0.0.15'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -29,8 +29,12 @@ CompanyName = 'Actifio'
 # Copyright statement for this module
 Copyright = '(c) 2020 Actifio, Inc. All rights reserved'
 
+##################################################################################################################
 # Description of the functionality provided by this module
-Description = 'This is a community generated PowerShell Module for Actifio Global Manager (AGM).  It provides a method to issue commands to AGM API endpoints.'
+Description = 'This is a community generated PowerShell Module for Actifio Global Manager (AGM).  
+It provides a method to issue commands to AGM API endpoints, like "Application" and "Host".
+This lets you create automation with AGM, or generate your own composite functions.
+More information can be found here:  https://github.com/Actifio/AGMPowerCLI'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.0'
@@ -182,7 +186,7 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
-        ## [0.0.0.14] 2020-09-20
+        ## [0.0.0.15] 2020-09-20
         Improved module description for PowerShell Gallery users
 
         ## [0.0.0.13] 2020-09-18
