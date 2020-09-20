@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.13'
+ModuleVersion = '0.0.0.14'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -30,7 +30,7 @@ CompanyName = 'Actifio'
 Copyright = '(c) 2020 Actifio, Inc. All rights reserved'
 
 # Description of the functionality provided by this module
-Description = 'This is a community generated powershell module for AGM.  This is pre-BETA'
+Description = 'This is a community generated powershell module for Actifio Global Manager (AGM).  It provides a method to issue commands to AGM API endpoints.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.0'
@@ -182,6 +182,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.14] 2020-09-20
+        Improved module description for PowerShell Gallery users
+
         ## [0.0.0.13] 2020-09-18
         Add Get-AGMAPILimit, fix issue with Set-AGMAPILimit in PS5
 
