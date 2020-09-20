@@ -30,7 +30,7 @@ CompanyName = 'Actifio'
 Copyright = '(c) 2020 Actifio, Inc. All rights reserved'
 
 # Description of the functionality provided by this module
-Description = 'This is a community generated powershell module for Actifio Global Manager (AGM).  It provides a method to issue commands to AGM API endpoints.'
+Description = 'This is a community generated PowerShell Module for Actifio Global Manager (AGM).  It provides a method to issue commands to AGM API endpoints.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.0'
