@@ -181,6 +181,17 @@ There are three common options that may be available for a command (if shown wit
 -filtervalue id>10000     -->  filter on objects where the ID is greater than 10000
 -filtervalue appname~smalldb   -->  fuzzy search for appname like smalldb,  so you could get SmallDb, smalldb1, smalldbold.
 ```
+There are five filter types
+
+| symbol | purpose | example | result
+| ------ | ------- | ------- | ------
+| = | equals | -filtervalue id=123 | will show objects with an ID equal to 123
+| < | less than | -filtervalue id<123  | will show objects with an ID less than 123
+| > | great than | -filtervalue id>123 | will show objects with an ID greater than 123
+| ~ | similar to | -filtervalue appname~smalldb | will show objects with an name similar to smalldb
+| ! | not equals | -filtervalue apptype!VMBackup | will show objects with that are not apptype of VMbackup
+
+Multiple filtervalues can be used and will combine results.   So  **-filtervalue "appname=smalldb&appname=bigdb"**  will show both smalldb and bigdb in the results.
 
 #### API Limit
 
