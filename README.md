@@ -400,3 +400,99 @@ We could do exactly the same with:
 ```
 Remove-AGMOrg 54382768
 ```
+
+
+# User Stories
+
+In this section we will share some examples of User Stories
+
+## Bulk unprotection of VMs
+
+In this scenario, a large number of VMs that were no longer required were removed from the vCenter. However, as those VMs were still being managed by Actifio at the time of removal from the VCenter, the following error message is being received constantly
+ 
+ ```
+Error 933 - Failed to find VM with matching BIOS UUID
+```
+
+### 1)  Create a list of affected VMs using AGM PowerShell
+
+First we need to create a list of affected VMs.  The simplest way to do this is to run these commands:
+
+There are two parameters in the filtervalue.
+The first is the errorcode of 933
+The second is the startdate.  You need to update this.
+
+This is the command we thus run (connect-agm logs us into the appliance).
+We grab just the Appname  (which is the VMname) and AppID of each affected VM and reduce to a unique list in a CSV file
+
+```
+connect-agm 
+Get-AGMJobHistory -filtervalue "errorcode=933&startdate>2020-09-01"  | select appname,appid | sort-object appname | Get-Unique -asstring | Export-Csv -Path .\missingvms.csv -NoTypeInformation
+```
+### 2). Edit your list if needed
+
+Now open your CSV file called missingvms.csv and go to the VMware administrator.
+Validate each VM is truly gone.
+Edit the CSV and remove any VMs you don't want to unprotect.   
+ 
+### 3) Unprotection script using AGM Powershell
+
+Because we have a CSV file of affected VMs we can run this simple PowerShell script. 
+
+Import the list and validate the import worked by displaying the imported variable.  In this example we have only four apps.
+```
+PS /Users/anthonyv> $appstounmanage = Import-Csv -Path .\missingvms.csv
+PS /Users/anthonyv> $appstounmanage
+
+appname      appid
+-------      --
+duoldapproxy 655601
+SYDWINDC1    655615
+SYDWINDC2    6227957
+SYDWINFS2    5370126
+```
+Then paste this script to validate each app has an SLA ID
+```
+foreach ($app in $appstounmanage)
+{ $slaid = get-agmSLA -filtervalue appid=$($app.appid)
+write-host "Appid $($app.appid) has SLA ID $($slaid.id)" }
+```
+Output will be similar to this:
+```
+Appid 655601 has SLA ID 6749490
+Appid 655615 has SLA ID 6749492
+Appid 6227957 has SLA ID 6749494
+Appid 5370126 has SLA ID 6749496
+```
+If you want to build a backout plan, run this script now:
+```
+foreach ($app in $appstounmanage)
+{ $slaid = Get-AGMSLA -filtervalue appid=$($app.appid)
+$slpid =  $slaid.slp.id
+$sltid =  $slaid.slt.id
+write-host "New-AGMSLA -appid $($app.appid) -slpid $slpid -sltid $sltid" }
+```
+It will produce a list of commands to re-protect all the apps.
+You would simply paste this list into your Powershell session:
+```
+New-AGMSLA -appid 655601 -slpid 655697 -sltid 4171
+New-AGMSLA -appid 655615 -slpid 655697 -sltid 4181
+New-AGMSLA -appid 6227957 -slpid 655697 -sltid 4171
+New-AGMSLA -appid 5370126 -slpid 655697 -sltid 4181
+```
+Now we are ready for the final step.  Run this script to unprotect the VMs:
+```
+foreach ($app in $appstounmanage)
+{ Remove-AGMSLA -appid $($app.appid) }
+```
+Output will be blank but the VMs will all be unprotected
+
+### 4) Bulk deletion of the Applications
+
+If any of the Applications have images, it is not recommended you delete them, as this creates orphans apps and images.
+If you are determined to also delete them, run this script to delete the VMs from AGM and Appliances.
+```
+foreach ($app in $appstounmanage)
+{ Remove-AGMApplication -appid $($app.appid) }
+```
+Output will be blank but the VMs will all be deleted.
