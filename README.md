@@ -174,24 +174,27 @@ There are three common options that may be available for a command (if shown wit
 #### filtering
 -filtervalue   This is a filtering function.  To get a list of available filters, run the command with option -o.   The filters allow for searches using equals, less than, greater than or fuzzy.   To combine searches use & between each filter and encase the whole thing in double quotes.   Here are some examples:
 
-```
--filtervalue appname=smalldb          -->  Filter on appname
--filtervalue "appname=smalldb&hostname=prodserver"  --> filter on appname and hostname
--filtervalue id<10000    -->  filter on objects where the ID is less than 10000
--filtervalue id>10000     -->  filter on objects where the ID is greater than 10000
--filtervalue appname~smalldb   -->  fuzzy search for appname like smalldb,  so you could get SmallDb, smalldb1, smalldbold.
-```
 There are five filter types
 
 | symbol | purpose | example | result
 | ------ | ------- | ------- | ------
-| = | equals | -filtervalue id=123 | will show objects with an ID equal to 123
+| = | equals | -filtervalue id=123 | will show objects with an ID equal to 123 
 | < | less than | -filtervalue id<123  | will show objects with an ID less than 123
 | > | great than | -filtervalue id>123 | will show objects with an ID greater than 123
 | ~ | similar to | -filtervalue appname~smalldb | will show objects with an name similar to smalldb
 | ! | not equals | -filtervalue apptype!VMBackup | will show objects with that are not apptype of VMbackup
 
-Multiple filtervalues can be used and will combine results.   So  **-filtervalue "appname=smalldb&appname=bigdb"**  will show both smalldb and bigdb in the results.
+Multiple filtervalues can be used and will combine results.  Note also they need to be encased in double quotes.
+
+| example | result
+| ------ | ------- 
+| -filtervalue appname=smalldb  | filter on appname
+| -filtervalue "appname=smalldb&hostname=prodserver"  | filter on appname and hostname
+| -filtervalue id<10000   | filter on objects where the ID is less than 10000
+| -filtervalue id>10000   | filter on objects where the ID is greater than 10000
+| -filtervalue appname~smalldb  | fuzzy search for appname like smalldb,  so you could get SmallDb, smalldb1, smalldbold.
+| filtervalue "appname=smalldb&appname=bigdb" | will show both smalldb and bigdb in the results.
+
 
 #### API Limit
 
