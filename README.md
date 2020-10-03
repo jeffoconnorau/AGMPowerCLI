@@ -3,9 +3,7 @@ A Powershell module for Powershell for Actifio Global Manager.
 
 It is currently:
 
-* limited in function 
-* considered beta
-* may be changed dramatically or even withdrawn
+* Functionally very useful but not complete as some API Endpoints have not been added.   These will be added over time.
 
 It has a partner module:  ActPowerLib
 While this partner module is optional, it is strongly recommended.
