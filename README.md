@@ -106,8 +106,6 @@ PS C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main>
 
 ### 2)  Get some help
 
-Help may not exist yet for all functions
-
 List the available commands in the AGMPowerCLI module:
 ```
 Get-Command -module AGMPowerCLI
@@ -123,7 +121,7 @@ Get-Help Connect-AGM -examples
 
 ### 3)  Save your password
 
-Create an encrypted password file using the AGMPowerCLI Save-AGMPassword function:
+Create an encrypted password file using the AGMPowerCLI **Save-AGMPassword** function:
 ```
 Save-AGMPassword -filename "C:\temp\password.key"
 ```
@@ -165,7 +163,7 @@ AGM     10.0.1.4673
 
 ### 6) Example commands
 
-There are four common options that may be available for a command (if shown with Get-Help)
+There are three common options that may be available for a command (if shown with Get-Help)
 
 #### id search
 -id   This will fetch a specific ID
@@ -260,17 +258,17 @@ createdate
 
 ## Date field format
 
-All date fields are returned by AGM as EPOCH time (an offset from Jan 1, 1970).  The Module transforms these using the timezone discussed above.   If an EPOCH time is shown (which will be a long number), then this field has been missed and needs to be added to the transform effort.
+All date fields are returned by AGM as EPOCH time (an offset from Jan 1, 1970).  The Module transforms these using the timezone discussed above.   If an EPOCH time is shown (which will be a long number), then this field has been missed and needs to be added to the transform effort.  Please open an issue to let us know.
 
 
 ## What about Self Signed Certs?
 
-At this time you only have the choice to ignore the cert.   Clearly you can manually import the cert and trust it, or you can install a trusted cert on your AGM to avoid the issue altogether.
+At this time we only offer the choice to ignore the cert.   Clearly you can manually import the cert and trust it, or you can install a trusted cert on your AGM to avoid the issue altogether.
 
 
 ## Detecting errors and failures
 
-One design goal of AGMPowerCLI is for all user messages to be easy to understand and formatted nicely.   However when a command fails, the return code shown by $? will not indicate this.  For instance in these two examples I try to connect and check $? each time.  However the result is the same for both cases ($? being 'True', as opposed to 'False', meaning the last command was successfully run).
+One design goal of AGMPowerCLI is for all user messages to be easy to understand and formatted nicely.   However when a command fails, the return code shown by $? will not indicate this.  For instance in these two examples we try to connect and check $? each time.  However the result is the same for both cases ($? being 'True', as opposed to 'False', meaning the last command was successfully run).
 
 Successful login:
 ```
