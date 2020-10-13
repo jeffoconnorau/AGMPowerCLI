@@ -1,4 +1,4 @@
-Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,[int]$timeout,[string]$endpoint,[string]$extrarequests,[switch][alias("o")]$options,[switch]$itemoverride,[string]$datefields,[int]$limit,[string]$sort)
+Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,[int]$timeout,[string]$endpoint,[string]$extrarequests,[switch][alias("o")]$options,[switch]$itemoverride,[switch]$duration,[string]$datefields,[int]$limit,[string]$sort)
 {
     <#  
     .SYNOPSIS
@@ -301,6 +301,13 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                             }
                         }
                     }
+                    if ($duration)
+                    {
+                        if ($resp.duration)
+                        {
+                            $resp.duration = Convert-AGMDuration $resp.duration
+                        }
+                    }
                     $resp
                 }
                 
@@ -320,6 +327,19 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                                 {
                                     $line.$field = Convert-FromUnixDate $line.$field
                                 }
+                            }
+                        }
+                    }
+                }
+                if ($duration)
+                {
+                    if ($resp.items)
+                    {
+                        foreach($line in $resp.items)
+                        {
+                            if ($line.duration)
+                            {
+                                $line.duration = Convert-AGMDuration $line.duration
                             }
                         }
                     }

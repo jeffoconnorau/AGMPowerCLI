@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.16'
+ModuleVersion = '0.0.0.17'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -183,6 +183,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.17] 2020-10-13
+        Add duration conversion routine to job, jobstatus and jobhistory
+
         ## [0.0.0.16] 2020-09-20
         Improved module description for PowerShell Gallery users
         Added more help information

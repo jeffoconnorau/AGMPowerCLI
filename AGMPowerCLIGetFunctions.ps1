@@ -847,7 +847,7 @@ function Get-AGMImage ([string]$id,[string]$filtervalue,[string]$keyword,[switch
         Get-AGMAPIData -endpoint /backup -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
     }
     elseif ($keyword)
-    {
+    { 
         Get-AGMAPIData -endpoint /backup -keyword $keyword -datefields $datefields -limit $limit -sort $sort
     } 
     else
@@ -956,19 +956,19 @@ function Get-AGMJob ([string]$id,[string]$filtervalue,[string]$keyword,[switch][
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /job/$id -datefields $datefields
+        Get-AGMAPIData -endpoint /job/$id -datefields $datefields -duration
     }
     elseif ($filtervalue)
     {
-        Get-AGMAPIData -endpoint /job -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
+        Get-AGMAPIData -endpoint /job -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort -duration
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /job -keyword $keyword -datefields $datefields -limit $limit -sort $sort
+        Get-AGMAPIData -endpoint /job -keyword $keyword -datefields $datefields -limit $limit -sort $sort -duration
     } 
     else
     {
-        Get-AGMAPIData -endpoint /job -datefields $datefields -limit $limit -sort $sort
+        Get-AGMAPIData -endpoint /job -datefields $datefields -limit $limit -sort $sort -duration
     }
 }
 
@@ -1034,15 +1034,15 @@ function Get-AGMJobHistory ([string]$filtervalue,[string]$keyword,[switch][alias
     }
     elseif ($filtervalue)
     { 
-        Get-AGMAPIData -endpoint /jobhistory -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
+        Get-AGMAPIData -endpoint /jobhistory -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort -duration
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /jobhistory -keyword $keyword -datefields $datefields -limit $limit -sort $sort
+        Get-AGMAPIData -endpoint /jobhistory -keyword $keyword -datefields $datefields -limit $limit -sort $sort -duration
     } 
     else
     {
-        Get-AGMAPIData -endpoint /jobhistory -datefields $datefields -limit $limit -sort $sort
+        Get-AGMAPIData -endpoint /jobhistory -datefields $datefields -limit $limit -sort $sort -duration
     }
 }
 
@@ -1109,15 +1109,15 @@ function Get-AGMJobStatus ([string]$filtervalue,[string]$keyword,[switch][alias(
     }
     elseif ($filtervalue)
     { 
-        Get-AGMAPIData -endpoint /jobstatus -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort
+        Get-AGMAPIData -endpoint /jobstatus -filtervalue $filtervalue -datefields $datefields -limit $limit -sort $sort -duration
     }
     elseif ($keyword)
     {
-        Get-AGMAPIData -endpoint /jobstatus -keyword $keyword -datefields $datefields -limit $limit -sort $sort
+        Get-AGMAPIData -endpoint /jobstatus -keyword $keyword -datefields $datefields -limit $limit -sort $sort -duration
     } 
     else
     {
-        Get-AGMAPIData -endpoint /jobstatus -datefields $datefields -limit $limit -sort $sort
+        Get-AGMAPIData -endpoint /jobstatus -datefields $datefields -limit $limit -sort $sort -duration
     }
 }
 
