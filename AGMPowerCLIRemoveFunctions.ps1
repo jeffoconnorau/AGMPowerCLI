@@ -22,6 +22,30 @@ function Remove-AGMApplication ([Parameter(Mandatory=$true)][string]$appid)
     Post-AGMAPIData -endpoint /application/$appid -method delete
 }
 
+function Remove-AGMHost ([Parameter(Mandatory=$true)][string]$id)
+{
+    <#
+    .SYNOPSIS
+    Deletes a nominated host
+
+    .EXAMPLE
+    Remove-host
+    You will be prompted for an host ID
+
+    .EXAMPLE
+    Remove-AGMHost -id 2133445
+    Deletes Host ID 2133445
+
+
+    .DESCRIPTION
+    A function to delete Hosts
+
+    #>
+
+
+    Post-AGMAPIData -endpoint /host/$id -method delete
+}
+
 function Remove-AGMImage ([string]$imagename)
 {
     <#
