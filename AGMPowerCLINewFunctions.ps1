@@ -1,3 +1,60 @@
+Function New-AGMAppDiscovery ([string]$hostid,[string]$ipaddress,[string]$applianceid) 
+{
+    <#
+    .SYNOPSIS
+    Runs discovery against a host 
+
+    .EXAMPLE
+    New-AGMAppDiscovery -hostid 5678 -applianceid 1415071155
+    
+    Runs application discovery against the host with ID 5678 for appliance with ID 1415071155
+
+    .DESCRIPTION
+    A function to run application discovery
+
+    #>
+
+    if ((!($hostid)) -and (!($ipaddress)))
+    {
+        [string]$hostid = Read-Host "Host to perform discovery on (press enter to use IP)"
+        if (!($hostid))
+        {
+            [string]$ipaddress = Read-Host "Host IP perform discovery on"
+        }
+    }
+    
+    if (!($applianceid))
+    {
+        [string]$applianceid = Read-Host "Appliance to perform discovery on"
+    }
+    
+    if ($hostid)
+    {
+        $body = [ordered]@{
+            host = [ordered]@{
+                id=$hostid
+                sources= @(
+                    @{ 
+                        clusterid=$applianceid
+                    }
+                )
+            }
+        }
+    }
+    if ($ipaddress)
+    {
+        $body = [ordered]@{
+            cluster=$applianceid;
+            type="standard";
+            ipaddress=$ipaddress
+        }
+    }
+
+    $jsonbody = $body | ConvertTo-Json -depth 4
+
+    Post-AGMAPIData  -endpoint /host/discover -body $jsonbody
+}
+
 Function New-AGMMount ([string]$imageid,[string]$targethostid,[string]$jsonbody,[string]$label) 
 {
     <#

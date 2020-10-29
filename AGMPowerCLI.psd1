@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.18'
+ModuleVersion = '0.0.0.19'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -122,6 +122,7 @@ FunctionsToExport = @(
     'Get-AGMVersionDetail',
     'Get-AGMWorkflow',
     'Import-AGMOnVault',
+    'New-AGMAppDiscovery',
     'New-AGMMount',
     'New-AGMOrg',
     'New-AGMRole',
@@ -184,6 +185,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.19] 2020-10-29
+        Add  New-AGMAppDiscovery
+
         ## [0.0.0.18] 2020-10-28
         Add Remove-AGMHost
 
