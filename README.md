@@ -127,6 +127,7 @@ Save-AGMPassword -filename "C:\temp\password.key"
 ```
 
 The Save-AGMPassword function creates an encrypted password file on Windows, but on Linux and Mac it only creates an encoded password file.  
+Note that you can also use this file with the Connect-Act command from ActPowerCLI.
 
 ##### Sharing Windows key files
 
