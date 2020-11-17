@@ -297,7 +297,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                         {
                             if ($resp.$field)
                             {
-                                $resp.$field = Convert-FromUnixDate $resp.$field
+                                [datetime]$resp.$field = Convert-FromUnixDate $resp.$field
                             }
                         }
                     }
@@ -325,7 +325,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                             {
                                 if ($line.$field)
                                 {
-                                    $line.$field = Convert-FromUnixDate $line.$field
+                                    [datetime]$line.$field = Convert-FromUnixDate $line.$field
                                 }
                             }
                         }
@@ -551,7 +551,7 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
                 {
                     if ($resp.$field)
                     {
-                        $resp.$field = Convert-FromUnixDate $resp.$field
+                        [datetime]$resp.$field = Convert-FromUnixDate $resp.$field
                     }
                 }
             }
@@ -651,7 +651,7 @@ Function Put-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body)
                 {
                     if ($resp.$field)
                     {
-                        $resp.$field = Convert-FromUnixDate $resp.$field
+                        [datetime]$resp.$field = Convert-FromUnixDate $resp.$field
                     }
                 }
             }
