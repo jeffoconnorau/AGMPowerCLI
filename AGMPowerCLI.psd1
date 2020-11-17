@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.20'
+ModuleVersion = '0.0.0.19'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -129,7 +129,6 @@ FunctionsToExport = @(
     'New-AGMSLA',
     'Save-AGMPassword',
     'Set-AGMAPILimit',
-    'Set-AGMHost',
     'Set-AGMTimeZoneHandling',
     'Set-AGMOrgApplication',
     'Set-AGMOrgHost',
@@ -186,9 +185,6 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
-        ## [0.0.0.20] 2020-11-16
-        Auto cast date fields to datetime when transforming from epoch time
-
         ## [0.0.0.19] 2020-10-29
         Add  New-AGMAppDiscovery
 
