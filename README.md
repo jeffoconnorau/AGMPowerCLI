@@ -1,12 +1,15 @@
 # AGMPowerCLI
-A Powershell module for Powershell for Actifio Global Manager.
+A Powershell module that allows PowerShell users to issue API calls to Actifio Global Manager.
+This module is intended to deliver the following:
 
-It is currently:
+* Allow the user to create and remove sessions so that API commands can be issued
+* Issue commands to API end points 
 
-* Functionally very useful but not complete as some API Endpoints have not been added.   These will be added over time.
+There is a partner module:  AGMPowerLib found here:  https://github.com/Actifio/AGMPowerLib
+The AGMPowerLib module contains what we call composite functions, these being complex combination of API endpoints.   
+We chose to separate the two modules (a module for end points versus a module for composite functions), to make it easier to differentiate if you are working with a single end-point or working with a composite collection of endpoints.  
 
-It has a partner module:  ActPowerLib
-While this partner module is optional, it is strongly recommended.
+Our intention is that you should install both modules.
 
 
 ### What versions of PowerShell will this module work with?
@@ -103,6 +106,9 @@ AGM     10.0.1.4673
 
 PS C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main>
 ```
+
+Now jump over to https://github.com/Actifio/AGMPowerLib and install AGMPowerLib.
+
 
 ### 2)  Get some help
 
