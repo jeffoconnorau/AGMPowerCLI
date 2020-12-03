@@ -280,12 +280,13 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             {
                 if ($options)
                 {
-                    $grab = $resp | ConvertTo-JSON | ConvertFrom-Json -AsHashtable
+                    $grab = $resp | ConvertTo-JSON -depth 4 | ConvertFrom-Json -AsHashtable 
+                    
                     if ($grab.Values)
                     {
-                        $grab1 = $grab.Values.filterablefields.Split("@{field=") | Select-Object -skip 1 
-                        $grab2 = $grab1 -notmatch '^\s*$'
-                        $grab2 -replace "}"
+                        $grab1 = $grab.Values.filterablefields  | Sort-Object -property field
+                        $grab2 = foreach ($line in $grab1) { write-host $line.field "(" $line.type ")" }
+                        $grab2
                     }
                 }
                 else 

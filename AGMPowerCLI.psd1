@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.19'
+ModuleVersion = '0.0.0.20'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -185,8 +185,11 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.20] 2020-12-03
+        Improve output of filter value options when shown with -o, they are now alpha sorted, format nicer and dont get JSON layer error if the list is too long
+
         ## [0.0.0.19] 2020-10-29
-        Add  New-AGMAppDiscovery
+        Add New-AGMAppDiscovery
 
         ## [0.0.0.18] 2020-10-28
         Add Remove-AGMHost
