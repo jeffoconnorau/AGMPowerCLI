@@ -22,7 +22,7 @@ function Remove-AGMApplication ([Parameter(Mandatory=$true)][string]$appid)
     Post-AGMAPIData -endpoint /application/$appid -method delete
 }
 
-function Remove-AGMHost ([Parameter(Mandatory=$true)][string]$id)
+function Remove-AGMHost ([string]$id,[string]$clusterid)
 {
     <#
     .SYNOPSIS
@@ -33,9 +33,13 @@ function Remove-AGMHost ([Parameter(Mandatory=$true)][string]$id)
     You will be prompted for an host ID
 
     .EXAMPLE
-    Remove-AGMHost -id 2133445
-    Deletes Host ID 2133445
+    Remove-AGMHost -id 2133445 -clusterid 1415071155
+    Deletes Host ID 2133445 from cluster ID 1415071155
 
+    .EXAMPLE
+    Remove-AGMHost -id 2133445 -clusterid "1415071155,1425071155"
+    Deletes Host ID 2133445 from cluster ID 1415071155 and cluster ID 1425071155
+    If you don't enclose in double quotes you will get errors
 
     .DESCRIPTION
     A function to delete Hosts
@@ -43,8 +47,32 @@ function Remove-AGMHost ([Parameter(Mandatory=$true)][string]$id)
     #>
 
 
-    Post-AGMAPIData -endpoint /host/$id -method delete
+    if (!($id)) 
+    {
+        [string]$id = Read-Host "Host ID"
+    }
+    if (!($clusterid)) 
+    {
+        [string]$clusterid = Read-Host "Cluster ID (comma separated list)"
+    }
+
+    # add each cluster ID to sources
+    $sources = @(
+        foreach ($cluster in $clusterid.Split(","))
+        {
+        @{
+            clusterid = $cluster
+        }
+    }
+    )
+    # create source body and convert to JSON
+    $body = @{ sources = $sources }
+    $json = $body | ConvertTo-Json
+
+
+    Post-AGMAPIData -endpoint /host/$id -method delete -body $json
 }
+
 
 function Remove-AGMImage ([string]$imagename)
 {

@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.20'
+ModuleVersion = '0.0.0.21'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -185,6 +185,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.21] 2020-12-04
+        Teach Remove-AGMHost about clusterIDs
+
         ## [0.0.0.20] 2020-12-03
         Improve output of filter value options when shown with -o, they are now alpha sorted, format nicer and dont get JSON layer error if the list is too long
 
