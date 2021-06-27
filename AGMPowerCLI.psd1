@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.21'
+ModuleVersion = '0.0.0.22'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -185,6 +185,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.22] 2021-06-28
+        Teach Remove-AGMMount about preservevm
+        Fix install bug on Linux OS on line 80 of Install-AGMPowerLib.ps1
+
         ## [0.0.0.21] 2020-12-04
         Teach Remove-AGMHost about clusterIDs
 

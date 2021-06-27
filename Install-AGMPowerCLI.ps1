@@ -74,10 +74,14 @@ function RemoveModuleContent
 
 function CreateModuleContent
 {
+  $platform=$PSVersionTable.platform
   # Attempts to create a new folder and copy over the AGMPowerCLI Module contents
   try
   {
+    if ( $platform -notmatch "Unix" )
+    {
     $null = Get-ChildItem -Path $PSScriptRoot\AGMPowerCLI* -Recurse | Unblock-File
+    }
     $null = New-Item -ItemType Directory -Path $InstallPath -Force -ErrorAction Stop
     $null = Copy-Item $PSScriptRoot\AGMPowerCLI* $InstallPath -Force -Recurse -ErrorAction Stop
     $null = Test-Path -Path $InstallPath -ErrorAction Stop

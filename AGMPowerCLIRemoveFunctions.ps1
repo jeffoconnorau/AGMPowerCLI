@@ -323,7 +323,7 @@ function Remove-AGMJob([string]$jobname)
 }
 
 
-function Remove-AGMMount([string]$imagename,[switch][alias("d")]$delete,[switch][alias("f")]$force)
+function Remove-AGMMount([string]$imagename,[switch][alias("d")]$delete,[switch][alias("p")]$preservevm,[switch][alias("f")]$force)
 {
     <#
     .SYNOPSIS
@@ -340,6 +340,11 @@ function Remove-AGMMount([string]$imagename,[switch][alias("d")]$delete,[switch]
         .EXAMPLE
     Remove-AGM -imagename Image_2133445 -d
     Unmounts Image_2133445 and deletes it
+
+    .EXAMPLE
+    Remove-AGM -imagename Image_2133445 -d -p
+    For Google Cloud Persistent Disk (PD) mounts
+    Unmounts Image_2133445 and deletes it on Actifio Side but preserves it on Google side.
 
     .DESCRIPTION
     A function to unmount images
@@ -381,9 +386,17 @@ function Remove-AGMMount([string]$imagename,[switch][alias("d")]$delete,[switch]
     {
         $forcerequest="false"
     }
+    if ($preservevm)
+    { 
+        $preservevmrequest="true"
+    }
+    else 
+    {
+        $preservevmrequest="false"
+    }
 
 
-    $body = @{delete=$deleterequest;force=$forcerequest}
+    $body = @{delete=$deleterequest;force=$forcerequest;preservevm=$preservevmrequest}
     $json = $body | ConvertTo-Json
 
     Post-AGMAPIData -endpoint /backup/$id/unmount -body $json
