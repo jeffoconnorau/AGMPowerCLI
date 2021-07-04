@@ -549,6 +549,27 @@ function Get-AGMConsistencyGroup ([string]$id,[string]$filtervalue,[switch][alia
     }
 }
 
+# cloud credentials
+function Get-AGMCredential 
+{
+<#
+    .SYNOPSIS
+    Gets details about the stored cloud credentials
+
+    .EXAMPLE
+    Get-AGMCredential
+    Will display the cloud credentials
+
+    .DESCRIPTION
+    A function to display cloud credentials
+    
+    #>
+
+     Get-AGMAPIData -endpoint /cloudcredential        
+}
+
+
+
 # Disk pool
 
 function Get-AGMDiskPool([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)

@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.22'
+ModuleVersion = '0.0.0.23'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -96,6 +96,7 @@ FunctionsToExport = @(
     'Get-AGMApplicationWorkflowStatus',
     'Get-AGMAudit',
     'Get-AGMConsistencyGroup',
+    'Get-AGMCredential',
     'Get-AGMDiskPool',
     'Get-AGMEvent',
     'Get-AGMHost',
@@ -185,6 +186,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.23] 2021-06-28    
+        Add Get-AGMCredential 
+
         ## [0.0.0.22] 2021-06-28
         Teach Remove-AGMMount about preservevm
         Fix install bug on Linux OS on line 80 of Install-AGMPowerLib.ps1
