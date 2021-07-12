@@ -130,6 +130,7 @@ FunctionsToExport = @(
     'New-AGMSLA',
     'Save-AGMPassword',
     'Set-AGMAPILimit',
+    'Set-AGMImage',
     'Set-AGMTimeZoneHandling',
     'Set-AGMOrgApplication',
     'Set-AGMOrgHost',
@@ -186,6 +187,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.24] 2021-07-12  
+        Improve help text for Remove-AGMMount 
+        Add Set-AGMimage to allow user to set labels
+
         ## [0.0.0.23] 2021-06-28    
         Add Get-AGMCredential 
 

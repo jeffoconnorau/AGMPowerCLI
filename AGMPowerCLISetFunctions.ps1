@@ -1,3 +1,58 @@
+function Set-AGMImage([string]$imagename,[string]$imageid,[string]$label)
+{
+    <#
+    .SYNOPSIS
+    Labels a nominated image
+
+    .EXAMPLE
+    Set-AGMImage
+    You will be prompted for image Name 
+
+    .EXAMPLE
+    Set-AGMImage -imagename Image_2133445 -label "testimage"
+    Labels Image_2133445 with the label "testimage"
+
+    .DESCRIPTION
+    A function to label images  
+
+    #>
+
+
+    if ((!($imagename)) -and (!($imageid)))
+    {
+        $imagename = Read-Host "ImageName"
+    }
+    if ($imageid)
+    {
+        $id = $imageid
+    }
+
+    if ($imagename)
+    {
+        $imagegrab = Get-AGMImage -filtervalue backupname=$imagename
+        if ($imagegrab.id)
+        {
+            $id = $imagegrab.id
+        }
+        else 
+        {
+            Get-AGMErrorMessage -messagetoprint "Failed to find $imagename"
+            return
+        }
+    }
+
+    if (!($label))
+    {
+        $label = Read-Host "Label"
+    }
+
+
+    $body = @{label=$label}
+    $json = $body | ConvertTo-Json
+
+    Put-AGMAPIData  -endpoint /backup/$id -body $json
+}
+
 Function Set-AGMSLA ([string]$id,[string]$slaid,[string]$appid,[string]$dedupasync,[string]$expiration,[string]$logexpiration,[string]$scheduler) 
 {
     <#

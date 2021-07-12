@@ -337,17 +337,21 @@ function Remove-AGMMount([string]$imagename,[switch][alias("d")]$delete,[switch]
     Remove-AGM -imagename Image_2133445
     Unmounts Image_2133445 but does not delete it
 
-        .EXAMPLE
+    .EXAMPLE
     Remove-AGM -imagename Image_2133445 -d
-    Unmounts Image_2133445 and deletes it
+    Unmounts Image_2133445 and deletes it from Actifio and from the cloud if a mount is a GCP VM created from Persistent Disk Snapshot
 
     .EXAMPLE
-    Remove-AGM -imagename Image_2133445 -d -p
+    Remove-AGM -imagename Image_2133445 -p
     For Google Cloud Persistent Disk (PD) mounts
     Unmounts Image_2133445 and deletes it on Actifio Side but preserves it on Google side.
 
     .DESCRIPTION
     A function to unmount images
+
+    -delete (-d)      Is used to unmount and delete an image.  If not specified then an unmount is done, but the image is retained on the Actifio Side
+    -force (-f)       Removes the mount even if the host-side command to remove the mounted application fails.   This can leave artifacts on the Host and should be used with caution
+    -preservevm (-p)  This applies to GCE Instances created from PD Snapshot.   When used the Actifio Image of the mount is removed, but on the GCP side the new VM is retained.   
 
     #>
 
