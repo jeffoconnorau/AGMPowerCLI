@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.24'
+ModuleVersion = '0.0.0.25'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -187,6 +187,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.25] 2021-07-114
+        Teach Set-AGMSLA how to work with logical groups
+
         ## [0.0.0.24] 2021-07-12  
         Improve help text for Remove-AGMMount 
         Add Set-AGMimage to allow user to set labels
