@@ -1282,7 +1282,7 @@ function Get-AGMLogicalGroupMember ([Parameter(Mandatory=$true)][string]$id)
 
     if ($id)
     {
-        Get-AGMAPIData -endpoint /logicalgroup/$id/member
+        Get-AGMAPIData -endpoint /logicalgroup/$id/member -itemoverride
     }
 }
 
