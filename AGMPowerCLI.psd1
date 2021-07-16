@@ -190,6 +190,7 @@ PrivateData = @{
         ## [0.0.0.25] 2021-07-114
         Teach Set-AGMSLA how to work with logical groups
         Fix issue with Get-AGMLogicalGroupMember where groups with more than 1 member get no output
+        Teach the Get functions to allow both ID and say slaid for SLAs, or appid for apps.
 
         ## [0.0.0.24] 2021-07-12  
         Improve help text for Remove-AGMMount 
