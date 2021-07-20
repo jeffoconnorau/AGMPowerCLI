@@ -45,3 +45,34 @@ Function Start-AGMMigrate ([string]$imageid,[switch][alias("f")]$finalize)
     }
 
 }
+
+
+Function Start-AGMReplicateLog ([string]$appid,[string]$id) 
+{
+    <#
+    .SYNOPSIS
+    Starts a replicate log job 
+
+    .EXAMPLE
+    Start-AGMReplicateLog 
+    You will be prompted for AppID
+
+    .EXAMPLE
+    Start-AGMReplicateLog -appid 56072427 
+
+    Runs a log replication job for App ID 56072427
+
+    .DESCRIPTION
+    A function to run log replication jobs 
+
+    #>
+
+    if ($id) { $appid = $id }
+
+    if (!($appid))
+    {
+        $imageid = Read-host "App ID"
+    }
+    
+    Post-AGMAPIData  -endpoint /application/$appid/replicatelog 
+}
