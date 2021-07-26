@@ -61,6 +61,7 @@ If you find multiple installs, we strongly recommend you delete them all and run
 For Download and install on Mac OS or Linux you could also use this set of commands:
 ```
 wget https://github.com/Actifio/AGMPowerCLI/archive/refs/heads/main.zip
+pwsh
 Expand-Archive ./main.zip
 cd ./main/AGMPowerCLI-main/
 ./main/AGMPowerCLI-main/Install-AGMPowerCLI.ps1
