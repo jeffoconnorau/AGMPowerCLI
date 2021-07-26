@@ -50,24 +50,33 @@ $Latest = Get-InstalledModule AGMPowerCLI; Get-InstalledModule AGMPowerCLI -AllV
 
 Serious corporate servers will not allow downloads from PowerShell gallery or even access to GitHub from Production Servers, so for these we have the following process:
 
-1.  From GitHub, use the Green Code download button to download the AGMPowerCLI-Beta-main repo as a zip file
+1.  From GitHub, use the Green Code download button to download the AGMPowerCLI-main repo as a zip file
 1.  Copy the Zip file to the server where you want to install it
 1.  For Windows, Right select on the zip file, choose  Properties and then use the Unblock button next to the message:  "This file came from another computer and might be blocked to help protect  your computer."
-1.  For Windows, now right select and use Extract All to extract the contents of the zip file to a folder.  It doesn't matter where you put the folder.  For Mac it should automatically unzip.  For Linux use the unzip command to unzip the folder.
-1.  Now start PWSH and change directory to the  AGMPowerCLI-Beta-main directory that should contain our module files.   
+1.  For Windows, now right select and use Extract All to extract the contents of the zip file to a folder.  It doesn't matter where you put the folder.  For Mac it should automatically unzip.  For Linux use the unzip command to unzip the folder or use the PowerShell command Expand-Archive.
+1.  Now start PWSH and change directory to the  AGMPowerCLI-main directory that should contain our module files.   
 1.  There is an installer, Install-AGMPowerCLI.ps1 so run that with ./Install-AGMPowerCLI.ps1
 If you find multiple installs, we strongly recommend you delete them all and run the installer again to have just one install.
 
+For Download and install on Mac OS or Linux you could also use this set of commands:
+```
+wget https://github.com/Actifio/AGMPowerCLI/archive/refs/heads/main.zip
+Expand-Archive ./main.zip
+cd ./main/AGMPowerCLI-main/
+./main/AGMPowerCLI-main/Install-AGMPowerCLI.ps1
+rm main.zip
+rm -r main
+```
 
 If the install fails with:
 ```
-PS C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main> .\Install-
+PS C:\Users\av\Downloads\AGMPowerCLI-main\AGMPowerCLI-main> .\Install-
 AGMPowerCLI.ps1
-.\Install-AGMPowerCLI.ps1: File C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main\Install-AGMPowerCLI.ps1 cannot be loaded. 
-The file C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main\Install-AGMPowerCLI.ps1 is not digitally signed. 
+.\Install-AGMPowerCLI.ps1: File C:\Users\av\Downloads\AGMPowerCLI-main\AGMPowerCLI-main\Install-AGMPowerCLI.ps1 cannot be loaded. 
+The file C:\Users\av\Downloads\AGMPowerCLI-main\AGMPowerCLI-main\Install-AGMPowerCLI.ps1 is not digitally signed. 
 You cannot run this script on the current system. For more information about running scripts and setting execution policy, see about_Execution_Policies at https://go.microsoft.com/fwlink/?LinkID=135170.
 ```
-Then  run this command:
+Then run this command:
 ```
 Get-ChildItem .\Install-AGMPowerCLI.ps1 | Unblock-File
 ```
@@ -94,17 +103,15 @@ Name        Version ModuleBase
 ----        ------- ----------
 AGMPowerCLI 0.0.0.6 C:\Program Files\PowerShell\Modules\AGMPowerCLI
 
-PS C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main> Connect-AG
-M 10.65.5.38 av passw0rd -i
+PS C:\Users\av> Connect-AGM 10.65.5.38 av passw0rd -i
 Login Successful!
-PS C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main> Get-AGMVer
-sion
+PS C:\Users\av> Get-AGMVersion
 
 product summary
 ------- -------
 AGM     10.0.1.4673
 
-PS C:\Users\av\Downloads\AGMPowerCLI-Beta-main\AGMPowerCLI-Beta-main>
+PS C:\Users\av>
 ```
 
 Now jump over to https://github.com/Actifio/AGMPowerLib and install AGMPowerLib.
