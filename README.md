@@ -63,7 +63,6 @@ For Download and install on Mac OS or Linux you could also use this set of comma
 wget https://github.com/Actifio/AGMPowerCLI/archive/refs/heads/main.zip
 pwsh
 Expand-Archive ./main.zip
-cd ./main/AGMPowerCLI-main/
 ./main/AGMPowerCLI-main/Install-AGMPowerCLI.ps1
 rm main.zip
 rm -r main
@@ -162,7 +161,6 @@ Or login to the AGM using the password file created in the previous step:
 ```
 Connect-AGM 10.61.5.114 admin -passwordfile "c:\temp\password.key" -ignorecerts
 ```
-You will need to store the certificate during first login if you don't use **-ignorecerts**
 
 Note you can use **-quiet** to suppress messages.   This is handy when scripting.
 
@@ -429,7 +427,8 @@ Remove-AGMOrg 54382768
 
 # User Stories
 
-In this section we will share some examples of User Stories
+In this section we will share some examples of User Stories.  Note most user stories use the AGMPowerLib module, so also check them out here:
+https://github.com/Actifio/AGMPowerLib/blob/main/README.md
 
 ## Bulk unprotection of VMs
 
