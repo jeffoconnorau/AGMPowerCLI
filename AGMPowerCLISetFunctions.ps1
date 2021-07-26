@@ -53,7 +53,7 @@ function Set-AGMImage([string]$imagename,[string]$imageid,[string]$label)
     Put-AGMAPIData  -endpoint /backup/$id -body $json
 }
 
-Function Set-AGMSLA ([string]$id,[string]$slaid,[string]$appid,[string]$dedupasync,[string]$expiration,[string]$logexpiration,[string]$scheduler) 
+Function Set-AGMSLA ([string]$id,[string]$slaid,[string]$appid,[string]$logicalgroupid,[string]$dedupasync,[string]$expiration,[string]$logexpiration,[string]$scheduler) 
 {
     <#
     .SYNOPSIS
@@ -69,6 +69,11 @@ Function Set-AGMSLA ([string]$id,[string]$slaid,[string]$appid,[string]$dedupasy
     Set-AGMSLA -slaid 1234 -expiration disable 
     
     Disables expiration for SLA ID 1234.  
+
+    .EXAMPLE
+    Set-AGMSLA -logicalgroupid 1235 -expiration disable 
+    
+    Disables expiration for Logical Group ID 1235 
 
     .EXAMPLE
     Set-AGMSLA -appid 5678 -expiration disable 
@@ -110,11 +115,28 @@ Function Set-AGMSLA ([string]$id,[string]$slaid,[string]$appid,[string]$dedupasy
     if (($appid) -and (!($slaid)))
     {
         $slaid = (Get-AGMSLA -filtervalue appid=$appid).id
+        if (!($slaid))
+        {
+            Get-AGMErrorMessage -messagetoprint "Could not find an SLA ID for App ID $appid   Please use Get-AGMSLA to find the correct SLA ID or Get-AGMApplication to find the correct App ID"
+            return
+        }
     }
 
-    if (!($slaid))
+    if ($logicalgroupid)
     {
-        Get-AGMErrorMessage -messagetoprint "No SLA ID or App ID was supplied"
+        $logicalgroupgrab = (Get-AGMLogicalGroup $logicalgroupid).sla
+        if (!($logicalgroupgrab))
+        {
+            Get-AGMErrorMessage -messagetoprint "Could not find any SLA ID for Logical Group ID $logicalgroupid   Please use Get-AGMLogicalGroup to find the correct managed Group ID"
+            return
+        }
+        $slpid = $logicalgroupgrab.slp.id
+        $sltid = $logicalgroupgrab.slt.id
+    }
+
+    if ( (!($slaid)) -and (!($logicalgroupid)) )
+    {
+        Get-AGMErrorMessage -messagetoprint "No SLA ID or App ID or Logical Group ID was supplied.  Please either supply an appid like:  -appid 1234     or an SLA ID like  -slaid 5678   or logical groupID like  -logicalgroupid"
         return
     }
 
@@ -147,9 +169,20 @@ Function Set-AGMSLA ([string]$id,[string]$slaid,[string]$appid,[string]$dedupasy
     if ($scheduler.ToLower() -eq "disable"){
         $body | Add-Member -MemberType NoteProperty -Name scheduleoff -Value "true"
     }
+    if ($logicalgroupid)
+    {
+        $slp = @{id=$slpid}
+        $slt = @{id=$sltid}
+        $body | Add-Member -MemberType NoteProperty -Name slp -Value $slp
+        $body | Add-Member -MemberType NoteProperty -Name slt -Value $slt
+    }
 
     $jsonbody = $body | ConvertTo-Json
 
-
-    Put-AGMAPIData  -endpoint /sla/$slaid -body $jsonbody
+    if (!($logicalgroupid))
+    {
+        Put-AGMAPIData  -endpoint /sla/$slaid -body $jsonbody
+    } else {
+        Put-AGMAPIData  -endpoint /logicalgroup/$logicalgroupid/sla -body $jsonbody
     }
+}

@@ -79,7 +79,7 @@ function Get-AGMAppliance ([string]$id,[string]$filtervalue,[switch][alias("o")]
 
 # Application
 
-function Get-AGMApplication ([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
+function Get-AGMApplication ([string]$id,[string]$appid,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
 
     <#
@@ -138,6 +138,7 @@ function Get-AGMApplication ([string]$id,[string]$filtervalue,[string]$keyword,[
     {
         $sort = ""
     }
+    if ($appid) { $id = $appid }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /application -o
@@ -723,7 +724,7 @@ function Get-AGMEvent ([string]$id,[string]$filtervalue,[switch][alias("o")]$opt
 
 #host 
 
-function Get-AGMHost ([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
+function Get-AGMHost ([string]$id,[string]$hostid,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
 <#
     .SYNOPSIS
@@ -777,6 +778,7 @@ function Get-AGMHost ([string]$id,[string]$filtervalue,[string]$keyword,[switch]
     {
         $sort = ""
     }
+    if ($hostid) { $id = $hostid }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /host -o       
@@ -801,7 +803,7 @@ function Get-AGMHost ([string]$id,[string]$filtervalue,[string]$keyword,[switch]
 
 #Image (backup) 
 
-function Get-AGMImage ([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
+function Get-AGMImage ([string]$id,[string]$imageid,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
 <#
     .SYNOPSIS
@@ -855,6 +857,7 @@ function Get-AGMImage ([string]$id,[string]$filtervalue,[string]$keyword,[switch
         $sort = ""
     }
     #$datefields = ""
+    if ($imageid) { $id = $imageid}
     if ($options)
     { 
         Get-AGMAPIData -endpoint /backup -o 
@@ -1183,7 +1186,7 @@ function Get-AGMLDAPGroup
 
 # Logical group
 
-function Get-AGMLogicalGroup ([string]$id,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
+function Get-AGMLogicalGroup ([string]$id,[string]$logicalgroupid,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
 <#
     .SYNOPSIS
@@ -1241,6 +1244,7 @@ function Get-AGMLogicalGroup ([string]$id,[string]$filtervalue,[switch][alias("o
     {
         $sort = ""
     }
+    if ($logicalgroupid) { $id = $logicalgroupid }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /logicalgroup -o
@@ -1282,14 +1286,14 @@ function Get-AGMLogicalGroupMember ([Parameter(Mandatory=$true)][string]$id)
 
     if ($id)
     {
-        Get-AGMAPIData -endpoint /logicalgroup/$id/member
+        Get-AGMAPIData -endpoint /logicalgroup/$id/member -itemoverride
     }
 }
 
 
 #org
 
-function Get-AGMOrg ([string]$id,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
+function Get-AGMOrg ([string]$id,[string]$orgid,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
 <#
     .SYNOPSIS
@@ -1346,6 +1350,7 @@ function Get-AGMOrg ([string]$id,[string]$filtervalue,[string]$keyword,[switch][
     {
         $sort = ""
     }
+    if ($orgid) { $id = $orgid }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /org -o
@@ -1544,7 +1549,7 @@ function Get-AGMSession  ([String]$sessionid)
 
 #sla
 
-function Get-AGMSLA ([string]$id,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
+function Get-AGMSLA ([string]$id,[string]$slaid,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
  <#
     .SYNOPSIS
@@ -1599,6 +1604,7 @@ function Get-AGMSLA ([string]$id,[string]$filtervalue,[switch][alias("o")]$optio
     {
         $sort = ""
     }
+    if ($slaid)  { $id = $slaid }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /sla -o
@@ -1618,7 +1624,7 @@ function Get-AGMSLA ([string]$id,[string]$filtervalue,[switch][alias("o")]$optio
 }
 
 #SLP 
-function Get-AGMSLP ([string]$id,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
+function Get-AGMSLP ([string]$id,[string]$slpid,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     <#
     .SYNOPSIS
@@ -1671,6 +1677,7 @@ function Get-AGMSLP ([string]$id,[string]$filtervalue,[switch][alias("o")]$optio
     {
         $sort = ""
     }
+    if ($slpid)  { $id = $slpid }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /slp -o
@@ -1691,7 +1698,7 @@ function Get-AGMSLP ([string]$id,[string]$filtervalue,[switch][alias("o")]$optio
 }
 
 #SLT 
-function Get-AGMSLT ([string]$id,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
+function Get-AGMSLT ([string]$id,[string]$sltid,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
     <#
     .SYNOPSIS
@@ -1744,6 +1751,7 @@ function Get-AGMSLT ([string]$id,[string]$filtervalue,[switch][alias("o")]$optio
     {
         $sort = ""
     }
+    if ($sltid)  { $id = $sltid }
     if ($options)
     { 
         Get-AGMAPIData -endpoint /slt -o
