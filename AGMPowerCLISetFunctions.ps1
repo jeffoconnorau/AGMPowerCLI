@@ -1,3 +1,103 @@
+Function Set-AGMCredential ([string]$name,[string]$zone,[string]$id,[string]$clusterid,[string]$applianceid,$filename,[string]$projectid) 
+{
+    <#
+    .SYNOPSIS
+    Updates a cloud credential
+
+    .EXAMPLE
+    Set-AGMCredential -credentialid 1234 -name cred1 -zone australia-southeast1-c -clusterid 144292692833 -filename keyfile.json
+    
+
+    .DESCRIPTION
+    A function to update cloud credentials
+
+    #>
+
+    if ($id) { $credentialid = $id }
+    if (!($credentialid))
+    {
+        [string]$credentialid = Read-Host "Credential ID"
+    }
+    
+    if ($applianceid) { [string]$clusterid = $applianceid}
+    if (!($clusterid))
+    {
+        [string]$clusterid = Read-Host "Cluster IDs to update (comma separated)"
+    }
+    if (!($filename))
+    {
+        $filename = Read-Host "JSON key file"
+    }
+    if ( Test-Path $filename )
+    {
+        $jsonkey = Get-Content -Path $filename -raw
+        $jsonkey = $jsonkey.replace("\n","\\n")
+        $jsonkey = $jsonkey.replace("`n","\n ")
+        $jsonkey = $jsonkey.replace('"','\"')
+    }
+    else
+    {
+        Get-AGMErrorMessage -messagetoprint "The file named $filename could not be found."
+        return
+    }
+
+    if (!($projectid))
+    {
+        $jsongrab = Get-Content -Path $filename | ConvertFrom-Json
+        if (!($jsongrab.project_id))
+        {
+            Get-AGMErrorMessage -messagetoprint "The file named $filename does not contain a valid project ID."
+            return
+        } else {
+            $projectid = $jsongrab.project_id
+        }
+    }   
+
+    #if user doesn't specify name and zone, then learn them
+    $credentialgrab = Get-AGMCredential -credentialid $credentialid
+    if (!($credentialgrab.id))
+    {
+        Get-AGMErrorMessage -messagetoprint "The credential ID $credentialid could not be found."
+        return
+    } else {
+        if (!($name))
+        {
+            $name = $credentialgrab.name
+        }
+        if (!($zone))
+        {
+            $zone = $credentialgrab.region
+        }
+    }
+
+    $sources = ""
+    foreach ($cluster in $clusterid.Split(","))
+    {
+        $sources = $sources +',{"clusterid":"' +$cluster +'"}'
+    }
+    $sources = $sources.substring(1)
+
+    $json = '{"name":"' +$name +'","cloudtype":"GCP","region":"' +$zone +'","endpoint":"","credential":"'
+    $json = $json + $jsonkey
+    $json = $json +'","orglist":[],"projectid":"' +$projectid +'",'
+    $json = $json +'"sources":[' +$sources +']}'
+
+    $testcredential = Post-AGMAPIData  -endpoint /cloudcredential/testconnection -body $json
+    if ($testcredential.errors)
+    {
+        $testcredential
+        return
+    }
+
+    $json = '{"id":"' +$credentialid +'","name":"' +$name +'","cloudtype":"GCP","region":"' +$zone +'","endpoint":"","credential":"'
+    $json = $json + $jsonkey
+    $json = $json +'","orglist":[],'
+    $json = $json +'"sources":[' +$sources +']}'
+
+    Put-AGMAPIData  -endpoint /cloudcredential/$credentialid -body $json
+}
+
+
 function Set-AGMImage([string]$imagename,[string]$imageid,[string]$label)
 {
     <#

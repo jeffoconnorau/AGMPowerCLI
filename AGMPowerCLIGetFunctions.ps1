@@ -551,7 +551,7 @@ function Get-AGMConsistencyGroup ([string]$id,[string]$filtervalue,[switch][alia
 }
 
 # cloud credentials
-function Get-AGMCredential 
+function Get-AGMCredential ([string]$id,[string]$credentialid)
 {
 <#
     .SYNOPSIS
@@ -566,7 +566,13 @@ function Get-AGMCredential
     
     #>
 
-     Get-AGMAPIData -endpoint /cloudcredential        
+    if ($credentialid) { $id = $credentialid}
+    if ($id)
+    {
+        Get-AGMAPIData -endpoint /cloudcredential/$id
+    } else {
+        Get-AGMAPIData -endpoint /cloudcredential  
+    }      
 }
 
 
