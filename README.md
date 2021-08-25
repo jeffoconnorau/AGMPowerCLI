@@ -651,7 +651,7 @@ Learn the cluster ID with:
 ```
 Get-AGMAppliance
 ```
-To learn instance IDs use this command:
+To learn instance IDs use these two commands:
 ```
 $discovery = Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid "avwlab2" -zone "australia-southeast1-c" -filter NEW
 $discovery.items.vm | select vmname,instanceid
@@ -668,7 +668,7 @@ agm         6655459695622225630
 
 #### Add new cloud VMs
 
-Learn the instanceid and then use this command:
+Learn the instanceid and then use this command (comma separate the insstance IDs):
 ```
 New-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid "avwlab2" -zone "australia-southeast1-c" -instanceid "4240202854121875692,6655459695622225630
 ```
