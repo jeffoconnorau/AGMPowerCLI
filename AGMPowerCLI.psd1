@@ -192,6 +192,7 @@ PrivateData = @{
         ReleaseNotes = '
         ## [0.0.0.26] 2021-08-24
         Added Remove-AGMCredential, New-AGMCredential, Set-AGMCredential 
+        Updated Get-AGMCredential to allow individual credential to be selected
 
         ## [0.0.0.25] 2021-07-14
         Teach Set-AGMSLA how to work with logical groups
