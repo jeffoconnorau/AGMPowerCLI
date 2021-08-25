@@ -1,4 +1,4 @@
-Function Set-AGMCredential ([string]$name,[string]$zone,[string]$id,[string]$clusterid,[string]$applianceid,$filename,[string]$projectid) 
+Function Set-AGMCredential ([string]$name,[string]$zone,[string]$id,[string]$credentialid,[string]$clusterid,[string]$applianceid,$filename,[string]$projectid) 
 {
     <#
     .SYNOPSIS
@@ -7,9 +7,15 @@ Function Set-AGMCredential ([string]$name,[string]$zone,[string]$id,[string]$clu
     .EXAMPLE
     Set-AGMCredential -credentialid 1234 -name cred1 -zone australia-southeast1-c -clusterid 144292692833 -filename keyfile.json
     
+    To update just the JSON file to the same appliances for credential ID 1234
+
+    .EXAMPLE
+    Set-AGMCredential -credentialid 1234 -name cred1 -zone australia-southeast1-c  -filename keyfile.json
+    
+    To update the JSON file and also the name and default zone for credential ID 1234
 
     .DESCRIPTION
-    A function to update cloud credentials
+    A function to update cloud credentials.   You need to supply the 
 
     #>
 
@@ -20,10 +26,7 @@ Function Set-AGMCredential ([string]$name,[string]$zone,[string]$id,[string]$clu
     }
     
     if ($applianceid) { [string]$clusterid = $applianceid}
-    if (!($clusterid))
-    {
-        [string]$clusterid = Read-Host "Cluster IDs to update (comma separated)"
-    }
+
     if (!($filename))
     {
         $filename = Read-Host "JSON key file"
@@ -68,27 +71,35 @@ Function Set-AGMCredential ([string]$name,[string]$zone,[string]$id,[string]$clu
         {
             $zone = $credentialgrab.region
         }
+        if(!($clusterid))
+        {
+            $clusterid = $credentialgrab.sources.clusterid -join ","
+        }
     }
 
+    # convert credential ID into some nice JSON
     $sources = ""
     foreach ($cluster in $clusterid.Split(","))
     {
         $sources = $sources +',{"clusterid":"' +$cluster +'"}'
     }
+    # this removes the leading comma
     $sources = $sources.substring(1)
 
+    # we constuct our JSON first to run test
     $json = '{"name":"' +$name +'","cloudtype":"GCP","region":"' +$zone +'","endpoint":"","credential":"'
     $json = $json + $jsonkey
     $json = $json +'","orglist":[],"projectid":"' +$projectid +'",'
     $json = $json +'"sources":[' +$sources +']}'
 
+    # if the test fails we error out
     $testcredential = Post-AGMAPIData  -endpoint /cloudcredential/testconnection -body $json
     if ($testcredential.errors)
     {
         $testcredential
         return
     }
-
+    
     $json = '{"id":"' +$credentialid +'","name":"' +$name +'","cloudtype":"GCP","region":"' +$zone +'","endpoint":"","credential":"'
     $json = $json + $jsonkey
     $json = $json +'","orglist":[],'
