@@ -124,6 +124,7 @@ FunctionsToExport = @(
     'Get-AGMWorkflow',
     'Import-AGMOnVault',
     'New-AGMAppDiscovery',
+    'New-AGMCloudVM',
     'New-AGMMount',
     'New-AGMOrg',
     'New-AGMRole',
