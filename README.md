@@ -15,6 +15,9 @@ Our intention is that you should install both modules.
 **[Usage](#usage)**<br>
 **[What else do I need to know?](#what-else-do-i-need-to-know)**<br>
 **[User Story: Bulk unprotection of VMs](#user-story-bulk-unprotection-of-vms)**<br>
+**[User Story: Managing Protection of a GCP VM](#user-story-managing-protection-of-a-gcp-vm)**<br>
+**[User Story: Managing GCP Cloud Credentials](#user-story-managing-gcp-cloud-credentials)**<br>
+**[User Story: Adding GCP Instances](#user-story-adding-gcp-instances)**<br>
 
 
 ### What versions of PowerShell will this module work with?
@@ -525,3 +528,178 @@ foreach ($app in $appstounmanage)
 { Remove-AGMApplication -appid $($app.appid) }
 ```
 Output will be blank but the VMs will all be deleted.
+
+
+## User Story:  Managing Protection of a GCP VM
+
+#### How to learn if a GCP VM is being backed up or not.
+
+Use this command:
+```
+Get-AGMApplication -filtervalue appname=bastion
+```
+The term we look for is “Managed” = True 
+```
+PS /Users/avw> Get-AGMApplication -filtervalue apptype=GCPInstance | select appname,apptype,managed,id, @{N='sltid'; E={$_.sla.slt.id}}, @{N='slpid'; E={$_.sla.slp.id}} | ft
+
+appname     apptype     managed id     sltid slpid
+-------     -------     ------- --     ----- -----
+consoletest GCPInstance   False 224079
+bastion     GCPInstance    True 209913 6392  35557
+```
+
+#### How to apply backup to unmanaged GCP VM
+
+Use a command like this.   
+```
+New-AGMSLA -appid 209913 -sltid 6392 -slpid 35557 -scheduler enabled
+```
+
+We need to know the App ID (ID from the Get-AGMApplication), SLT and SLP ID.
+We can learn the SLT and SLP from existing app, or with:
+```
+Get-AGMSLT
+Get-AGMSLP
+```
+
+#### How to learn the IP address of a GCP VM from AGM:
+
+If we know the name of the GCP VM, then use this command: 
+```
+Get-AGMApplication -filtervalue appname=bastion
+```
+Here is an example:
+```
+PS /Users/avw> $appdata = Get-AGMApplication -filtervalue appname=bastion
+PS /Users/avw> $appdata.host.ipaddress
+10.152.0.3
+PS /Users/avw>
+```
+
+## User Story:  Managing GCP Cloud Credentials
+
+
+#### Listing Cloud Credentials
+
+```
+PS /Users/avw/Downloads> Get-AGMCredential
+
+@type          : cloudCredentialRest
+id             : 218150
+href           : https://10.152.0.5/actifio/cloudcredential
+sources        : {@{srcid=20740; clusterid=145759989824; appliance=; name=london; cloudtype=GCP; region=europe-west2-b; projectid=avwlab2; serviceaccount=avwlabowner@avwlab2.iam.gserviceaccount.com}}
+name           : london
+cloudtype      : GCP
+region         : europe-west2-b
+projectid      : avwlab2
+serviceaccount : avwlabowner@avwlab2.iam.gserviceaccount.com
+```
+
+#### Creating new cloud credential:
+
+
+```
+PS /Users/avw/Downloads> New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824"
+
+@type          : cloudCredentialRest
+id             : 219764
+href           : https://10.152.0.5/actifio/cloudcredential
+sources        : {@{srcid=214315; clusterid=144292692833; appliance=; name=test; cloudtype=GCP; region=australia-southeast1-c; projectid=glabco; serviceaccount=avw-gcsops@glabco.iam.gserviceaccount.com}, @{srcid=21546;
+                 clusterid=145759989824; appliance=; name=test; cloudtype=GCP; region=australia-southeast1-c; projectid=glabco; serviceaccount=avw-gcsops@glabco.iam.gserviceaccount.com}}
+name           : test
+cloudtype      : GCP
+region         : australia-southeast1-c
+projectid      : glabco
+serviceaccount : avw-gcsops@glabco.iam.gserviceaccount.com
+```
+
+Situation where key cannot manage project
+```
+PS /Users/avw/Downloads> New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824" -projectid glabco1
+
+@type                    errors
+-----                    ------
+testCredentialResultRest {@{errorcode=4000; errormsg=No privileges for project or incorrect project id provided in credential json.; clusters=System.Object[]}}
+```
+Duplicate name
+```
+PS /Users/avw/Downloads> New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824"
+
+err_code err_message
+-------- -----------
+   10023 Create cloud credential failed on appliance avwlab2sky error code 10006 message Unique cloud credential name required: test,Create cloud credential failed on appliance londonsky.c.avwlab2.internal error code 10006 message U…
+```
+
+## User Story:  Adding GCP Instances
+
+#### Listing new GCP VMs. Use this syntax:
+
+By default this command only shows up to 50 new VMs:
+```
+Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid "avwlab2" -zone "australia-southeast1-c"
+```
+You can set filters to display different discovery status. Can be New, Ignored, Managed or Unmanaged  
+For example to list discovered but unmanaged VMs:
+```
+Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid "avwlab2" -zone "australia-southeast1-c" -filter Unmanaged
+```
+Learn the credential ID with:
+```
+Get-AGMCredential
+```
+Learn the cluster ID with:
+```
+Get-AGMAppliance
+```
+To learn instance IDs use this command:
+```
+$discovery = Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid "avwlab2" -zone "australia-southeast1-c" -filter NEW
+$discovery.items.vm | select vmname,instanceid
+```
+For example:
+```
+PS /Users/avw> $discovery.items.vm | select vmname,instanceid
+
+vmname      instanceid
+------      ----------
+consoletest 4240202854121875692
+agm         6655459695622225630
+```
+
+#### Add new cloud VMs
+
+Learn the instanceid and then use this command:
+```
+New-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid "avwlab2" -zone "australia-southeast1-c" -instanceid "4240202854121875692,6655459695622225630
+```
+
+
+#### Deleting a Cloud Credential
+```
+PS /Users/avw/Downloads> Remove-AGMCredential -credentialid 219764 -applianceid "145759989824,144292692833"
+```
+Update existing credential with new key and change its name
+```
+PS /Users/avw/Downloads> Set-AGMCredential -id 219764  -name test1 -filename ./glabco-4b72ba3d6a69.json
+
+@type          : cloudCredentialRest
+id             : 219764
+href           : https://10.152.0.5/actifio/cloudcredential
+sources        : {@{srcid=214315; clusterid=144292692833; appliance=; name=test1; cloudtype=GCP; region=australia-southeast1-c; projectid=glabco; serviceaccount=avw-gcsops@glabco.iam.gserviceaccount.com}, @{srcid=21546;
+                 clusterid=145759989824; appliance=; name=test1; cloudtype=GCP; region=australia-southeast1-c; projectid=glabco; serviceaccount=avw-gcsops@glabco.iam.gserviceaccount.com}}
+name           : test1
+cloudtype      : GCP
+region         : australia-southeast1-c
+projectid      : glabco
+serviceaccount : avw-gcsops@glabco.iam.gserviceaccount.com
+```
+
+
+
+
+
+
+
+
+
+
