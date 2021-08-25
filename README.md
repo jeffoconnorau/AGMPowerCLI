@@ -11,6 +11,11 @@ We chose to separate the two modules (a module for end points versus a module fo
 
 Our intention is that you should install both modules.
 
+### Table of Contents
+**[Usage](#usage)**<br>
+**[Time Zone handling](#time-zone-handling)**<br>
+**[User Stories](#user-stories)**<br>
+
 
 ### What versions of PowerShell will this module work with?
 

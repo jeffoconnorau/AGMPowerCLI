@@ -471,7 +471,87 @@ function Get-AGMAudit ([string]$filtervalue,[switch][alias("o")]$options,[string
     }
 }
 
+Function Get-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string]$clusterid,[string]$applianceid,[string]$projectid,[string]$limit,[string]$filter) 
+{
+    <#
+    .SYNOPSIS
+    Displays Cloud VMs
 
+    .EXAMPLE
+    Get-AGMCloudVM -credentialid 1234 -zone australia-southeast1-c -applianceid 144292692833
+
+    Because no filter was supplied only New VMs will be display.
+
+    .EXAMPLE
+    Get-AGMCloudVM -credentialid 1234 -zone australia-southeast1-c -applianceid 144292692833 -filter Managed
+
+    Shows all VMs from the specified zone and credential on appliance ID 144292692833 that are managed
+
+    .DESCRIPTION
+    A function to find Cloud VMs
+
+    Filter:   Defaults to New.  Can be New, Ignored, Managed or Unmanaged
+    Limit:    Defaults to 50.
+
+    #>
+
+    if ($id) { $credentialid = $id }
+    if (!($credentialid))
+    {
+        [string]$credentialid = Read-Host "Credential ID"
+    }
+    
+    if ($applianceid) { [string]$clusterid = $applianceid}
+
+    if (!($clusterid))
+    {
+        $clusterid = Read-Host "Cluster ID"
+    }
+    if (!($projectid))
+    {
+        [string]$projectid = Read-Host "Project ID"
+    }   
+
+    #if user doesn't specify name and zone, then learn them
+    $credentialgrab = Get-AGMCredential -credentialid $credentialid
+    if (!($credentialgrab.id))
+    {
+        Get-AGMErrorMessage -messagetoprint "The credential ID $credentialid could not be found."
+        return
+    } else {
+        if (!($zone))
+        {
+            $zone = $credentialgrab.region
+        }
+    }
+
+    if (!($zone))
+    {
+        [string]$zone = Read-Host "Zone Name"
+    } 
+    if ($filter)
+    {
+        if ($filter -ne "New" -and $filter -ne "Ignored" -and $filter -ne "Managed" -and $filter -ne "Unmanaged" )
+        {
+            Get-AGMErrorMessage -messagetoprint "The Filter $filter is not valid.  Use either New, Ignored, Managed or Unmanaged"
+            return
+        }
+    }
+
+    if (!($limit)) { $limit = 50 }
+    if (!($filter)) { $filter = "New"}
+
+    $cluster = @{ clusterid = $clusterid}
+    $body = [ordered]@{}
+    $body += @{ cluster = $cluster;
+    region = $zone;
+    project = $projectid;
+    actifioroles = @($filter)
+    }
+    $json = $body | ConvertTo-Json
+
+    Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/vm -body $json -limit $limit
+}
 
 # Consistency group
 

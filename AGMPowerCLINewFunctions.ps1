@@ -55,6 +55,74 @@ Function New-AGMAppDiscovery ([string]$hostid,[string]$ipaddress,[string]$applia
     Post-AGMAPIData  -endpoint /host/discover -body $jsonbody
 }
 
+Function New-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string]$clusterid,[string]$applianceid,[string]$projectid,[string]$instanceid) 
+{
+    <#
+    .SYNOPSIS
+    Adds new Cloud VMs
+
+    .EXAMPLE
+    New-AGMCloudVM -credentialid 1234 -zone australia-southeast1-c -applianceid 144292692833 -instanceid 4240202854121875692
+
+    Adds VM with ID 4240202854121875692 to specified appliance 
+
+    .DESCRIPTION
+    A function to add Cloud VMs
+    Multiple vmids should be comma separated
+
+    #>
+
+    if ($id) { $credentialid = $id }
+    if (!($credentialid))
+    {
+        [string]$credentialid = Read-Host "Credential ID"
+    }
+    
+    if ($applianceid) { [string]$clusterid = $applianceid}
+
+    if (!($clusterid))
+    {
+        $clusterid = Read-Host "Cluster ID"
+    }
+    if (!($projectid))
+    {
+        [string]$projectid = Read-Host "Project ID"
+    }   
+
+    #if user doesn't specify name and zone, then learn them
+    $credentialgrab = Get-AGMCredential -credentialid $credentialid
+    if (!($credentialgrab.id))
+    {
+        Get-AGMErrorMessage -messagetoprint "The credential ID $credentialid could not be found."
+        return
+    } else {
+        if (!($zone))
+        {
+            $zone = $credentialgrab.region
+        }
+    }
+
+    if (!($zone))
+    {
+        [string]$zone = Read-Host "Zone Name"
+    } 
+    if (!($instanceid))
+    {
+        [string]$instanceid = Read-Host "Instance IDs (Comma separated)"
+    } 
+
+    $cluster = @{ clusterid = $clusterid}
+    $body = [ordered]@{}
+    $body += @{ cluster = $cluster;
+    region = $zone;
+    listonly = $false;
+    vmids = $($instanceid.Split(","))
+    project = $projectid;
+    }
+    $json = $body | ConvertTo-Json
+    
+    Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/addvm -body $json -limit $limit
+}
 
 Function New-AGMCredential ([string]$name,[string]$zone,[string]$clusterid,[string]$applianceid,$filename,[string]$projectid) 
 {
