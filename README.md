@@ -530,7 +530,7 @@ foreach ($app in $appstounmanage)
 Output will be blank but the VMs will all be deleted.
 
 
-## User Story:  Managing Protection of a GCP VM
+## User Story: Managing Protection of a GCP VM
 
 #### How to learn if a GCP VM is being backed up or not.
 
@@ -576,7 +576,7 @@ PS /Users/avw> $appdata.host.ipaddress
 PS /Users/avw>
 ```
 
-## User Story:  Managing GCP Cloud Credentials
+## User Story: Managing GCP Cloud Credentials
 
 
 #### Listing Cloud Credentials
@@ -630,7 +630,7 @@ err_code err_message
    10023 Create cloud credential failed on appliance avwlab2sky error code 10006 message Unique cloud credential name required: test,Create cloud credential failed on appliance londonsky.c.avwlab2.internal error code 10006 message U…
 ```
 
-## User Story:  Adding GCP Instances
+## User Story: Adding GCP Instances
 
 #### Listing new GCP VMs. Use this syntax:
 
