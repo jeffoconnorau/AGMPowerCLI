@@ -13,8 +13,8 @@ Our intention is that you should install both modules.
 
 ### Table of Contents
 **[Usage](#usage)**<br>
-**[Time Zone handling](#time-zone-handling)**<br>
-**[User Stories](#user-stories)**<br>
+**[What else do I need to know?](#what-else-do-i-need-to-know)**<br>
+**[User Story: Bulk unprotection of VMs](#user-story-bulk-unprotection-of-vms)**<br>
 
 
 ### What versions of PowerShell will this module work with?
@@ -24,7 +24,7 @@ It was written and tested for Windows PowerShell 5 and PowerShell V7 with Linux,
 ## Usage
 
 
-### 1)    Install or Upgrade AGMPowerCLI
+### 1) Install or Upgrade AGMPowerCLI
 
 Install from PowerShell Gallery (the ProtocolType only needs to be set for Windows PowerShell 5)
 
@@ -435,7 +435,7 @@ Remove-AGMOrg 54382768
 In this section we will share some examples of User Stories.  Note most user stories use the AGMPowerLib module, so also check them out here:
 https://github.com/Actifio/AGMPowerLib/blob/main/README.md
 
-## Bulk unprotection of VMs
+## User Story: Bulk unprotection of VMs
 
 In this scenario, a large number of VMs that were no longer required were removed from the vCenter. However, as those VMs were still being managed by Actifio at the time of removal from the VCenter, the following error message is being received constantly
  
