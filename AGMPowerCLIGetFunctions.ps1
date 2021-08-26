@@ -966,6 +966,48 @@ function Get-AGMImage ([string]$id,[string]$imageid,[string]$filtervalue,[string
     }
 }
 
+function Get-AGMImageCount ([string]$filtervalue,[string]$keyword)
+{
+<#
+    .SYNOPSIS
+    Gets a count of images.  
+
+    .EXAMPLE
+    Get-AGMImageCount
+    Will count all images.  
+
+    .EXAMPLE
+    Get-AGMImage -filtervalue "id>1234&name~sky"
+    Count all images with id greater than 1234 and a name like sky.   
+
+
+    .DESCRIPTION
+    A function to count all images known to AGM.  
+    Multiple filtervalues need to be encased in double quotes and separated by the & symbol
+    Jobclasses are case sensitive, so please use correct syntax:   snapshot, OnVault
+    Filtervalues can be =, <, >, ~ (fuzzy) or ! (not)
+    
+    #>
+
+    if ($filtervalue)
+    {
+        $count = Get-AGMAPIData -endpoint /backup -filtervalue $filtervalue -head
+    }
+    elseif ($keyword)
+    { 
+        $count = Get-AGMAPIData -endpoint /backup -keyword $keyword -head
+    } 
+    else
+    {
+        $count = Get-AGMAPIData -endpoint /backup -head
+    }
+    if ($count.headers."Actifio-Count")
+    {
+        $count.headers."Actifio-Count"
+    }
+}
+
+
 function Get-AGMImageSystemStateOptions ([string]$imageid,[string]$id,[string]$target)
 {
 <#

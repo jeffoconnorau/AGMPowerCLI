@@ -95,12 +95,14 @@ FunctionsToExport = @(
     'Get-AGMApplicationWorkflow',
     'Get-AGMApplicationWorkflowStatus',
     'Get-AGMAudit',
+    'Get-AGMCloudVM',
     'Get-AGMConsistencyGroup',
     'Get-AGMCredential',
     'Get-AGMDiskPool',
     'Get-AGMEvent',
     'Get-AGMHost',
     'Get-AGMImage',
+    'Get-AGMImageCount',
     'Get-AGMImageSystemStateOptions',
     'Get-AGMJob',
     'Get-AGMJobHistory',
@@ -192,7 +194,7 @@ PrivateData = @{
         # ReleaseNotes of this module
         ReleaseNotes = '
         ## [0.0.0.26] 2021-08-24
-        Added Remove-AGMCredential, New-AGMCredential, Set-AGMCredential 
+        Added Remove-AGMCredential, New-AGMCredential, Set-AGMCredential, Get-AGMImageCount, New-AGMCloudVM, Get-AGMCloudVM
         Updated Get-AGMCredential to allow individual credential to be selected
 
         ## [0.0.0.25] 2021-07-14

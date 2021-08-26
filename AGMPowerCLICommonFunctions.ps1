@@ -1,4 +1,4 @@
-Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,[int]$timeout,[string]$endpoint,[string]$extrarequests,[switch][alias("o")]$options,[switch]$itemoverride,[switch]$duration,[string]$datefields,[int]$limit,[string]$sort)
+Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,[int]$timeout,[string]$endpoint,[string]$extrarequests,[switch][alias("h")]$head,[switch][alias("o")]$options,[switch]$itemoverride,[switch]$duration,[string]$datefields,[int]$limit,[string]$sort)
 {
     <#  
     .SYNOPSIS
@@ -248,11 +248,22 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             # write-host "we are going to use this method: $method     with this url: $url"
             if ($IGNOREAGMCERTS)
             {
-                $resp = Invoke-RestMethod -SkipCertificateCheck -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                if ($head)
+                {
+                    $resp = Invoke-WebRequest -SkipCertificateCheck -Method "head" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                } else {
+                    $resp = Invoke-RestMethod -SkipCertificateCheck -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                }   
+                
             }
             else
             {
-                $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                if ($head)
+                {
+                    $resp = Invoke-WebRequest -Method "head" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                } else {
+                    $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                }
             }
         }
             Catch
