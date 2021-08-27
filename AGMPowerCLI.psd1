@@ -196,6 +196,7 @@ PrivateData = @{
         ## [0.0.0.26] 2021-08-24
         Added Remove-AGMCredential, New-AGMCredential, Set-AGMCredential, Get-AGMImageCount, New-AGMCloudVM, Get-AGMCloudVM
         Updated Get-AGMCredential to allow individual credential to be selected
+        Updated Convert-FromUnixDate to handle empty fields 
 
         ## [0.0.0.25] 2021-07-14
         Teach Set-AGMSLA how to work with logical groups

@@ -694,20 +694,18 @@ Function Convert-FromUnixDate ($UnixDate)
 
     Convert 1594697896759000 to ISO8601 readable date format
     #>
-    if (!($UnixDate))
+    $length = $UnixDate | measure-object -character | Select-Object -expandproperty characters
+    if ($length -eq 16)
     {
-        $UnixDate = Read-Host "Unix date"
+        if ($AGMTimezone -eq "local")
+        {
+            [timezone]::CurrentTimeZone.ToLocalTime(([datetime]'1/1/1970').AddSeconds($UnixDate.ToString().SubString(0,10))).ToLocalTime().ToString('yyyy-MM-dd HH:mm:ss')
+        }
+        if ($AGMTimezone -eq "utc") 
+        {
+            [timezone]::CurrentTimeZone.ToLocalTime(([datetime]'1/1/1970').AddSeconds($UnixDate.ToString().SubString(0,10))).ToUniversalTime().ToString('yyyy-MM-dd HH:mm:ss')
+        }
     }
-
-    if ($AGMTimezone -eq "local")
-    {
-        [timezone]::CurrentTimeZone.ToLocalTime(([datetime]'1/1/1970').AddSeconds($UnixDate.ToString().SubString(0,10))).ToLocalTime().ToString('yyyy-MM-dd HH:mm:ss')
-    }
-    if ($AGMTimezone -eq "utc") 
-    {
-        [timezone]::CurrentTimeZone.ToLocalTime(([datetime]'1/1/1970').AddSeconds($UnixDate.ToString().SubString(0,10))).ToUniversalTime().ToString('yyyy-MM-dd HH:mm:ss')
-    }
-   
 }
 
 Function Convert-ToUnixDate ([datetime]$InputEpoch) 
