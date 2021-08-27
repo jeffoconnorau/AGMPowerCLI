@@ -498,19 +498,20 @@ Function Get-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string
     if ($id) { $credentialid = $id }
     if (!($credentialid))
     {
-        [string]$credentialid = Read-Host "Credential ID"
+        [string]$credentialid = Read-Host "credentialid"
     }
     
     if ($applianceid) { [string]$clusterid = $applianceid}
 
     if (!($clusterid))
     {
-        $clusterid = Read-Host "Cluster ID"
+        $clusterid = Read-Host "clusterid"
     }
     if (!($projectid))
     {
-        [string]$projectid = Read-Host "Project ID"
+        [string]$projectid = Read-Host "projectid"
     }   
+
 
     #if user doesn't specify name and zone, then learn them
     $credentialgrab = Get-AGMCredential -credentialid $credentialid
@@ -519,16 +520,13 @@ Function Get-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string
         Get-AGMErrorMessage -messagetoprint "The credential ID $credentialid could not be found."
         return
     } else {
-        if (!($zone))
+        if ($zone -eq "")
         {
             $zone = $credentialgrab.region
         }
     }
 
-    if (!($zone))
-    {
-        [string]$zone = Read-Host "Zone Name"
-    } 
+
     if ($filter)
     {
         if ($filter -ne "New" -and $filter -ne "Ignored" -and $filter -ne "Managed" -and $filter -ne "Unmanaged" )
