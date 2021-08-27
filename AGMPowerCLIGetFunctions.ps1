@@ -471,7 +471,85 @@ function Get-AGMAudit ([string]$filtervalue,[switch][alias("o")]$options,[string
     }
 }
 
+Function Get-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string]$clusterid,[string]$applianceid,[string]$projectid,[string]$limit,[string]$filter) 
+{
+    <#
+    .SYNOPSIS
+    Displays Cloud VMs
 
+    .EXAMPLE
+    Get-AGMCloudVM -credentialid 1234 -zone australia-southeast1-c -applianceid 144292692833
+
+    Because no filter was supplied only New VMs will be display.
+
+    .EXAMPLE
+    Get-AGMCloudVM -credentialid 1234 -zone australia-southeast1-c -applianceid 144292692833 -filter Managed
+
+    Shows all VMs from the specified zone and credential on appliance ID 144292692833 that are managed
+
+    .DESCRIPTION
+    A function to find Cloud VMs
+
+    Filter:   Defaults to New.  Can be New, Ignored, Managed or Unmanaged
+    Limit:    Defaults to 50.
+
+    #>
+
+    if ($id) { $credentialid = $id }
+    if (!($credentialid))
+    {
+        [string]$credentialid = Read-Host "credentialid"
+    }
+    
+    if ($applianceid) { [string]$clusterid = $applianceid}
+
+    if (!($clusterid))
+    {
+        $clusterid = Read-Host "clusterid"
+    }
+    if (!($projectid))
+    {
+        [string]$projectid = Read-Host "projectid"
+    }   
+
+
+    #if user doesn't specify name and zone, then learn them
+    $credentialgrab = Get-AGMCredential -credentialid $credentialid
+    if (!($credentialgrab.id))
+    {
+        Get-AGMErrorMessage -messagetoprint "The credential ID $credentialid could not be found."
+        return
+    } else {
+        if ($zone -eq "")
+        {
+            $zone = $credentialgrab.region
+        }
+    }
+
+
+    if ($filter)
+    {
+        if ($filter -ne "New" -and $filter -ne "Ignored" -and $filter -ne "Managed" -and $filter -ne "Unmanaged" )
+        {
+            Get-AGMErrorMessage -messagetoprint "The Filter $filter is not valid.  Use either New, Ignored, Managed or Unmanaged"
+            return
+        }
+    }
+
+    if (!($limit)) { $limit = 50 }
+    if (!($filter)) { $filter = "New"}
+
+    $cluster = @{ clusterid = $clusterid}
+    $body = [ordered]@{}
+    $body += @{ cluster = $cluster;
+    region = $zone;
+    project = $projectid;
+    actifioroles = @($filter)
+    }
+    $json = $body | ConvertTo-Json
+
+    Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/vm -body $json -limit $limit
+}
 
 # Consistency group
 
@@ -551,7 +629,7 @@ function Get-AGMConsistencyGroup ([string]$id,[string]$filtervalue,[switch][alia
 }
 
 # cloud credentials
-function Get-AGMCredential 
+function Get-AGMCredential ([string]$id,[string]$credentialid)
 {
 <#
     .SYNOPSIS
@@ -566,7 +644,13 @@ function Get-AGMCredential
     
     #>
 
-     Get-AGMAPIData -endpoint /cloudcredential        
+    if ($credentialid) { $id = $credentialid}
+    if ($id)
+    {
+        Get-AGMAPIData -endpoint /cloudcredential/$id
+    } else {
+        Get-AGMAPIData -endpoint /cloudcredential  
+    }      
 }
 
 
@@ -879,6 +963,48 @@ function Get-AGMImage ([string]$id,[string]$imageid,[string]$filtervalue,[string
         Get-AGMAPIData -endpoint /backup -datefields $datefields -limit $limit -sort $sort
     }
 }
+
+function Get-AGMImageCount ([string]$filtervalue,[string]$keyword)
+{
+<#
+    .SYNOPSIS
+    Gets a count of images.  
+
+    .EXAMPLE
+    Get-AGMImageCount
+    Will count all images.  
+
+    .EXAMPLE
+    Get-AGMImage -filtervalue "id>1234&name~sky"
+    Count all images with id greater than 1234 and a name like sky.   
+
+
+    .DESCRIPTION
+    A function to count all images known to AGM.  
+    Multiple filtervalues need to be encased in double quotes and separated by the & symbol
+    Jobclasses are case sensitive, so please use correct syntax:   snapshot, OnVault
+    Filtervalues can be =, <, >, ~ (fuzzy) or ! (not)
+    
+    #>
+
+    if ($filtervalue)
+    {
+        $count = Get-AGMAPIData -endpoint /backup -filtervalue $filtervalue -head
+    }
+    elseif ($keyword)
+    { 
+        $count = Get-AGMAPIData -endpoint /backup -keyword $keyword -head
+    } 
+    else
+    {
+        $count = Get-AGMAPIData -endpoint /backup -head
+    }
+    if ($count.headers."Actifio-Count")
+    {
+        $count.headers."Actifio-Count"
+    }
+}
+
 
 function Get-AGMImageSystemStateOptions ([string]$imageid,[string]$id,[string]$target)
 {

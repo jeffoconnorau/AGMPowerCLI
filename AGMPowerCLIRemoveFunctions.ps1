@@ -22,6 +22,52 @@ function Remove-AGMApplication ([Parameter(Mandatory=$true)][string]$appid)
     Post-AGMAPIData -endpoint /application/$appid -method delete
 }
 
+
+function Remove-AGMCredential([string]$credentialid,[string]$id,[string]$applianceid,[string]$clusterid)
+{
+    <#
+    .SYNOPSIS
+    Deletes a nominated Cloud Credential
+
+    .EXAMPLE
+    Remove-AGMCredential -id 12345 clusterid 5678
+    Deletes credential ID 12345 from clusterid ID 5678
+
+
+    .DESCRIPTION
+    A function to delete cloud credentials
+
+    #>
+
+    if ($credentialid) { $id = $credentialid}
+    if ($applianceid) { $clusterid = $applianceid}
+    if (!($id))
+    {
+        $id = Read-Host "Credential ID"
+    }
+    if (!($clusterid))
+    {
+        $clusterid = Read-Host "Cluster IDs (comma separated)"
+    }
+    # add each cluster ID to sources
+    $sources = @(
+        foreach ($cluster in $clusterid.Split(","))
+        {
+        @{
+            clusterid = $cluster
+        }
+    }
+    )
+    # create source body and convert to JSON
+    $body = @{ sources = $sources }
+    $json = $body | ConvertTo-Json
+    
+    Post-AGMAPIData -endpoint /cloudcredential/$id -method delete -body $json
+}
+
+
+
+
 function Remove-AGMHost ([string]$id,[string]$clusterid)
 {
     <#

@@ -1,4 +1,4 @@
-Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,[int]$timeout,[string]$endpoint,[string]$extrarequests,[switch][alias("o")]$options,[switch]$itemoverride,[switch]$duration,[string]$datefields,[int]$limit,[string]$sort)
+Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,[int]$timeout,[string]$endpoint,[string]$extrarequests,[switch][alias("h")]$head,[switch][alias("o")]$options,[switch]$itemoverride,[switch]$duration,[string]$datefields,[int]$limit,[string]$sort)
 {
     <#  
     .SYNOPSIS
@@ -248,11 +248,22 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             # write-host "we are going to use this method: $method     with this url: $url"
             if ($IGNOREAGMCERTS)
             {
-                $resp = Invoke-RestMethod -SkipCertificateCheck -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                if ($head)
+                {
+                    $resp = Invoke-WebRequest -SkipCertificateCheck -Method "head" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                } else {
+                    $resp = Invoke-RestMethod -SkipCertificateCheck -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                }   
+                
             }
             else
             {
-                $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                if ($head)
+                {
+                    $resp = Invoke-WebRequest -Method "head" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                } else {
+                    $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                }
             }
         }
             Catch
@@ -683,20 +694,18 @@ Function Convert-FromUnixDate ($UnixDate)
 
     Convert 1594697896759000 to ISO8601 readable date format
     #>
-    if (!($UnixDate))
+    $length = $UnixDate | measure-object -character | Select-Object -expandproperty characters
+    if ($length -eq 16)
     {
-        $UnixDate = Read-Host "Unix date"
+        if ($AGMTimezone -eq "local")
+        {
+            [timezone]::CurrentTimeZone.ToLocalTime(([datetime]'1/1/1970').AddSeconds($UnixDate.ToString().SubString(0,10))).ToLocalTime().ToString('yyyy-MM-dd HH:mm:ss')
+        }
+        if ($AGMTimezone -eq "utc") 
+        {
+            [timezone]::CurrentTimeZone.ToLocalTime(([datetime]'1/1/1970').AddSeconds($UnixDate.ToString().SubString(0,10))).ToUniversalTime().ToString('yyyy-MM-dd HH:mm:ss')
+        }
     }
-
-    if ($AGMTimezone -eq "local")
-    {
-        [timezone]::CurrentTimeZone.ToLocalTime(([datetime]'1/1/1970').AddSeconds($UnixDate.ToString().SubString(0,10))).ToLocalTime().ToString('yyyy-MM-dd HH:mm:ss')
-    }
-    if ($AGMTimezone -eq "utc") 
-    {
-        [timezone]::CurrentTimeZone.ToLocalTime(([datetime]'1/1/1970').AddSeconds($UnixDate.ToString().SubString(0,10))).ToUniversalTime().ToString('yyyy-MM-dd HH:mm:ss')
-    }
-   
 }
 
 Function Convert-ToUnixDate ([datetime]$InputEpoch) 

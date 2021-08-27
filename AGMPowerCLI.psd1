@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.25'
+ModuleVersion = '0.0.0.26'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -95,12 +95,14 @@ FunctionsToExport = @(
     'Get-AGMApplicationWorkflow',
     'Get-AGMApplicationWorkflowStatus',
     'Get-AGMAudit',
+    'Get-AGMCloudVM',
     'Get-AGMConsistencyGroup',
     'Get-AGMCredential',
     'Get-AGMDiskPool',
     'Get-AGMEvent',
     'Get-AGMHost',
     'Get-AGMImage',
+    'Get-AGMImageCount',
     'Get-AGMImageSystemStateOptions',
     'Get-AGMJob',
     'Get-AGMJobHistory',
@@ -124,11 +126,13 @@ FunctionsToExport = @(
     'Get-AGMWorkflow',
     'Import-AGMOnVault',
     'New-AGMAppDiscovery',
+    'New-AGMCloudVM',
     'New-AGMMount',
     'New-AGMOrg',
     'New-AGMRole',
     'New-AGMSLA',
     'Save-AGMPassword',
+    'Set-AGMCredential',
     'Set-AGMAPILimit',
     'Set-AGMImage',
     'Set-AGMTimeZoneHandling',
@@ -137,6 +141,7 @@ FunctionsToExport = @(
     'Set-AGMOrgLogicalGroup',
     'Set-AGMSLA',
     'Remove-AGMApplication',
+    'Remove-AGMCredential',
     'Remove-AGMHost',
     'Remove-AGMImage',
     'Remove-AGMJob',
@@ -188,7 +193,12 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
-        ## [0.0.0.25] 2021-07-114
+        ## [0.0.0.26] 2021-08-24
+        Added Remove-AGMCredential, New-AGMCredential, Set-AGMCredential, Get-AGMImageCount, New-AGMCloudVM, Get-AGMCloudVM
+        Updated Get-AGMCredential to allow individual credential to be selected
+        Updated Convert-FromUnixDate to handle empty fields 
+
+        ## [0.0.0.25] 2021-07-14
         Teach Set-AGMSLA how to work with logical groups
         Fix issue with Get-AGMLogicalGroupMember where groups with more than 1 member get no output
         Teach the Get functions to allow both ID and say slaid for SLAs, or appid for apps.

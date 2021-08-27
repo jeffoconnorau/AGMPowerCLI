@@ -55,6 +55,161 @@ Function New-AGMAppDiscovery ([string]$hostid,[string]$ipaddress,[string]$applia
     Post-AGMAPIData  -endpoint /host/discover -body $jsonbody
 }
 
+Function New-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string]$clusterid,[string]$applianceid,[string]$projectid,[string]$instanceid) 
+{
+    <#
+    .SYNOPSIS
+    Adds new Cloud VMs
+
+    .EXAMPLE
+    New-AGMCloudVM -credentialid 1234 -zone australia-southeast1-c -applianceid 144292692833 -instanceid 4240202854121875692
+
+    Adds VM with ID 4240202854121875692 to specified appliance 
+
+    .DESCRIPTION
+    A function to add Cloud VMs
+    Multiple vmids should be comma separated
+
+    #>
+
+    if ($id) { $credentialid = $id }
+    if (!($credentialid))
+    {
+        [string]$credentialid = Read-Host "Credential ID"
+    }
+    
+    if ($applianceid) { [string]$clusterid = $applianceid}
+
+    if (!($clusterid))
+    {
+        $clusterid = Read-Host "Cluster ID"
+    }
+    if (!($projectid))
+    {
+        [string]$projectid = Read-Host "Project ID"
+    }   
+
+    #if user doesn't specify name and zone, then learn them
+    $credentialgrab = Get-AGMCredential -credentialid $credentialid
+    if (!($credentialgrab.id))
+    {
+        Get-AGMErrorMessage -messagetoprint "The credential ID $credentialid could not be found."
+        return
+    } else {
+        if (!($zone))
+        {
+            $zone = $credentialgrab.region
+        }
+    }
+
+    if (!($zone))
+    {
+        [string]$zone = Read-Host "Zone Name"
+    } 
+    if (!($instanceid))
+    {
+        [string]$instanceid = Read-Host "Instance IDs (Comma separated)"
+    } 
+
+    $cluster = @{ clusterid = $clusterid}
+    $body = [ordered]@{}
+    $body += @{ cluster = $cluster;
+    region = $zone;
+    listonly = $false;
+    vmids = $($instanceid.Split(","))
+    project = $projectid;
+    }
+    $json = $body | ConvertTo-Json
+    
+    Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/addvm -body $json -limit $limit
+}
+
+Function New-AGMCredential ([string]$name,[string]$zone,[string]$clusterid,[string]$applianceid,$filename,[string]$projectid) 
+{
+    <#
+    .SYNOPSIS
+    Creates a cloud credential
+
+    .EXAMPLE
+    New-AGMCredential -name cred1 -zone australia-southeast1-c -clusterid 144292692833 -filename keyfile.json
+    
+
+    .DESCRIPTION
+    A function to create cloud credentials
+
+    #>
+
+    if (!($name))
+    {
+        [string]$name = Read-Host "Credential Name"
+    }
+    if (!($zone))
+    {
+        [string]$zone = Read-Host "Default zone"
+    }
+    if ($applianceid) { [string]$clusterid = $applianceid}
+    if (!($clusterid))
+    {
+        [string]$clusterid = Read-Host "Cluster IDs (comma separated)"
+    }
+    if (!($filename))
+    {
+        $filename = Read-Host "JSON key file"
+    }
+    if ( Test-Path $filename )
+    {
+        $jsonkey = Get-Content -Path $filename -raw
+        $jsonkey = $jsonkey.replace("\n","\\n")
+        $jsonkey = $jsonkey.replace("`n","\n ")
+        $jsonkey = $jsonkey.replace('"','\"')
+    }
+    else
+    {
+        Get-AGMErrorMessage -messagetoprint "The file named $filename could not be found."
+        return
+    }
+
+    if (!($projectid))
+    {
+        $jsongrab = Get-Content -Path $filename | ConvertFrom-Json
+        if (!($jsongrab.project_id))
+        {
+            Get-AGMErrorMessage -messagetoprint "The file named $filename does not contain a valid project ID."
+            return
+        } else {
+            $projectid = $jsongrab.project_id
+        }
+    }   
+
+    $sources = ""
+    foreach ($cluster in $clusterid.Split(","))
+    {
+        $sources = $sources +',{"clusterid":"' +$cluster +'"}'
+    }
+    $sources = $sources.substring(1)
+
+    $json = '{"name":"' +$name +'","cloudtype":"GCP","region":"' +$zone +'","endpoint":"","credential":"'
+    $json = $json + $jsonkey
+    $json = $json +'","orglist":[],"projectid":"' +$projectid +'",'
+    $json = $json +'"sources":[' +$sources +']}'
+
+    $testcredential = Post-AGMAPIData  -endpoint /cloudcredential/testconnection -body $json
+    if ($testcredential.errors)
+    {
+        $testcredential
+        return
+    }
+
+    $json = '{"name":"' +$name +'","cloudtype":"GCP","region":"' +$zone +'","endpoint":"","credential":"'
+    $json = $json + $jsonkey
+    $json = $json +'","orglist":[],'
+    $json = $json +'"sources":[' +$sources +']}'
+
+    Post-AGMAPIData  -endpoint /cloudcredential -body $json
+}
+
+
+
 Function New-AGMMount ([string]$imageid,[string]$targethostid,[string]$jsonbody,[string]$label) 
 {
     <#
