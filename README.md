@@ -630,6 +630,15 @@ err_code err_message
    10023 Create cloud credential failed on appliance avwlab2sky error code 10006 message Unique cloud credential name required: test,Create cloud credential failed on appliance londonsky.c.avwlab2.internal error code 10006 message U…
 ```
 
+#### Updating an existing cloud credential
+
+The most common reason for doing this is to update the JSON key.  Use syntax like this where we specify the credential ID and the filename of the JSON file.
+```
+Set-AGMCredential -credentialid 1234 -filename keyfile.json
+```
+You can also use this command to update the default zone or the credential name as well.   However zone, name and clusterid are not mandatory and only need to be supplied if you are changing them.   The clusterid parameter would determine which appliances get updated, by default all relevant appliances are updated.   You can learn the credential ID with **Get-AGMCredential** and the clusterid will be in the sources field of the same output.   
+
+
 ## User Story: Adding GCP Instances
 
 #### Listing new GCP VMs. Use this syntax:
