@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.26'
+ModuleVersion = '0.0.0.27'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -127,6 +127,7 @@ FunctionsToExport = @(
     'Import-AGMOnVault',
     'New-AGMAppDiscovery',
     'New-AGMCloudVM',
+    'New-AGMCredential',
     'New-AGMMount',
     'New-AGMOrg',
     'New-AGMRole',
@@ -193,6 +194,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.27] 2021-09-08
+        New-AGMCredential was missed from the PSD1 file.   Corrected this
+
         ## [0.0.0.26] 2021-08-24
         Added Remove-AGMCredential, New-AGMCredential, Set-AGMCredential, Get-AGMImageCount, New-AGMCloudVM, Get-AGMCloudVM
         Updated Get-AGMCredential to allow individual credential to be selected
