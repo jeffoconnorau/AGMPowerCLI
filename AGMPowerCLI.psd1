@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.27'
+ModuleVersion = '0.0.0.28'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -87,6 +87,7 @@ FunctionsToExport = @(
     'Get-AGMAPILimit',
     'Get-AGMAppliance',
     'Get-AGMApplication',
+    'Get-AGMApplicationCount',
     'Get-AGMApplicationActiveImage',
     'Get-AGMApplicationAppClass',
     'Get-AGMApplicationInstanceMember',
@@ -194,6 +195,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.28] 2021-09-12
+        Added Get-AGMApplicationCount
+        Told Get-AGMSLA to stop allowing -o, as this endpoint cannot be queried for filterable fields
+
         ## [0.0.0.27] 2021-09-08
         New-AGMCredential was missed from the PSD1 file.   Corrected this
 

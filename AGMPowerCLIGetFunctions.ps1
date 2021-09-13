@@ -253,6 +253,48 @@ function Get-AGMApplicationAppClass ([Parameter(Mandatory=$true)][string]$id,[st
     }
 }
 
+function Get-AGMApplicationCount ([string]$filtervalue,[string]$keyword)
+{
+<#
+    .SYNOPSIS
+    Gets a count of Applications.  
+
+    .EXAMPLE
+    Get-AGMImageCount
+    Will count all Applications.  
+
+    .EXAMPLE
+    et-AGMApplicationCount -filtervalue "apptype=VMbackup"
+    Count all applications that are type VMBackup 
+
+
+    .DESCRIPTION
+    A function to count all Applications known to AGM.  
+    Multiple filtervalues need to be encased in double quotes and separated by the & symbol
+    Jobclasses are case sensitive, so please use correct syntax:   snapshot, OnVault
+    Filtervalues can be =, <, >, ~ (fuzzy) or ! (not)
+    
+    #>
+
+    if ($filtervalue)
+    {
+        $count = Get-AGMAPIData -endpoint /application -filtervalue $filtervalue -head
+    }
+    elseif ($keyword)
+    { 
+        $count = Get-AGMAPIData -endpoint /application -keyword $keyword -head
+    } 
+    else
+    {
+        $count = Get-AGMAPIData -endpoint /application -head
+    }
+    if ($count.headers."Actifio-Count")
+    {
+        $count.headers."Actifio-Count"
+    }
+}
+
+
 function Get-AGMApplicationInstanceMember ([Parameter(Mandatory=$true)][string]$id,[int]$limit,[string]$sort)
 {
 <#
@@ -975,7 +1017,7 @@ function Get-AGMImageCount ([string]$filtervalue,[string]$keyword)
     Will count all images.  
 
     .EXAMPLE
-    Get-AGMImage -filtervalue "id>1234&name~sky"
+    Get-AGMImageCount -filtervalue "id>1234&name~sky"
     Count all images with id greater than 1234 and a name like sky.   
 
 
@@ -1675,7 +1717,7 @@ function Get-AGMSession  ([String]$sessionid)
 
 #sla
 
-function Get-AGMSLA ([string]$id,[string]$slaid,[string]$filtervalue,[switch][alias("o")]$options,[int]$limit,[string]$sort)
+function Get-AGMSLA ([string]$id,[string]$slaid,[string]$filtervalue,[int]$limit,[string]$sort)
 {
  <#
     .SYNOPSIS
@@ -1688,10 +1730,6 @@ function Get-AGMSLA ([string]$id,[string]$slaid,[string]$filtervalue,[switch][al
     .EXAMPLE
     Get-AGMSLA -limit 2
     Will display a maximum of two objects 
-
-    .EXAMPLE
-    Get-AGMSLA -o
-    To display all fields that can be filtered with filtervalue
 
     .EXAMPLE
     Get-AGMSLA -filtervalue id=1234
@@ -1719,7 +1757,6 @@ function Get-AGMSLA ([string]$id,[string]$slaid,[string]$filtervalue,[switch][al
     #>
 
 
-
     $datefields = "modifydate,syncdate"
     # if user doesn't ask for a limit, send 0 so we know to ignore it
     if (!($limit))
@@ -1731,11 +1768,7 @@ function Get-AGMSLA ([string]$id,[string]$slaid,[string]$filtervalue,[switch][al
         $sort = ""
     }
     if ($slaid)  { $id = $slaid }
-    if ($options)
-    { 
-        Get-AGMAPIData -endpoint /sla -o
-    }
-    elseif ($id)
+    if ($id)
     { 
         Get-AGMAPIData -endpoint /sla/$id -datefields $datefields
     }
