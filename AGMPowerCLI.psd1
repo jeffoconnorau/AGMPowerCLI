@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.28'
+ModuleVersion = '0.0.0.29'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -195,6 +195,12 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.29] 2021-09-13
+        Allow silent install
+        Teach Remove-AGMImage to use force=false 
+        Teach Set-AGMImage to change expiration
+        Teach Get-AGMImage and Set-AGMImage and Remove-AGMImage to work with both imagename and backupname
+
         ## [0.0.0.28] 2021-09-12
         Added Get-AGMApplicationCount
         Told Get-AGMSLA to stop allowing -o, as this endpoint cannot be queried for filterable fields

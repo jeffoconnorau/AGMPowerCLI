@@ -120,7 +120,7 @@ function Remove-AGMHost ([string]$id,[string]$clusterid)
 }
 
 
-function Remove-AGMImage ([string]$imagename)
+function Remove-AGMImage ([string]$imagename,[string]$backupname)
 {
     <#
     .SYNOPSIS
@@ -140,6 +140,7 @@ function Remove-AGMImage ([string]$imagename)
 
     #>
 
+    if ($backupname) { $imagename = $backupname }
     if (!($imagename)) 
     {
         $imagename = Read-Host "ImageName"
@@ -154,7 +155,7 @@ function Remove-AGMImage ([string]$imagename)
         Get-AGMErrorMessage -messagetoprint "Failed to find $imagename"
         return
     }
-    Post-AGMAPIData -endpoint /backup/$id/expire 
+    Post-AGMAPIData -endpoint /backup/$id/expire?force=false 
 }
 
 Function Remove-AGMMigrate ([string]$imageid) 

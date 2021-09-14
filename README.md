@@ -124,6 +124,17 @@ PS C:\Users\av>
 
 Now jump over to https://github.com/Actifio/AGMPowerLib and install AGMPowerLib.
 
+##### Silent Manul install
+
+You can run the installer silently by adding **-silentinstall** to the Install command.  Here is an example:
+```
+PS /Users/avw> ./AGMPowerCLI/Install-AGMPowerCLI.ps1 -silentinstall
+Detected PowerShell version:    7
+Downloaded AGMPowerCLI version: 0.0.0.29
+Found AGMPowerCLI version:      0.0.0.29
+Installed AGMPowerCLI version:  0.0.0.29
+PS /Users/avw>
+```
 
 ### 2)  Get some help
 
@@ -704,8 +715,75 @@ serviceaccount : avw-gcsops@glabco.iam.gserviceaccount.com
 ```
 
 
+## User Story: Bulk expiration
 
+You may have a requirement to expire large numbers of images at one time.   One way to approach this is to use the Remove-AGMImage command in a loop. However this may fail as shown in the example below.  The issue is that the first expiration job is still running while you attempt to execute the following jobs, which causes a collission:
+```
+PS /Users/avw> $images = Get-AGMImage -filtervalue appid=35590 | select backupname
+PS /Users/avw> $images
 
+backupname
+----------
+Image_0272391
+Image_0270340
+Image_0268295
+Image_0267271
+Image_0266247
+Image_0265223
+Image_0262151
+Image_0259079
+
+PS /Users/avw> foreach ($image in $images)
+>> {
+>> remove-agmimage -imagename $image.backupname
+>> }
+
+err_code err_message
+-------- -----------
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+
+```
+There are two solutions for this.   Either insert a sleep in between each Remove-AGMImage command, or preferably use the method below, where we set the image expiration date instead:
+
+First we learn the expiration dates
+```
+PS /Users/avw> $images = Get-AGMImage -filtervalue appid=35590 | select backupname,expiration
+PS /Users/avw> $images
+
+backupname    expiration
+----------    ----------
+Image_0267271 2021-09-18 19:02:27
+Image_0266247 2021-09-17 11:03:09
+Image_0265223 2021-09-16 10:07:43
+```
+We then change them all to the previous date and confirm they changed:
+```
+PS /Users/avw> foreach ($image in $images) { Set-AGMImage -imagename $image.backupname -expiration "2021-09-14" }
+
+xml                            backupRest
+---                            ----------
+version="1.0" encoding="UTF-8" backupRest
+version="1.0" encoding="UTF-8" backupRest
+version="1.0" encoding="UTF-8" backupRest
+
+PS /Users/avw> $images = Get-AGMImage -filtervalue appid=35590 | select backupname,expiration
+PS /Users/avw> $images
+
+backupname    expiration
+----------    ----------
+Image_0267271 2021-09-14 00:00:00
+Image_0266247 2021-09-14 00:00:00
+Image_0265223 2021-09-14 00:00:00
+
+PS /Users/avw>
+```
+The images will expire over the next hour.
 
 
 

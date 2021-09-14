@@ -929,7 +929,7 @@ function Get-AGMHost ([string]$id,[string]$hostid,[string]$filtervalue,[string]$
 
 #Image (backup) 
 
-function Get-AGMImage ([string]$id,[string]$imageid,[string]$filtervalue,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
+function Get-AGMImage ([string]$id,[string]$imageid,[string]$filtervalue,[string]$imagename,[string]$backupname,[string]$keyword,[switch][alias("o")]$options,[int]$limit,[string]$sort)
 {
 <#
     .SYNOPSIS
@@ -962,6 +962,10 @@ function Get-AGMImage ([string]$id,[string]$imageid,[string]$filtervalue,[string
     .EXAMPLE
     Get-AGMImage -sort "id:desc,name:asc"
     Displays all objects sorting on ID descending and name ascending. 
+    
+    .EXAMPLE
+    Get-AGMImage -imagename Image_0267271
+    Displays the image with backupname(imagename) Image_0267271
 
     .DESCRIPTION
     A function to display all images known to AGM.  The returned list can be huge.   Always use limits or filters.
@@ -983,6 +987,9 @@ function Get-AGMImage ([string]$id,[string]$imageid,[string]$filtervalue,[string
         $sort = ""
     }
     #$datefields = ""
+    if ($backupname) { $imagename = $backupname }
+    if (($imagename) -and ($filtervalue)) { $filtervalue = $filtervalue + "&backupname=" +$imagename}
+    if (($imagename) -and (!($filtervalue))) { $filtervalue = "backupname=$imagename" }
     if ($imageid) { $id = $imageid}
     if ($options)
     { 

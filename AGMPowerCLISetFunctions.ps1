@@ -109,26 +109,38 @@ Function Set-AGMCredential ([string]$name,[string]$zone,[string]$id,[string]$cre
 }
 
 
-function Set-AGMImage([string]$imagename,[string]$imageid,[string]$label)
+function Set-AGMImage([string]$imagename,[string]$backupname,[string]$imageid,[string]$label,[string]$expiration)
 {
     <#
     .SYNOPSIS
-    Labels a nominated image
-
-    .EXAMPLE
-    Set-AGMImage
-    You will be prompted for image Name 
+    Changes a nominated image
 
     .EXAMPLE
     Set-AGMImage -imagename Image_2133445 -label "testimage"
     Labels Image_2133445 with the label "testimage"
 
+    .EXAMPLE
+    Set-AGMImage -imagename Image_2133445 -expiration "2021-09-01"
+    Sets the expiration date for Image_2133445 to 2021-09-01
+
     .DESCRIPTION
-    A function to label images  
+    A function to change images.
 
     #>
 
+    if ((!($label)) -and (!($expiration)))
+    {
+        Get-AGMErrorMessage -messagetoprint "Please specify either a new label with -label, or a new expiration date with -expiration"
+        return
+    }
 
+    if (($label) -and ($expiration))
+    {
+        Get-AGMErrorMessage -messagetoprint "Please specify either a new label with -label, or a new expiration date with -expiration.   Please don't specify both."
+        return
+    }
+
+    if ($backupname) { $imagename = $backupname }
     if ((!($imagename)) -and (!($imageid)))
     {
         $imagename = Read-Host "ImageName"
@@ -152,15 +164,16 @@ function Set-AGMImage([string]$imagename,[string]$imageid,[string]$label)
         }
     }
 
-    if (!($label))
-    {
-        $label = Read-Host "Label"
+    if ($label)  
+    { 
+        $body = @{label=$label} 
+        $json = $body | ConvertTo-Json
     }
-
-
-    $body = @{label=$label}
-    $json = $body | ConvertTo-Json
-
+    if ($expiration)  
+    {
+        $unixexpiration = Convert-ToUnixDate $expiration
+        $json = '{"@type":"backupRest","expiration":' +$unixexpiration + '}'
+    }
     Put-AGMAPIData  -endpoint /backup/$id -body $json
 }
 
