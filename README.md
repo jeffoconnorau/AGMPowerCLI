@@ -124,7 +124,7 @@ PS C:\Users\av>
 
 Now jump over to https://github.com/Actifio/AGMPowerLib and install AGMPowerLib.
 
-##### Silent Manul install
+##### Silent Manual install
 
 You can run the installer silently by adding **-silentinstall** to the Install command.  Here is an example:
 ```
