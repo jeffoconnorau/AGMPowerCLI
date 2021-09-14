@@ -18,7 +18,7 @@ Our intention is that you should install both modules.
 **[User Story: Managing Protection of a GCP VM](#user-story-managing-protection-of-a-gcp-vm)**<br>
 **[User Story: Managing GCP Cloud Credentials](#user-story-managing-gcp-cloud-credentials)**<br>
 **[User Story: Adding GCP Instances](#user-story-adding-gcp-instances)**<br>
-
+**[User Story: Bulk expiration](#user-story-bulk-expiration)**<br>
 
 ### What versions of PowerShell will this module work with?
 
