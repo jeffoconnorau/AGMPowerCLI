@@ -529,7 +529,7 @@ Function Get-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string
 
     Shows all VMs from the specified zone and credential on appliance ID 144292692833 that are managed
 
-        .EXAMPLE
+    .EXAMPLE
     Get-AGMCloudVM -credentialid 1234 -zone australia-southeast1-c -applianceid 144292692833  -offset 1
 
     Shows 50 VMs from the specified zone and credential on appliance ID 144292692833 that are managed, skipping the first 50 results
