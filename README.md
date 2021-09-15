@@ -124,17 +124,43 @@ PS C:\Users\av>
 
 Now jump over to https://github.com/Actifio/AGMPowerLib and install AGMPowerLib.
 
-##### Silent Manual install
+##### Silent Install
 
-You can run the installer silently by adding **-silentinstall** to the Install command.  Here is an example:
+You can run the installer silently by adding **-silentinstall** to the Install command.  
+If the module is already installed, then the existing module will be replaced by the one you are installing, using the same module path.
+If the module is not installed, then by default it will be installed into path 1
 ```
-PS /Users/avw> ./AGMPowerCLI/Install-AGMPowerCLI.ps1 -silentinstall
-Detected PowerShell version:    7
-Downloaded AGMPowerCLI version: 0.0.0.29
-Found AGMPowerCLI version:      0.0.0.29
-Installed AGMPowerCLI version:  0.0.0.29
-PS /Users/avw>
+PS C:\Windows\system32>  $env:PSModulePath.split(';')
+C:\Users\avw\Documents\WindowsPowerShell\Modules <-- this is 0
+C:\Program Files (x86)\WindowsPowerShell\Modules <-- this is 1
+PS C:\Windows\system32>
 ```
+Or for Unix:
+```
+PS /Users/avw> $env:PSModulePath.Split(':')
+/Users/avw/.local/share/powershell/Modules    <-- this is 0
+/usr/local/share/powershell/Modules           <-- this is 1
+```
+Here is an example of a silent install:
+```
+PS C:\Windows\system32> C:\Users\avw\Downloads\AGMPowerCLI-main\AGMPowerCLI-main\Install-AGMPowerCLI.ps1 -silentinstall 
+Detected PowerShell version:    5
+Downloaded AGMPowerCLI version: 0.0.0.35
+Installed AGMPowerCLI version:  0.0.0.35 in  C:\Program Files (x86)\WindowsPowerShell\Modules\AGMPowerCLI\
+```
+Here is an example of a silent upgrade:
+```
+PS C:\Windows\system32> C:\Users\avw\Downloads\AGMPowerCLI-main\AGMPowerCLI-main\Install-AGMPowerCLI.ps1 -silentinstall 
+Detected PowerShell version:    5
+Downloaded AGMPowerCLI version: 0.0.0.34
+Found AGMPowerCLI version:      0.0.0.34 in  C:\Program Files (x86)\WindowsPowerShell\Modules\AGMPowerCLI
+Installed AGMPowerCLI version:  0.0.0.35 in  C:\Program Files (x86)\WindowsPowerShell\Modules\AGMPowerCLI
+PS C:\Windows\system32>
+```
+
+##### Silent Uninstall
+
+You can uninstall the module silently by adding **-silentuninstall** to the Install command.  
 
 ### 2)  Get some help
 
@@ -186,7 +212,7 @@ Note you can use **-quiet** to suppress messages.   This is handy when scripting
 ### 5)  Run your first command:
 
 ```
-PS /Users/anthony/git/AGMPowerLib> Get-AGMVersion
+PS /Users/anthony/git/> Get-AGMVersion
 
 product summary
 ------- -------

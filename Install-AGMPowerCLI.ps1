@@ -124,8 +124,9 @@ Import-LocalizedData -BaseDirectory $PSScriptRoot\ -FileName AGMPowerCLI.psd1 -B
 
 function silentinstall
 {
-  Write-host 'Detected PowerShell version:   ' $hostVersionInfo
+  Write-host 'Detected PowerShell version:   ' $hostVersionInfo 
   Write-host 'Downloaded AGMPowerCLI version:' $ActModuleData.ModuleVersion
+  $platform=$PSVersionTable.platform
   # if we find an install then we upgrade it
   [Array]$ActInstall = GetAGMPowerCLIInstall
   if ($ActInstall.name.count -gt 1)
@@ -135,16 +136,23 @@ function silentinstall
   if ($ActInstall.name.count -eq 1)
   {
     $InstallPath = $ActInstall.ModuleBase
-    Write-host 'Found AGMPowerCLI version:     ' $ActInstall.Version
+    Write-host 'Found AGMPowerCLI version:     ' $ActInstall.Version 'in ' $InstallPath 
     Remove-Item -Path $InstallPath -Recurse -Force -ErrorAction Stop -Confirm:$false
   }
   else 
   {
     $InstallPathList = GetPSModulePath
-    $InstallPath = $InstallPathList[0]
-    $InstallPath = $InstallPath + '\AGMPowerCLI\'
+    $InstallPath = $InstallPathList[1]
+    if ( $platform -notmatch "Unix" )
+    {
+      $InstallPath = $InstallPath + '\AGMPowerCLI\'
+    }
+    else {
+      $InstallPath = $InstallPath + '/AGMPowerCLI/'
+    }
+    
   }
-  $platform=$PSVersionTable.platform
+  
   if ( $platform -notmatch "Unix" )
   {
   $null = Get-ChildItem -Path $PSScriptRoot\AGMPowerCLI* -Recurse | Unblock-File
@@ -158,7 +166,7 @@ function silentinstall
     Write-Host 'Silent Installation failed.'
   }
   else {
-    Write-Host 'Installed AGMPowerCLI version: ' $ActModuleData.ModuleVersion
+    Write-Host 'Installed AGMPowerCLI version: ' $ActModuleData.ModuleVersion 'in ' $InstallPath 
   }
   exit
 }
@@ -166,6 +174,17 @@ function silentinstall
 if ($args[0] -eq "-silentinstall")
 {
   silentinstall
+}
+
+if ($args[0] -eq "-silentuninstall")
+{
+  [Array]$ActInstall = GetAGMPowerCLIInstall
+  foreach ($Location in ([Array]$ActInstall = GetAGMPowerCLIInstall).ModuleBase)
+        {
+        $InstallPath = $Location
+        Remove-Item -Path $InstallPath -Recurse -Force -ErrorAction Stop -Confirm:$false   
+        }
+      exit
 }
 
 Write-host 'Detected PowerShell version:   ' $hostVersionInfo
