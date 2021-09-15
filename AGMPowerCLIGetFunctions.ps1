@@ -513,7 +513,7 @@ function Get-AGMAudit ([string]$filtervalue,[switch][alias("o")]$options,[string
     }
 }
 
-Function Get-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string]$clusterid,[string]$applianceid,[string]$projectid,[string]$limit,[string]$filter) 
+Function Get-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string]$clusterid,[string]$applianceid,[string]$projectid,[string]$limit,[string]$offset,[string]$filter) 
 {
     <#
     .SYNOPSIS
@@ -529,12 +529,17 @@ Function Get-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string
 
     Shows all VMs from the specified zone and credential on appliance ID 144292692833 that are managed
 
+        .EXAMPLE
+    Get-AGMCloudVM -credentialid 1234 -zone australia-southeast1-c -applianceid 144292692833  -offset 1
+
+    Shows 50 VMs from the specified zone and credential on appliance ID 144292692833 that are managed, skipping the first 50 results
+
     .DESCRIPTION
     A function to find Cloud VMs
 
-    Filter:   Defaults to New.  Can be New, Ignored, Managed or Unmanaged
-    Limit:    Defaults to 50.
-
+    -filter     Defaults to New.  Can be New, Ignored, Managed or Unmanaged
+    -limit      Defaults to 50.   Means only 50 VMs are fetched, starting at offset 0
+    -offset xx  Defaults to 0     Offsets the result based on the limit.  So if limit is 100 and offset is 1, then it will show the next 100 starting at 101.
     #>
 
     if ($id) { $credentialid = $id }
@@ -579,6 +584,7 @@ Function Get-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string
     }
 
     if (!($limit)) { $limit = 50 }
+    if (!($offset)) { $offset = 0 }
     if (!($filter)) { $filter = "New"}
 
     $cluster = @{ clusterid = $clusterid}
@@ -586,11 +592,12 @@ Function Get-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string
     $body += @{ cluster = $cluster;
     region = $zone;
     project = $projectid;
+    offset = $offset;
+    limit =$limit
     actifioroles = @($filter)
     }
     $json = $body | ConvertTo-Json
-
-    Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/vm -body $json -limit $limit
+    Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/vm -body $json 
 }
 
 # Consistency group

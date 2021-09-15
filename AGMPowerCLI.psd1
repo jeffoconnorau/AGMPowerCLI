@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.29'
+ModuleVersion = '0.0.0.30'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -195,6 +195,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.30] 2021-09-15
+        Taught Get-CloudVM to use offset and limit correctly, it was only fetching 10 VMs before this and ignoring the limit
+
         ## [0.0.0.29] 2021-09-13
         Allow silent install
         Teach Remove-AGMImage to use force=false 
