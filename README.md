@@ -821,7 +821,7 @@ Image_0267271 2021-09-18 19:02:27
 Image_0266247 2021-09-17 11:03:09
 Image_0265223 2021-09-16 10:07:43
 ```
-We then change them all to the previous date and confirm they changed:
+We then change them all to a date prior to today and confirm they changed:
 ```
 PS /Users/avw> foreach ($image in $images) { Set-AGMImage -imagename $image.backupname -expiration "2021-09-14" }
 
