@@ -747,9 +747,9 @@ PS /Users/avw>
 
 #### Add new cloud VMs
 
-Learn the instanceid and then use this command (comma separate the insstance IDs):
+Learn the instanceid and then use this command (comma separate the instance IDs):
 ```
-New-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid "avwlab2" -zone "australia-southeast1-c" -instanceid "4240202854121875692,6655459695622225630
+New-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid "avwlab2" -zone "australia-southeast1-c" -instanceid "4240202854121875692,6655459695622225630"
 ```
 
 
