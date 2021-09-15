@@ -711,6 +711,39 @@ vmname      instanceid
 consoletest 4240202854121875692
 agm         6655459695622225630
 ```
+The total number of VMs that were found and the total number fetched will be different.  In this example, 57 VMs can be found, but only 50 were fetched as the limit defaults to 50:
+```
+PS /Users/avw> Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid avwlab2
+
+count items                             totalcount
+----- -----                             ----------
+   50 {@{vm=}, @{vm=}, @{vm=}, @{vm=}…}         57
+```
+By setting the limit to 60 we now fetch all 57 VMs:
+```
+PS /Users/avw> Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid avwlab2 -limit 60
+
+count items                             totalcount
+----- -----                             ----------
+   57 {@{vm=}, @{vm=}, @{vm=}, @{vm=}…}         57
+
+PS /Users/avw>
+```
+
+Or we could fetch the first 50 in one command and then in a second command, set an offset of 1, which will fetch all VMs from 51 onwards (offset it added to limit to denote the starting point).  In this example we fetch the remaining 7 VMs (since the limit is 50):
+```
+PS /Users/avw> Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid avwlab2 -limit 50 -offset 1
+
+count items                             totalcount
+----- -----                             ----------
+    7 {@{vm=}, @{vm=}, @{vm=}, @{vm=}…}         57
+
+PS /Users/avw>
+```
+
+
+
+
 
 #### Add new cloud VMs
 
