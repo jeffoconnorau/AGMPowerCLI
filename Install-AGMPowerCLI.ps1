@@ -109,7 +109,7 @@ function ReportAGMPowerCLI
 }
 
 ### Code
-Clear-Host
+
 
 $hostVersionInfo = (get-host).Version.Major
 if ( $hostVersionInfo -lt "5" )
@@ -186,7 +186,7 @@ if ($args[0] -eq "-silentuninstall")
         }
       exit
 }
-
+Clear-Host
 Write-host 'Detected PowerShell version:   ' $hostVersionInfo
 Write-host 'Downloaded AGMPowerCLI version:' $ActModuleData.ModuleVersion
 Write-host ""
