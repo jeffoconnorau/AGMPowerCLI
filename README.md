@@ -867,7 +867,7 @@ id   name       ipaddress
 --   ----       ---------
 7286 backupsky1 10.194.0.20
 ```
-We can add the Appliance back with this command.  Note we can do a dryrun to make sure the add will work, but you don't need to.
+We can add the Appliance back with this command.  Note we can do a dryrun to make sure the add will work, but you don't need to.  The main thing with a dry run is we need to see an approval token because that is key to actually adding the appliance.  
 ```
 PS /Users/avw> New-AGMAppliance -ipaddress 10.194.0.38 -username admin -password password -dryrun | select-object approvaltoken,cluster,report
 
