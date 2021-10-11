@@ -55,7 +55,7 @@ Function New-AGMAppDiscovery ([string]$hostid,[string]$ipaddress,[string]$applia
     Post-AGMAPIData  -endpoint /host/discover -body $jsonbody
 }
 
-Function New-AGMAppliance ([string]$ipaddress,[string]$username,[string]$password,[switch]$dryrun) 
+Function New-AGMAppliance ([string]$ipaddress,[string]$username,[string]$password,[SecureString]$passwordenc,[switch]$dryrun) 
 {
     <#
     .SYNOPSIS
@@ -74,6 +74,11 @@ Function New-AGMAppliance ([string]$ipaddress,[string]$username,[string]$passwor
     
     .DESCRIPTION
     A function to add Appliances
+    
+    For password handling there are two parameters you can use:
+    -password     This is the Appliance password in plain text
+    -passwordenc  This is the Appliance password as a secure string
+    If you don't use either parameter you will be prompted to enter the password in a secure fashion.
 
     #>
 
@@ -86,11 +91,17 @@ Function New-AGMAppliance ([string]$ipaddress,[string]$username,[string]$passwor
     {
         [string]$username = Read-Host "Appliance username"
     }
-    if (!($password))
+
+    if ((!($password)) -and (!($passwordenc)))
     {
-        [string]$password = Read-Host "Appliance password"
+        # prompt for a password
+        [SecureString]$passwordenc = Read-Host -AsSecureString "Password"
+        [string]$password = (Convertfrom-SecureString $passwordenc -AsPlainText)
     }
-    
+    if ($passwordenc)
+    {
+        [string]$password = (Convertfrom-SecureString $passwordenc -AsPlainText)
+    }
 
     $body = [ordered]@{
         ipaddress=$ipaddress;
