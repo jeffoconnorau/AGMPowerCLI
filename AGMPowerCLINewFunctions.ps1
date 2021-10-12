@@ -95,7 +95,7 @@ Function New-AGMAppliance ([string]$ipaddress,[string]$username,[string]$passwor
     if ((!($password)) -and (!($passwordenc)))
     {
         # prompt for a password
-        [SecureString]$passwordenc = Read-Host "Password"
+        [SecureString]$passwordenc = Read-Host "Password" -AsSecureString
         [string]$password = (Convertfrom-SecureString $passwordenc -AsPlainText)
     }
     if ($passwordenc)
