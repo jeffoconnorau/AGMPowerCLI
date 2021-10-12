@@ -129,7 +129,7 @@ Function New-AGMAppliance ([string]$ipaddress,[string]$username,[string]$passwor
         Post-AGMAPIData  -endpoint /cluster -body $jsonbody
     }
     else {
-        $dryrun
+        $dryrungrab
     }
 }
 
