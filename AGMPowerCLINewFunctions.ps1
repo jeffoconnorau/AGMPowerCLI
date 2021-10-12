@@ -77,8 +77,8 @@ Function New-AGMAppliance ([string]$ipaddress,[string]$username,[string]$passwor
     
     For password handling there are two parameters you can use:
     -password     This is the Appliance password in plain text
-    -passwordenc  This is the Appliance password as a secure string
-    If you don't use either parameter you will be prompted to enter the password in a secure fashion.
+    -passwordenc  This is the Appliance password as a secure string.  This can be used with Powershell 7
+    If you don't use either parameter you will be prompted to enter the password in a secure fashion. This can be used with Powershell 7
 
     #>
 
@@ -95,7 +95,7 @@ Function New-AGMAppliance ([string]$ipaddress,[string]$username,[string]$passwor
     if ((!($password)) -and (!($passwordenc)))
     {
         # prompt for a password
-        [SecureString]$passwordenc = Read-Host -AsSecureString "Password"
+        [SecureString]$passwordenc = Read-Host "Password"
         [string]$password = (Convertfrom-SecureString $passwordenc -AsPlainText)
     }
     if ($passwordenc)
@@ -129,7 +129,7 @@ Function New-AGMAppliance ([string]$ipaddress,[string]$username,[string]$passwor
         Post-AGMAPIData  -endpoint /cluster -body $jsonbody
     }
     else {
-        $dryrungrab
+        $dryrun
     }
 }
 
