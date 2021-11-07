@@ -114,7 +114,7 @@ function ReportAGMPowerCLI
 $hostVersionInfo = (get-host).Version.Major
 if ( $hostVersionInfo -lt "5" )
 {
-    Write-Host "This module only works with PowerShell Version 5.  You are running version $hostVersionInfo."
+    Write-Host "This module only works with PowerShell Version 5 or above.  You are running version $hostVersionInfo."
     Write-Host "You will need to install PowerShell Version 5 or higher and try again"
     break
 }
