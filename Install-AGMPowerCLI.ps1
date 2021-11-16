@@ -121,6 +121,55 @@ if ( $hostVersionInfo -lt "5" )
 
 Import-LocalizedData -BaseDirectory $PSScriptRoot\ -FileName AGMPowerCLI.psd1 -BindingVariable ActModuleData
 
+function silentinstall0
+{
+  Write-host 'Detected PowerShell version:   ' $hostVersionInfo 
+  Write-host 'Downloaded AGMPowerCLI version:' $ActModuleData.ModuleVersion
+  $platform=$PSVersionTable.platform
+  # if we find an install then we upgrade it
+  [Array]$ActInstall = GetAGMPowerCLIInstall
+  if ($ActInstall.name.count -gt 1)
+  {
+    Write-Host -Object "`nMultipe installations detected.  Silent Installation failed."
+  }
+  if ($ActInstall.name.count -eq 1)
+  {
+    $InstallPath = $ActInstall.ModuleBase
+    Write-host 'Found AGMPowerCLI version:     ' $ActInstall.Version 'in ' $InstallPath 
+    Remove-Item -Path $InstallPath -Recurse -Force -ErrorAction Stop -Confirm:$false
+  }
+  else 
+  {
+    $InstallPathList = GetPSModulePath
+    $InstallPath = $InstallPathList[0]
+    if ( $platform -notmatch "Unix" )
+    {
+      $InstallPath = $InstallPath + '\AGMPowerCLI\'
+    }
+    else {
+      $InstallPath = $InstallPath + '/AGMPowerCLI/'
+    }
+    
+  }
+  
+  if ( $platform -notmatch "Unix" )
+  {
+  $null = Get-ChildItem -Path $PSScriptRoot\AGMPowerCLI* -Recurse | Unblock-File
+  }
+  $null = New-Item -ItemType Directory -Path $InstallPath -Force -ErrorAction Stop
+  $null = Copy-Item $PSScriptRoot\AGMPowerCLI* $InstallPath -Force -Recurse -ErrorAction Stop
+  $null = Test-Path -Path $InstallPath -ErrorAction Stop
+  $commandcheck = get-command -module AGMPowerCLI
+  if (!($commandcheck))
+  {
+    Write-Host 'Silent Installation failed.'
+  }
+  else {
+    Write-Host 'Installed AGMPowerCLI version: ' $ActModuleData.ModuleVersion 'in ' $InstallPath 
+  }
+  exit
+}
+
 
 function silentinstall
 {
@@ -171,12 +220,17 @@ function silentinstall
   exit
 }
 
-if ($args[0] -eq "-silentinstall")
+if (($args[0] -eq "-silentinstall0") -or ($args[0] -eq "-s0"))
+{
+  silentinstall0
+}
+
+if (($args[0] -eq "-silentinstall") -or ($args[0] -eq "-s"))
 {
   silentinstall
 }
 
-if ($args[0] -eq "-silentuninstall")
+if (($args[0] -eq "-silentuninstall")  -or ($args[0] -eq "-u"))
 {
   [Array]$ActInstall = GetAGMPowerCLIInstall
   foreach ($Location in ([Array]$ActInstall = GetAGMPowerCLIInstall).ModuleBase)
