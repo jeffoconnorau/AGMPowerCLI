@@ -171,12 +171,17 @@ function silentinstall
   exit
 }
 
-if ($args[0] -eq "-silentinstall")
+if (($args[0] -eq "-silentinstall0") -or ($args[0] -eq "-s0"))
+{
+  silentinstall0
+}
+
+if (($args[0] -eq "-silentinstall") -or ($args[0] -eq "-s"))
 {
   silentinstall
 }
 
-if ($args[0] -eq "-silentuninstall")
+if (($args[0] -eq "-silentuninstall")  -or ($args[0] -eq "-u"))
 {
   [Array]$ActInstall = GetAGMPowerCLIInstall
   foreach ($Location in ([Array]$ActInstall = GetAGMPowerCLIInstall).ModuleBase)
