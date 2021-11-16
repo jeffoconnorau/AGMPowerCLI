@@ -166,7 +166,7 @@ PS C:\Windows\system32>
 
 ##### Silent Uninstall
 
-You can uninstall the module silently by adding **-silentuninstall** to the Install command.  
+You can uninstall the module silently by adding **-silentuninstall**  or **-u** to the Install command.  
 
 ### 2)  Get some help
 
