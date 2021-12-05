@@ -170,7 +170,6 @@ function silentinstall0
   exit
 }
 
-
 function silentinstall
 {
   Write-host 'Detected PowerShell version:   ' $hostVersionInfo 
