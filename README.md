@@ -19,6 +19,7 @@ Our intention is that you should install both modules.
 **[User Story: Managing GCP Cloud Credentials](#user-story-managing-gcp-cloud-credentials)**<br>
 **[User Story: Adding GCP Instances](#user-story-adding-gcp-instances)**<br>
 **[User Story: Bulk expiration](#user-story-bulk-expiration)**<br>
+**[User Story: Appliance management](#user-story-appliance-management)**<br>
 
 ### What versions of PowerShell will this module work with?
 
@@ -852,6 +853,50 @@ The images will expire over the next hour.
 
 
 
+## User Story: Appliance management
 
+You may want to add or remove an Appliance from AGM.   You can list all the Appliances with this command:
+```
+PS /Users/avw> Get-AGMAppliance | select id,name,ipaddress
+
+id    name       ipaddress
+--    ----       ---------
+7286  backupsky1 10.194.0.20
+45408 backupsky2 10.194.0.38
+```
+We can then remove the Appliance by specifying the ID of the appliance with this command:
+```
+PS /Users/avw> Remove-AGMAppliance 45408
+PS /Users/avw> Get-AGMAppliance | select id,name,ipaddress
+
+id   name       ipaddress
+--   ----       ---------
+7286 backupsky1 10.194.0.20
+```
+We can add the Appliance back with this command.  Note we can do a dryrun to make sure the add will work, but you don't need to.  The main thing with a dry run is we need to see an approval token because that is key to actually adding the appliance.  
+```
+PS /Users/avw> New-AGMAppliance -ipaddress 10.194.0.38 -username admin -password password -dryrun | select-object approvaltoken,cluster,report
+
+approvaltoken          cluster                                                      report
+-------------          -------                                                      ------
+05535A005F051E00480608 @{clusterid=141925880424; ipaddress=10.194.0.38; masterid=0} {"errcode":0,"summary":"Objects to be imported:\n\t.....
+```
+This is the same command but without the dryrun.   After the command finishes, we list the Appliances to see our new one has been added:
+```
+PS /Users/avw> New-AGMAppliance -ipaddress 10.194.0.38 -username admin -password password  | select-object cluster,report
+
+cluster                                                                                                               report
+-------                                                                                                               ------
+@{id=45582; href=https://10.194.0.3/actifio/cluster/45582; clusterid=141925880424; ipaddress=10.194.0.38; masterid=0} {"errcode":0,"summary"...
+
+PS /Users/avw> Get-AGMAppliance | select id,name,ipaddress
+
+id    name       ipaddress
+--    ----       ---------
+45582 backdrsky2 10.194.0.38
+7286  backupsky1 10.194.0.20
+
+PS /Users/avw>
+```
 
 

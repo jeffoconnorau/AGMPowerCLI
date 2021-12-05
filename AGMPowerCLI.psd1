@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.30'
+ModuleVersion = '0.0.0.31'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -127,6 +127,7 @@ FunctionsToExport = @(
     'Get-AGMWorkflow',
     'Import-AGMOnVault',
     'New-AGMAppDiscovery',
+    'New-AGMAppliance',
     'New-AGMCloudVM',
     'New-AGMCredential',
     'New-AGMMount',
@@ -142,6 +143,7 @@ FunctionsToExport = @(
     'Set-AGMOrgHost',
     'Set-AGMOrgLogicalGroup',
     'Set-AGMSLA',
+    'Remove-AGMAppliance',
     'Remove-AGMApplication',
     'Remove-AGMCredential',
     'Remove-AGMHost',
@@ -195,6 +197,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.31] 2021-10-11
+        Add Remove-AGMAppliance and New-AGMAppliance
+
         ## [0.0.0.30] 2021-09-15
         Taught Get-CloudVM to use offset and limit correctly, it was only fetching 10 VMs before this and ignoring the limit
 

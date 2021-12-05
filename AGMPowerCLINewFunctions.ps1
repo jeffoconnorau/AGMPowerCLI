@@ -55,6 +55,86 @@ Function New-AGMAppDiscovery ([string]$hostid,[string]$ipaddress,[string]$applia
     Post-AGMAPIData  -endpoint /host/discover -body $jsonbody
 }
 
+Function New-AGMAppliance ([string]$ipaddress,[string]$username,[string]$password,[SecureString]$passwordenc,[switch]$dryrun) 
+{
+    <#
+    .SYNOPSIS
+    Adds a new appliance to AGM
+
+    .EXAMPLE
+    New-AGMAppliance ipaddress 10.194.0.38 -username admin -password password -dryrun | select-object approvaltoken,cluster,report
+    This performs a dryrun to test if Appliance add will work.   Pay close attention to the errcode in the report field and that the cluster field contains a clusterid.
+    You also need to see an approval token.    If everything looks good, run the command again without specifying -dryrun
+    If you are feeling lucky you can choose to skip running the command without -dryrun
+
+    .EXAMPLE
+    New-AGMAppliance ipaddress 10.194.0.38 -username admin -password password
+    This adds the Appliance and includes a dryrun.   
+    After it runs, then run Get-AGMAppliance to confirm the appliance has been added.
+    
+    .DESCRIPTION
+    A function to add Appliances
+    
+    For password handling there are two parameters you can use:
+    -password     This is the Appliance password in plain text
+    -passwordenc  This is the Appliance password as a secure string.  This can be used with Powershell 7
+    If you don't use either parameter you will be prompted to enter the password in a secure fashion. This can be used with Powershell 7
+
+    #>
+
+    if (!($ipaddress))
+    {
+        [string]$ipaddress = Read-Host "Appliance IP Address"
+    }
+    
+    if (!($username))
+    {
+        [string]$username = Read-Host "Appliance username"
+    }
+
+    if ((!($password)) -and (!($passwordenc)))
+    {
+        # prompt for a password
+        [SecureString]$passwordenc = Read-Host "Password" -AsSecureString
+        [string]$password = (Convertfrom-SecureString $passwordenc -AsPlainText)
+    }
+    if ($passwordenc)
+    {
+        [string]$password = (Convertfrom-SecureString $passwordenc -AsPlainText)
+    }
+
+    $body = [ordered]@{
+        ipaddress=$ipaddress;
+        username=$username;
+        password=$password
+    }
+    $jsonbody = $body | ConvertTo-Json 
+
+    $dryrungrab = Post-AGMAPIData  -endpoint /cluster/dryrun -body $jsonbody
+    if ($dryrun)
+    {
+        $dryrungrab
+        return
+    }
+
+    if ($dryrungrab.approvaltoken)
+    {
+        $body = [ordered]@{
+            ipaddress=$ipaddress;
+            username=$username;
+            password=$password;
+            approvaltoken=$dryrungrab.approvaltoken
+        }
+        $jsonbody = $body | ConvertTo-Json 
+        Post-AGMAPIData  -endpoint /cluster -body $jsonbody
+    }
+    else {
+        $dryrun
+    }
+}
+
+
+
 Function New-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string]$clusterid,[string]$applianceid,[string]$projectid,[string]$instanceid) 
 {
     <#

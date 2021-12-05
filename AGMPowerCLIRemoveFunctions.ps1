@@ -23,6 +23,37 @@ function Remove-AGMApplication ([Parameter(Mandatory=$true)][string]$appid)
 }
 
 
+function Remove-AGMAppliance ([string]$applianceid,[string]$id)
+{
+    <#
+    .SYNOPSIS
+    Removes a nominated appliance
+
+    .EXAMPLE
+    Remove-AGMAppliance
+    You will be prompted for an Appliance ID
+    You could learn the Appliance IDs with Get-AGMAppliance.  Use the ID field
+
+    .EXAMPLE
+    Remove-AGMAppliance -id 2133445
+    Removes Appliance ID 2133445
+
+
+    .DESCRIPTION
+    A function to remove appliances
+
+    #>
+
+    if ($id) { $applianceid = $id}
+    if (!($applianceid))
+    {
+        $applianceid = Read-Host "Appliance ID"
+    }
+    Post-AGMAPIData -endpoint /cluster/$applianceid -method delete
+}
+
+
+
 function Remove-AGMCredential([string]$credentialid,[string]$id,[string]$applianceid,[string]$clusterid)
 {
     <#
