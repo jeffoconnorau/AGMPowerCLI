@@ -200,10 +200,10 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
 
 
 
-    # default of 120 seconds may be too short
+    # default of 15 seconds may be too short
     if (!($timeout))
     {
-        $timeout = 120
+        $timeout = 15
     }
 
     # we always start at apistart of 0 which is the first result
