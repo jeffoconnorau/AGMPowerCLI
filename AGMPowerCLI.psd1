@@ -195,11 +195,11 @@ PrivateData = @{
         # A URL to an icon representing this module.
         IconUri = 'https://i.imgur.com/QAaK5Po.jpg'
 
-        # ReleaseNotes of this module
+        # ReleaseNotes of this modulegte
         ReleaseNotes = '
         ## [0.0.0.32] 2022-01-07
         Handle empty packet return error line 544
-        Changed default timeout to 15 seconds
+        Changed default timeout to 20 seconds
 
         ## [0.0.0.31] 2021-10-11
         Add Remove-AGMAppliance and New-AGMAppliance
