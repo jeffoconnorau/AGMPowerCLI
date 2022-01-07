@@ -541,11 +541,19 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
         }
         else 
         {
-            $result = $_.Exception.Response.GetResponseStream()
-            $reader = New-Object System.IO.StreamReader($result)
-            $reader.BaseStream.Position = 0
-            $reader.DiscardBufferedData()
-            $RestError = $reader.ReadToEnd();
+            if ($_.Exception.Response)
+            {
+                $result = $_.Exception.Response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($result)
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $RestError = $reader.ReadToEnd();
+            }
+            else 
+            {
+                Get-AGMErrorMessage  -messagetoprint  "No response was received from $AGMIP  Timeout is set to $timeout seconds"
+                return
+            }
         }
     }
     if ($RestError)
@@ -641,11 +649,19 @@ Function Put-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body)
         }
         else 
         {
-            $result = $_.Exception.Response.GetResponseStream()
-            $reader = New-Object System.IO.StreamReader($result)
-            $reader.BaseStream.Position = 0
-            $reader.DiscardBufferedData()
-            $RestError = $reader.ReadToEnd();
+            if ($_.Exception.Response)
+            {
+                $result = $_.Exception.Response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($result)
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $RestError = $reader.ReadToEnd();
+            }
+            else 
+            {
+                Get-AGMErrorMessage  -messagetoprint  "No response was received from $AGMIP  Timeout is set to $timeout seconds"
+                return
+            }
         }
     }
     if ($RestError)

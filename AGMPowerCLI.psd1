@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.31'
+ModuleVersion = '0.0.0.32'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -197,6 +197,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
+        ## [0.0.0.32] 2022-01-07
+        Handle empty packet return error line 544
+
         ## [0.0.0.31] 2021-10-11
         Add Remove-AGMAppliance and New-AGMAppliance
 
