@@ -200,10 +200,10 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
 
 
 
-    # default of 120 seconds may be too short
+    # default of 20 seconds is enforced regardless
     if (!($timeout))
     {
-        $timeout = 120
+        $timeout = 20
     }
 
     # we always start at apistart of 0 which is the first result
@@ -274,11 +274,19 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                 }
                 else 
                 {
-                    $result = $_.Exception.Response.GetResponseStream()
-                    $reader = New-Object System.IO.StreamReader($result)
-                    $reader.BaseStream.Position = 0
-                    $reader.DiscardBufferedData()
-                    $RestError = $reader.ReadToEnd();
+                    if ($_.Exception.Response)
+                    {
+                        $result = $_.Exception.Response.GetResponseStream()
+                        $reader = New-Object System.IO.StreamReader($result)
+                        $reader.BaseStream.Position = 0
+                        $reader.DiscardBufferedData()
+                        $RestError = $reader.ReadToEnd();
+                    }
+                    else 
+                    {
+                        Get-AGMErrorMessage  -messagetoprint  "No response was received from $AGMIP  Timeout is set to $timeout seconds"
+                        return
+                    }
                 }
             }
             if ($RestError)
@@ -502,10 +510,10 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
         $endpoint = "/" + $endpoint
     }
 
-    # default of 120 seconds may be too short
+    # default of 20 seconds may be too short
     if (!($timeout))
     {
-        $timeout = 120
+        $timeout = 20
     }
 
     # we need to set the method
@@ -541,11 +549,19 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
         }
         else 
         {
-            $result = $_.Exception.Response.GetResponseStream()
-            $reader = New-Object System.IO.StreamReader($result)
-            $reader.BaseStream.Position = 0
-            $reader.DiscardBufferedData()
-            $RestError = $reader.ReadToEnd();
+            if ($_.Exception.Response)
+            {
+                $result = $_.Exception.Response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($result)
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $RestError = $reader.ReadToEnd();
+            }
+            else 
+            {
+                Get-AGMErrorMessage  -messagetoprint  "No response was received from $AGMIP  Timeout is set to $timeout seconds"
+                return
+            }
         }
     }
     if ($RestError)
@@ -611,10 +627,10 @@ Function Put-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body)
         $endpoint = "/" + $endpoint
     }
 
-    # default of 120 seconds may be too short
+    # default of 20 seconds may be too short
     if (!($timeout))
     {
-        $timeout = 120
+        $timeout = 20
     }
     if (!($body))
     {
@@ -641,11 +657,19 @@ Function Put-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body)
         }
         else 
         {
-            $result = $_.Exception.Response.GetResponseStream()
-            $reader = New-Object System.IO.StreamReader($result)
-            $reader.BaseStream.Position = 0
-            $reader.DiscardBufferedData()
-            $RestError = $reader.ReadToEnd();
+            if ($_.Exception.Response)
+            {
+                $result = $_.Exception.Response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($result)
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $RestError = $reader.ReadToEnd();
+            }
+            else 
+            {
+                Get-AGMErrorMessage  -messagetoprint  "No response was received from $AGMIP  Timeout is set to $timeout seconds"
+                return
+            }
         }
     }
     if ($RestError)
