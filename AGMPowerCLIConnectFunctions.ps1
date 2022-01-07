@@ -112,7 +112,7 @@ if ( $certaction -eq "i" -or $certaction -eq "I" )
     {
         Try
         {
-            $resp = Invoke-RestMethod -Uri https://$agmip -TimeoutSec 15
+            $resp = Invoke-RestMethod -Uri https://$agmip -TimeoutSec 20
         }
         Catch
         {
@@ -120,7 +120,7 @@ if ( $certaction -eq "i" -or $certaction -eq "I" )
         }
         if ($RestError -like "The operation was canceled.")
         {
-            Get-AGMErrorMessage -messagetoprint "No response was received from $agmip after 15 seconds"
+            Get-AGMErrorMessage -messagetoprint "No response was received from $agmip after 20 seconds"
             return;
         }
         elseif ($RestError -like "Connection refused")
@@ -202,11 +202,11 @@ if ( $certaction -eq "i" -or $certaction -eq "I" )
         $hostVersionInfo = (get-host).Version.Major
         if ( $hostVersionInfo -lt "6" )
         {
-            $resp = Invoke-RestMethod -Method POST -Uri $Url -Credential $creds  -TimeoutSec 15
+            $resp = Invoke-RestMethod -Method POST -Uri $Url -Credential $creds  -TimeoutSec 20
         }
         else 
         {
-            $resp = Invoke-RestMethod -SkipCertificateCheck -Method POST -Uri $Url -Credential $creds  -TimeoutSec 15
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method POST -Uri $Url -Credential $creds  -TimeoutSec 20
         }
     }
     Catch
@@ -215,7 +215,7 @@ if ( $certaction -eq "i" -or $certaction -eq "I" )
     }
     if ($RestError -like "The operation was canceled.")
     {
-        Get-AGMErrorMessage -messagetoprint "No response was received from $agmip after 15 seconds"
+        Get-AGMErrorMessage -messagetoprint "No response was received from $agmip after 20 seconds"
         return;
     }
     elseif ($RestError -like "Connection refused")

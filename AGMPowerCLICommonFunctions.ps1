@@ -510,10 +510,10 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
         $endpoint = "/" + $endpoint
     }
 
-    # default of 120 seconds may be too short
+    # default of 20 seconds may be too short
     if (!($timeout))
     {
-        $timeout = 120
+        $timeout = 20
     }
 
     # we need to set the method
@@ -627,10 +627,10 @@ Function Put-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body)
         $endpoint = "/" + $endpoint
     }
 
-    # default of 120 seconds may be too short
+    # default of 20 seconds may be too short
     if (!($timeout))
     {
-        $timeout = 120
+        $timeout = 20
     }
     if (!($body))
     {
