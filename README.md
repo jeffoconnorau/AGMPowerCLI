@@ -184,7 +184,7 @@ If you need some examples on the command:
 Get-Help Connect-AGM -examples
 ```
 
-### 3)  Save your password
+### 3a)  Save your password locally
 
 Create an encrypted password file using the AGMPowerCLI **Save-AGMPassword** function:
 ```
@@ -202,6 +202,19 @@ Key not valid for use in specified state.
 ```
 This will cause issues when running saved scripts when two different users want to run the same script with the same keyfile.    To work around this issue, please have each user create a keyfile for their own use.   Then when running a shared script, each user should execute the script specifying their own keyfile.  This can be done by using a parameter file for each script.
 
+### 3b)  Save your password remotely
+
+You can save your password in a secret manager and call it during login.   For example you could do this:
+
+1. Enable Google Secret Manager API:  https://console.cloud.google.com/apis/library/secretmanager.googleapis.com
+1. Create a secret storing your AGM password:  https://console.cloud.google.com/security/secret-manager
+1. Create a service account with the **Secret Manager Secret Accessor** role:  https://console.cloud.google.com/iam-admin/serviceaccounts
+1. Create or select an instance which you will use to run PowerShell and set the service account for this instance (which will need to be powered off).
+1. On this instance install the Google PowerShell module:  **Install-Module GoogleCloud**
+1. You can now fetch the AGM password using a command like this:  
+```
+gcloud secrets versions access latest --secret=agmadminpassword
+```
 
 ### 4)  Login to your appliance
 
@@ -213,7 +226,10 @@ Or login to the AGM using the password file created in the previous step:
 ```
 Connect-AGM 10.61.5.114 admin -passwordfile "c:\temp\password.key" -ignorecerts
 ```
-
+If you are using Google secret manager, then if your AGM password is stored in a secret called **agmadminpassword** then this syntax will work:
+```
+connect-agm 10.152.0.5 admin $(gcloud secrets versions access latest --secret=agmadminpassword) -i 
+```
 Note you can use **-quiet** to suppress messages.   This is handy when scripting.
 
 ### 5)  Run your first command:
