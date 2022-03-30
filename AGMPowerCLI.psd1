@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.32'
+ModuleVersion = '0.0.0.33'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -104,6 +104,7 @@ FunctionsToExport = @(
     'Get-AGMHost',
     'Get-AGMImage',
     'Get-AGMImageCount',
+    'Get-AGMImageSystemRecovery',
     'Get-AGMImageSystemStateOptions',
     'Get-AGMJob',
     'Get-AGMJobHistory',
@@ -197,6 +198,9 @@ PrivateData = @{
 
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
+        ## [0.0.0.33] 2022-03-30
+        Add Get-AGMImageSystemRecovery
+
         ## [0.0.0.32] 2022-01-07
         Handle empty packet return error line 544
         Changed default timeout to 20 seconds

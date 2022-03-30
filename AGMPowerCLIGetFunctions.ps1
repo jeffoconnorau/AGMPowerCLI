@@ -1061,6 +1061,40 @@ function Get-AGMImageCount ([string]$filtervalue,[string]$keyword)
     }
 }
 
+function Get-AGMImageSystemRecovery ([string]$imageid,[string]$credentialid)
+{
+<#
+    .SYNOPSIS
+    Gets a list of system state recovery options for a specified image with a specified credential ID
+
+    .EXAMPLE
+    Get-AGMImageSystemStateOptions
+    Will request an image ID and then a credential ID
+
+    .EXAMPLE
+    Get-AGMImageSystemStateOptions -imageid 761385 -credentialid 405475
+    Will show the system state recovery options for image ID 761385 when recovered with credentialid 405475
+
+    .DESCRIPTION
+    A function to display system state recovery information.  
+    
+    #>
+
+
+    if (!($imageid))
+    {
+        [string]$imageid = Read-Host "ImageID"
+    }
+    if (!($credentialid))
+    {
+        [string]$credentialid = Read-Host "credentialid"
+    }
+
+
+        Get-AGMAPIData -endpoint /backup/$imageid/systemrecovery/$credentialid     
+
+}
+
 
 function Get-AGMImageSystemStateOptions ([string]$imageid,[string]$id,[string]$target)
 {
