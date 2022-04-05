@@ -789,7 +789,7 @@ Function Convert-AGMDuration ($duration)
 
 ####   Applinance Delegation
 
-Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$endpoint,[string]$parameters,[int]$timeout)
+Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$endpoint,[string]$arguments,[int]$timeout)
 {
     <#  
     .SYNOPSIS
@@ -799,6 +799,13 @@ Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$endpoint,[string]$para
     Written by Anthony Vandewerdt
     
     #>
+
+
+    if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
+    {
+        Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM"
+        return
+    }
 
     if (!($timeout))
     {
@@ -815,7 +822,11 @@ Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$endpoint,[string]$para
     }
     Try
     {
-        $url = "https://$AGMIP/actifio/appliancedelegation/$skyid/api/info/" + "$endpoint" + "$parameters"
+        $url = "https://$AGMIP/actifio/appliancedelegation/$skyid/api/info/" + "$endpoint" 
+        if  ($arguments)
+        {
+            $url = $url +"?" +$arguments
+        }
         if ($IGNOREAGMCERTS)
         {
             $resp = Invoke-RestMethod -SkipCertificateCheck -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
@@ -862,7 +873,7 @@ Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$endpoint,[string]$para
     }      
 }
 
-Function Get-AGMAPIApplianceReport ([String]$skyid,[string]$endpoint,[string]$parameters,[int]$timeout)
+Function Get-AGMAPIApplianceReport ([String]$skyid,[string]$endpoint,[string]$arguments,[int]$timeout)
 {
     <#  
     .SYNOPSIS
@@ -872,6 +883,12 @@ Function Get-AGMAPIApplianceReport ([String]$skyid,[string]$endpoint,[string]$pa
     Written by Anthony Vandewerdt
     
     #>
+
+    if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
+    {
+        Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM"
+        return
+    }
 
     if (!($timeout))
     {
@@ -888,7 +905,11 @@ Function Get-AGMAPIApplianceReport ([String]$skyid,[string]$endpoint,[string]$pa
     }
     Try
     {
-        $url = "https://$AGMIP/actifio/appliancedelegation/$skyid/api/report/" + "$endpoint" + "$parameters"
+        $url = "https://$AGMIP/actifio/appliancedelegation/$skyid/api/report/" + "$endpoint" 
+        if  ($arguments)
+        {
+            $url = $url +"?" +$arguments
+        }
         if ($IGNOREAGMCERTS)
         {
             $resp = Invoke-RestMethod -SkipCertificateCheck -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
