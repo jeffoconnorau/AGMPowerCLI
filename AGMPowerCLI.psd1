@@ -76,6 +76,7 @@ PowerShellVersion = '5.0'
 FunctionsToExport = @(
     'Get-AGMAPIData',
     'Get-AGMAPIApplianceInfo',
+    'Get-AGMAPIApplianceReport',
     'Post-AGMAPIData',
     'Put-AGMAPIData',
     'Connect-AGM',
@@ -200,7 +201,7 @@ PrivateData = @{
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
         ## [0.0.0.34] 2022-04-05
-        Add Appliance API commands: Set-AGMApplianceTask, Get-AGMAPIApplianceInfo, Get-AGMApplianceReport
+        Add Appliance API commands:  Get-AGMAPIApplianceInfo, Get-AGMAPIApplianceReport
 
         ## [0.0.0.33] 2022-03-30
         Add Get-AGMImageSystemRecovery

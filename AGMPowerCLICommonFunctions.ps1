@@ -866,7 +866,7 @@ Function Get-AGMAPIApplianceReport ([String]$skyid,[string]$endpoint,[string]$pa
 {
     <#  
     .SYNOPSIS
-    Fetch info output from Appliances
+    Fetch report output from Appliances
 
     .NOTES
     Written by Anthony Vandewerdt
