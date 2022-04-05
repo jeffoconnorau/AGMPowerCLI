@@ -786,3 +786,73 @@ Function Convert-AGMDuration ($duration)
     }
     $totalhours + $convertedtime.ToString("\:mm\:ss")
 }
+
+####   Applinance Delegation
+
+Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$endpoint,[string]$parameters)
+{
+    <#  
+    .SYNOPSIS
+    Fetch info output from Appliances
+
+    .NOTES
+    Written by Anthony Vandewerdt
+    
+    #>
+
+    if (!($skyid))
+    {
+        [string]$skyid = Read-Host "SkyID"
+    }
+    if (!($endpoint))
+    {
+        [string]$endpoint = Read-Host "Endpoint"
+    }
+    Try
+    {
+        $url = "https://$AGMIP/actifio/appliancedelegation/$skyid/api/info/" + "$endpoint" + "$parameters"
+        if ($IGNOREAGMCERTS)
+        {
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+        }
+        else
+        {
+            $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+        }
+    }
+    Catch
+    {
+        if ( $((get-host).Version.Major) -gt 5 )
+        {
+            $RestError = $_
+        }
+        else 
+        {
+            if ($_.Exception.Response)
+            {
+                $result = $_.Exception.Response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($result)
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $RestError = $reader.ReadToEnd();
+            }
+            else 
+            {
+                Get-AGMErrorMessage  -messagetoprint  "No response was received from $AGMIP  Timeout is set to $timeout seconds"
+                return
+            }
+        }
+    }
+    if ($RestError)
+    {
+        Test-AGMJSON $RestError 
+    }
+    elseif ($resp.result)
+    {
+        $resp.results
+    }
+    else 
+    {
+        $resp    
+    }      
+}

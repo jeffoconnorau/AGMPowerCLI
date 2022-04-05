@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.33'
+ModuleVersion = '0.0.0.34'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -75,6 +75,7 @@ PowerShellVersion = '5.0'
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
     'Get-AGMAPIData',
+    'Get-AGMAPIApplianceInfo',
     'Post-AGMAPIData',
     'Put-AGMAPIData',
     'Connect-AGM',
@@ -198,6 +199,9 @@ PrivateData = @{
 
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
+        ## [0.0.0.34] 2022-04-05
+        Add Appliance API commands: Set-AGMApplianceTask, Get-AGMAPIApplianceInfo, Get-AGMApplianceReport
+
         ## [0.0.0.33] 2022-03-30
         Add Get-AGMImageSystemRecovery
 
