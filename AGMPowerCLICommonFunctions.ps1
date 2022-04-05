@@ -789,7 +789,7 @@ Function Convert-AGMDuration ($duration)
 
 ####   Applinance Delegation
 
-Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$endpoint,[string]$parameters)
+Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$endpoint,[string]$parameters,[int]$timeout)
 {
     <#  
     .SYNOPSIS
@@ -799,6 +799,11 @@ Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$endpoint,[string]$para
     Written by Anthony Vandewerdt
     
     #>
+
+    if (!($timeout))
+    {
+         $timeout = 20
+    }
 
     if (!($skyid))
     {
