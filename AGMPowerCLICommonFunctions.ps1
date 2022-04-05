@@ -854,7 +854,80 @@ Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$endpoint,[string]$para
     }
     elseif ($resp.result)
     {
-        $resp.results
+        $resp.result
+    }
+    else 
+    {
+        $resp    
+    }      
+}
+
+Function Get-AGMAPIApplianceReport ([String]$skyid,[string]$endpoint,[string]$parameters,[int]$timeout)
+{
+    <#  
+    .SYNOPSIS
+    Fetch info output from Appliances
+
+    .NOTES
+    Written by Anthony Vandewerdt
+    
+    #>
+
+    if (!($timeout))
+    {
+         $timeout = 20
+    }
+
+    if (!($skyid))
+    {
+        [string]$skyid = Read-Host "SkyID"
+    }
+    if (!($endpoint))
+    {
+        [string]$endpoint = Read-Host "Endpoint"
+    }
+    Try
+    {
+        $url = "https://$AGMIP/actifio/appliancedelegation/$skyid/api/report/" + "$endpoint" + "$parameters"
+        if ($IGNOREAGMCERTS)
+        {
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+        }
+        else
+        {
+            $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+        }
+    }
+    Catch
+    {
+        if ( $((get-host).Version.Major) -gt 5 )
+        {
+            $RestError = $_
+        }
+        else 
+        {
+            if ($_.Exception.Response)
+            {
+                $result = $_.Exception.Response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($result)
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $RestError = $reader.ReadToEnd();
+            }
+            else 
+            {
+                Get-AGMErrorMessage  -messagetoprint  "No response was received from $AGMIP  Timeout is set to $timeout seconds"
+                return
+            }
+        }
+    }
+    if ($RestError)
+    {
+        Test-AGMJSON $RestError 
+    }
+    elseif ($resp.result)
+    {
+        $resp.result
     }
     else 
     {
