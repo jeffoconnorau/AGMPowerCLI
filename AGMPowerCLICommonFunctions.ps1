@@ -262,7 +262,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                 {
                     if ($AGMToken)
                     {
-                        $resp = Invoke-WebRequest -Method "head" -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $sessionid" } -Uri "$url" -TimeoutSec $timeout 
+                        $resp = Invoke-WebRequest -Method "head" -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
                     }
                     else {
                         $resp = Invoke-WebRequest -Method "head" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
@@ -272,7 +272,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                 {
                     if ($AGMToken)
                     {
-                        $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $sessionid" } -Uri "$url" -TimeoutSec $timeout 
+                        $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
                     }
                     else {
                         $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
@@ -552,7 +552,16 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
         }
         else
         {
-            $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" ; accept = "application/json" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+            if ($AGMToken) 
+            {
+                $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" ; accept = "application/json" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+                
+            }
+            else 
+            {
+                $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" ; accept = "application/json" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+            }
+            
         }
     }
     Catch
@@ -660,7 +669,15 @@ Function Put-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body)
         }
         else
         {
-            $resp = Invoke-RestMethod -Method put -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+            if ($AGMToken)
+            {
+                $resp = Invoke-RestMethod -Method put -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+            }
+            else 
+            {
+                $resp = Invoke-RestMethod -Method put -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+            }
+            
         }
     }
     Catch
@@ -847,7 +864,14 @@ Function Get-AGMAPIApplianceInfo ([String]$applianceid,[string]$command,[string]
         }
         else
         {
-            $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            if ($AGMToken)
+            {
+                $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            }
+            else 
+            {
+                $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            }
         }
     }
     Catch
@@ -930,7 +954,14 @@ Function Get-AGMAPIApplianceReport ([String]$applianceid,[string]$command,[strin
         }
         else
         {
-            $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            if ($AGMToken)
+            {
+                $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            }
+            else
+            {
+                $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            }
         }
     }
     Catch
@@ -1014,7 +1045,14 @@ Function Set-AGMAPIApplianceTask ([String]$applianceid,[string]$command,[string]
         }
         else
         {
-            $resp = Invoke-RestMethod -Method "Post" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            if ($AGMToken)
+            {
+                $resp = Invoke-RestMethod -Method "Post" -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" }  -Uri "$url" -TimeoutSec $timeout 
+            }
+            else 
+            {
+                $resp = Invoke-RestMethod -Method "Post" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            }
         }
     }
     Catch
