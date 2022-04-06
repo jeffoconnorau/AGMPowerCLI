@@ -662,7 +662,7 @@ function Connect-GBDRManagementConsole
     $Url = "https://" +$managementconsole +"/actifio/manageacl/promoteUser"
     Try
     {
-        $resp = Invoke-RestMethod -Method PUT -SkipCertificateCheck  -Headers @{ Authorization = "Bearer $token"; "backupdr-management-session" = "Actifio $sessionid" } -Uri $Url
+        $resp = Invoke-RestMethod -Method PUT -Headers @{ Authorization = "Bearer $token"; "backupdr-management-session" = "Actifio $sessionid" } -Uri $Url
     }
     Catch
     {
