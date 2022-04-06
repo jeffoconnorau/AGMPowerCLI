@@ -508,3 +508,194 @@ function Get-AGMTimeZoneHandling
         Write-Host "Currently timezone in use is $GLOBAL:AGMTimezone"
     }
 }
+
+
+
+
+
+function Get-GBDRManagementConsole ([string]$project,[string]$region)
+{
+    <#  
+    .SYNOPSIS
+    Displays details of Google Backup and DR Management Console
+
+    .DESCRIPTION
+    The user needs to specify a project ID and region
+
+    .NOTES
+    Written by Anthony Vandewerdt
+
+    .EXAMPLE
+    Get-AGMTimeZoneHandling
+    Show whether the AGM Module is using local or UTC
+ 
+    #>
+
+    if (!($project))
+    {
+        Get-AGMErrorMessage -messagetoprint "Please specify project with -project"
+    }
+    if (!($region))
+    {
+        Get-AGMErrorMessage -messagetoprint "Please specify region with -region"
+    }
+    
+    Try
+    {
+        $resp = Invoke-RestMethod -Method GET -Headers @{ Authorization = "Bearer $(gcloud auth print-access-token)" } -Uri "https://backupdr.googleapis.com/v1/projects/$project/locations/$region/managementServers"
+    }
+    Catch
+    {
+        $RestError = $_
+    }
+    if ($RestError) 
+    {
+        Test-AGMJSON "$RestError"
+    }
+    elseif ($resp.managementServers)
+    {
+        $resp.managementServers
+    }
+}
+
+function Connect-GBDRManagementConsole
+{
+    <#
+    .SYNOPSIS
+    Connects to Management Server to create a Session ID
+
+    .DESCRIPTION
+    The Connect-ManagementServer connects to Management Server to get a bearer token and session ID to use on all subsequent calls
+
+    .NOTES
+    Written by Anthony Vandewerdt
+
+    .EXAMPLE
+    Connect-ManagementServer
+    
+    #>
+
+    
+    Param([String]$managementconsole,[String]$serviceaccount,[String]$oauth2ClientId,[switch][alias("q")]$quiet, [switch][alias("p")]$printsession,[int]$actmaxapilimit)
+
+    # max objects returned will be unlimited.   Otherwise user can supply a limit
+    if (!($agmmaxapilimit))
+    {
+        $agmmaxapilimit = 0
+    }
+    $global:agmmaxapilimit = $agmmaxapilimit
+
+    if (!($managementconsole))
+    {
+    $agmip = Read-Host "IP or Name of Management Console"
+    }
+
+    if (!($serviceaccount))
+    {
+    $serviceaccount = Read-Host "Service Account"
+    }
+
+    if (!($oauth2ClientId))
+    {
+    $oauth2ClientId = Read-Host "oauth2ClientId"
+    }
+
+    # first we get a token
+    $Url = "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/$serviceaccount" +":generateIdToken"
+    $body = '{"audience": "' +$oauth2ClientId +'", "includeEmail":"true"}'
+
+    $RestError = $null
+    Try
+    {
+            $resp = Invoke-RestMethod -Method POST -Headers @{ Authorization = "Bearer $(gcloud auth print-access-token)" }  -body $body -ContentType "application/json" -Uri $url
+
+    }
+    Catch
+    {
+        $RestError = $_
+    }
+    if ($RestError)
+    {
+        $loginfailedsniff = Test-AGMJSON $RestError
+        $loginfailedsniff
+        return
+    }
+    elseif ($resp.token)
+    {
+        $token = $resp.$token
+    }
+    else 
+    {
+        Get-AGMErrorMessage -messagetoprint "Failed to get a token"
+        return
+    }
+    # now we get a sessionID
+
+    $Url = "https://" +$managementconsole +"/actifio/session"
+    Try
+    {
+        $resp = Invoke-RestMethod -Method POST -SkipCertificateCheck  -Headers @{ Authorization = "Bearer $token " } -Uri $Url
+    }
+    Catch
+    {
+        $RestError = $_
+    }
+    if ($RestError)
+    {
+        $loginfailedsniff = Test-AGMJSON $RestError
+        $loginfailedsniff
+        return
+    }
+    elseif ($resp.id)
+    {
+        $sessionid = $resp.$id
+    }
+    else 
+    {
+        Get-AGMErrorMessage -messagetoprint "Failed to get a sessionid"
+        return
+    }
+
+    # we promote the user
+    $Url = "https://" +$agmip +"/actifio/manageacl/promoteUser"
+    Try
+    {
+        $resp = Invoke-RestMethod -Method PUT -SkipCertificateCheck  -Headers @{ Authorization = "Bearer $token"; "backupdr-management-session" = "Actifio $sessionid" } -Uri $Url
+    }
+    Catch
+    {
+        $RestError = $_
+    }
+    if ($RestError)
+    {
+        $loginfailedsniff = Test-AGMJSON $RestError
+        $loginfailedsniff
+        return
+    }
+    elseif ($resp.xml)
+    {
+        $global:AGMSESSIONID = $sessionid
+        $global:AGMIP = $managementconsole
+        $GLOBAL:AGMTimezone = "local"
+        $GLOBAL:AGMToken = $token
+        if ($quiet)
+        {
+            return
+        }
+        elseif ($printsession)
+        {
+            Write-Host "$agmsessionid"
+            return
+        }
+        else 
+        {
+            Write-Host "Login Successful!"
+            return
+        }
+    }
+    else 
+    {
+        Get-AGMErrorMessage -messagetoprint "Failed to promote the user"
+        return
+    }
+}
