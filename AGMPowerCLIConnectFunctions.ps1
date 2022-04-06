@@ -592,12 +592,12 @@ function Connect-GBDRManagementConsole
 
     if (!($serviceaccount))
     {
-    $serviceaccount = Read-Host "Service Account"
+        $serviceaccount = Read-Host "Service Account"
     }
 
     if (!($oauth2ClientId))
     {
-    $oauth2ClientId = Read-Host "oauth2ClientId"
+        $oauth2ClientId = Read-Host "oauth2ClientId"
     }
 
     # first we get a token
@@ -672,8 +672,8 @@ function Connect-GBDRManagementConsole
     }
     elseif ($resp.xml)
     {
-        $global:AGMSESSIONID = $sessionid
-        $global:AGMIP = $agmip
+        $GLOBAL:AGMSESSIONID = $sessionid
+        $GLOBAL:AGMIP = $agmip
         $GLOBAL:AGMTimezone = "local"
         $GLOBAL:AGMToken = $token
         if ($quiet)
