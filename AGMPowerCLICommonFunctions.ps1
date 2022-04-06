@@ -260,9 +260,23 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             {
                 if ($head)
                 {
-                    $resp = Invoke-WebRequest -Method "head" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
-                } else {
-                    $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                    if ($token)
+                    {
+                        $resp = Invoke-WebRequest -Method "head" -Headers @{ Authorization = "Bearer $token"; "backupdr-management-session" = "Actifio $sessionid" } -Uri "$url" -TimeoutSec $timeout 
+                    }
+                    else {
+                        $resp = Invoke-WebRequest -Method "head" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                    }
+                } 
+                else 
+                {
+                    if ($token)
+                    {
+                        $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Bearer $token"; "backupdr-management-session" = "Actifio $sessionid" } -Uri "$url" -TimeoutSec $timeout 
+                    }
+                    else {
+                        $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                    }
                 }
             }
         }
