@@ -789,7 +789,7 @@ Function Convert-AGMDuration ($duration)
 
 ####   Appliance Delegation
 
-Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$command,[string]$arguments,[int]$timeout)
+Function Get-AGMAPIApplianceInfo ([String]$applianceid,[string]$command,[string]$arguments,[int]$timeout)
 {
     <#  
     .SYNOPSIS
@@ -812,9 +812,9 @@ Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$command,[string]$argum
          $timeout = 20
     }
 
-    if (!($skyid))
+    if (!($applianceid))
     {
-        [string]$skyid = Read-Host "SkyID"
+        [string]$applianceid = Read-Host "applianceid"
     }
     if (!($command))
     {
@@ -822,7 +822,7 @@ Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$command,[string]$argum
     }
     Try
     {
-        $url = "https://$AGMIP/actifio/appliancedelegation/$skyid/api/info/" + "$command" 
+        $url = "https://$AGMIP/actifio/appliancedelegation/$applianceid/api/info/" + "$command" 
         if  ($arguments)
         {
             $url = $url +"?" +$arguments
@@ -873,7 +873,7 @@ Function Get-AGMAPIApplianceInfo ([String]$skyid,[string]$command,[string]$argum
     }      
 }
 
-Function Get-AGMAPIApplianceReport ([String]$skyid,[string]$command,[string]$arguments,[int]$timeout)
+Function Get-AGMAPIApplianceReport ([String]$applianceid,[string]$command,[string]$arguments,[int]$timeout)
 {
     <#  
     .SYNOPSIS
@@ -895,9 +895,9 @@ Function Get-AGMAPIApplianceReport ([String]$skyid,[string]$command,[string]$arg
          $timeout = 20
     }
 
-    if (!($skyid))
+    if (!($applianceid))
     {
-        [string]$skyid = Read-Host "SkyID"
+        [string]$applianceid = Read-Host "applianceid"
     }
     if (!($command))
     {
@@ -905,7 +905,7 @@ Function Get-AGMAPIApplianceReport ([String]$skyid,[string]$command,[string]$arg
     }
     Try
     {
-        $url = "https://$AGMIP/actifio/appliancedelegation/$skyid/api/report/" + "$command" 
+        $url = "https://$AGMIP/actifio/appliancedelegation/$applianceid/api/report/" + "$command" 
         if  ($arguments)
         {
             $url = $url +"?" +$arguments
@@ -956,7 +956,7 @@ Function Get-AGMAPIApplianceReport ([String]$skyid,[string]$command,[string]$arg
     }      
 }
 
-Function Set-AGMAPIApplianceTask ([String]$skyid,[string]$command,[string]$arguments,[int]$timeout)
+Function Set-AGMAPIApplianceTask ([String]$applianceid,[string]$command,[string]$arguments,[int]$timeout)
 {
     <#  
     .SYNOPSIS
@@ -979,9 +979,9 @@ Function Set-AGMAPIApplianceTask ([String]$skyid,[string]$command,[string]$argum
          $timeout = 20
     }
 
-    if (!($skyid))
+    if (!($applianceid))
     {
-        [string]$skyid = Read-Host "SkyID"
+        [string]$applianceid = Read-Host "applianceid"
     }
     if (!($command))
     {
@@ -989,7 +989,7 @@ Function Set-AGMAPIApplianceTask ([String]$skyid,[string]$command,[string]$argum
     }
     Try
     {
-        $url = "https://$AGMIP/actifio/appliancedelegation/$skyid/api/task/" + "$command" 
+        $url = "https://$AGMIP/actifio/appliancedelegation/$applianceid/api/task/" + "$command" 
         if  ($arguments)
         {
             $url = $url +"?" +$arguments
