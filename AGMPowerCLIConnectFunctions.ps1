@@ -548,7 +548,11 @@ function Get-GBDRManagementConsole ([string]$project,[string]$region)
     {
         $RestError = $_
     }
-    if ($RestError) 
+    if ($resp.error)
+    {
+        ($resp.error).error
+    }
+    elseif ($RestError) 
     {
         Test-AGMJSON "$RestError"
     }
@@ -603,12 +607,10 @@ function Connect-GBDRManagementConsole
     # first we get a token
     $Url = "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/$serviceaccount" +":generateIdToken"
     $body = '{"audience": "' +$oauth2ClientId +'", "includeEmail":"true"}'
-
     $RestError = $null
     Try
     {
-            $resp = Invoke-RestMethod -Method POST -Headers @{ Authorization = "Bearer $(gcloud auth print-access-token)" }  -body $body -ContentType "application/json" -Uri $url
-
+        $resp = Invoke-RestMethod -Method POST -Headers @{ Authorization = "Bearer $(gcloud auth print-access-token)" }  -body $body -ContentType "application/json" -Uri $url
     }
     Catch
     {
@@ -616,13 +618,14 @@ function Connect-GBDRManagementConsole
     }
     if ($RestError)
     {
+        
         $loginfailedsniff = Test-AGMJSON $RestError
         $loginfailedsniff
         return
     }
     elseif ($resp.token)
     {
-        $token = $resp.$token
+        $token = $resp.token
     }
     else 
     {
@@ -634,7 +637,7 @@ function Connect-GBDRManagementConsole
     $Url = "https://" +$managementconsole +"/actifio/session"
     Try
     {
-        $resp = Invoke-RestMethod -Method POST -SkipCertificateCheck  -Headers @{ Authorization = "Bearer $token " } -Uri $Url
+        $resp = Invoke-RestMethod -Method POST -Headers @{ Authorization = "Bearer $token" } -Uri $Url
     }
     Catch
     {
@@ -648,16 +651,15 @@ function Connect-GBDRManagementConsole
     }
     elseif ($resp.id)
     {
-        $sessionid = $resp.$id
+        $sessionid = $resp.id
     }
     else 
     {
         Get-AGMErrorMessage -messagetoprint "Failed to get a sessionid"
         return
     }
-
     # we promote the user
-    $Url = "https://" +$agmip +"/actifio/manageacl/promoteUser"
+    $Url = "https://" +$managementconsole +"/actifio/manageacl/promoteUser"
     Try
     {
         $resp = Invoke-RestMethod -Method PUT -SkipCertificateCheck  -Headers @{ Authorization = "Bearer $token"; "backupdr-management-session" = "Actifio $sessionid" } -Uri $Url
