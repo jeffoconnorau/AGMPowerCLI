@@ -80,20 +80,20 @@ function Connect-AGM
     $agmip = Read-Host "IP or Name of AGM"
     }
 
-# based on the action, do the right thing.
-if ( $certaction -eq "i" -or $certaction -eq "I" )
-{
-    $hostVersionInfo = (get-host).Version.Major
-    if ( $hostVersionInfo -lt "6" )
+    # based on the action, do the right thing.
+    if ( $certaction -eq "i" -or $certaction -eq "I" )
     {
-        psfivecerthandler
+        $hostVersionInfo = (get-host).Version.Major
+        if ( $hostVersionInfo -lt "6" )
+        {
+            psfivecerthandler
+        }
+        else 
+        {
+            # set IGNOREACTCERTS so that we ignore self-signed certs
+            $env:IGNOREACTCERTS = "y"
+        }
     }
-    else 
-    {
-        # set IGNOREACTCERTS so that we ignore self-signed certs
-        $env:IGNOREACTCERTS = "y"
-    }
-}
 
 
     if ($ignorecerts)
@@ -565,18 +565,18 @@ function Connect-GBDRManagementConsole
     Connects to Management Server to create a Session ID
 
     .DESCRIPTION
-    The Connect-ManagementServer connects to Management Server to get a bearer token and session ID to use on all subsequent calls
+    The Connect-GBDRManagementConsole connects to Management Console to get a bearer token and session ID to use on all subsequent calls
 
     .NOTES
     Written by Anthony Vandewerdt
 
     .EXAMPLE
-    Connect-ManagementServer
+    Connect-GBDRManagementConsole
     
     #>
 
     
-    Param([String]$managementconsole,[String]$serviceaccount,[String]$oauth2ClientId,[switch][alias("q")]$quiet, [switch][alias("p")]$printsession,[int]$actmaxapilimit)
+    Param([String]$agmip,[String]$serviceaccount,[String]$oauth2ClientId,[switch][alias("q")]$quiet, [switch][alias("p")]$printsession,[int]$actmaxapilimit)
 
     # max objects returned will be unlimited.   Otherwise user can supply a limit
     if (!($agmmaxapilimit))
@@ -585,9 +585,9 @@ function Connect-GBDRManagementConsole
     }
     $global:agmmaxapilimit = $agmmaxapilimit
 
-    if (!($managementconsole))
+    if (!($agmip))
     {
-    $agmip = Read-Host "IP or Name of Management Console"
+        $agmip = Read-Host "IP or Name of Management Console"
     }
 
     if (!($serviceaccount))
@@ -630,7 +630,7 @@ function Connect-GBDRManagementConsole
     }
     # now we get a sessionID
 
-    $Url = "https://" +$managementconsole +"/actifio/session"
+    $Url = "https://" +$agmip +"/actifio/session"
     Try
     {
         $resp = Invoke-RestMethod -Method POST -Headers @{ Authorization = "Bearer $token" } -Uri $Url
@@ -655,7 +655,7 @@ function Connect-GBDRManagementConsole
         return
     }
     # we promote the user
-    $Url = "https://" +$managementconsole +"/actifio/manageacl/promoteUser"
+    $Url = "https://" +$agmip +"/actifio/manageacl/promoteUser"
     Try
     {
         $resp = Invoke-RestMethod -Method PUT -Headers @{ Authorization = "Bearer $token"; "backupdr-management-session" = "Actifio $sessionid" } -Uri $Url
@@ -673,7 +673,7 @@ function Connect-GBDRManagementConsole
     elseif ($resp.xml)
     {
         $global:AGMSESSIONID = $sessionid
-        $global:AGMIP = $managementconsole
+        $global:AGMIP = $agmip
         $GLOBAL:AGMTimezone = "local"
         $GLOBAL:AGMToken = $token
         if ($quiet)
