@@ -548,11 +548,7 @@ function Get-GBDRManagementConsole ([string]$project,[string]$region)
     {
         $RestError = $_
     }
-    if ($resp.error)
-    {
-        ($resp.error).error
-    }
-    elseif ($RestError) 
+    if ($RestError) 
     {
         Test-AGMJSON "$RestError"
     }
