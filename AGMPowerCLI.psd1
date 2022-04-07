@@ -202,7 +202,7 @@ PrivateData = @{
 
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
-        ## [0.0.0.34] 2022-04-05
+        ## [0.0.0.34] 2022-04-07
         Add Appliance API commands:  Get-AGMAPIApplianceInfo, Get-AGMAPIApplianceReport, Set-AGMAPIApplianceTask
 
         ## [0.0.0.33] 2022-03-30
