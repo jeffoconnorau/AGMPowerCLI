@@ -66,7 +66,7 @@ function Connect-AGM
     #>
 
     
-    Param([String]$agmip,[String]$agmuser,[String]$agmpassword,[String]$passwordfile,[switch][alias("q")]$quiet, [switch][alias("p")]$printsession,[switch][alias("i")]$ignorecerts,[int]$actmaxapilimit)
+    Param([String]$agmip,[String]$agmuser,[String]$agmpassword,[String]$oauth2ClientId,[String]$passwordfile,[switch][alias("q")]$quiet, [switch][alias("p")]$printsession,[switch][alias("i")]$ignorecerts,[int]$actmaxapilimit)
 
     # max objects returned will be unlimited.   Otherwise user can supply a limit
     if (!($agmmaxapilimit))
@@ -95,7 +95,83 @@ function Connect-AGM
         }
     }
 
+    # OATH handling
+    if ($oauth2ClientId)
+    {
+        # first we get a token
+        $Url = "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/$agmuser" +":generateIdToken"
+        $body = '{"audience": "' +$oauth2ClientId +'", "includeEmail":"true"}'
+        $RestError = $null
+        Try
+        {
+            $resp = Invoke-RestMethod -Method POST -Headers @{ Authorization = "Bearer $(gcloud auth print-access-token)" }  -body $body -ContentType "application/json" -Uri $url
+        }
+        Catch
+        {
+            $RestError = $_
+        }
+        if ($RestError)
+        {
+            
+            $loginfailedsniff = Test-AGMJSON $RestError
+            $loginfailedsniff
+            return
+        }
+        elseif ($resp.token)
+        {
+            $token = $resp.token
+        }
+        else 
+        {
+            Get-AGMErrorMessage -messagetoprint "Failed to get a token"
+            return
+        }
+        # now we get a sessionID
 
+        $Url = "https://" +$agmip +"/actifio/session"
+        Try
+        {
+            $resp = Invoke-RestMethod -Method POST -Headers @{ Authorization = "Bearer $token" } -Uri $Url
+        }
+        Catch
+        {
+            $RestError = $_
+        }
+        if ($RestError)
+        {
+            $loginfailedsniff = Test-AGMJSON $RestError
+            $loginfailedsniff
+            return
+        }
+        elseif ($resp.id)
+        {
+            $GLOBAL:AGMSESSIONID = $resp.id
+            $GLOBAL:AGMIP = $agmip
+            $GLOBAL:AGMTimezone = "local"
+            $GLOBAL:AGMToken = $token
+            if ($quiet)
+            {
+                return
+            }
+            elseif ($printsession)
+            {
+                Write-Host "$agmsessionid"
+                return
+            }
+            else 
+            {
+                Write-Host "Login Successful!"
+                return
+            }
+        }
+        else 
+        {
+            Get-AGMErrorMessage -messagetoprint "Failed to get a sessionid"
+            return
+        }
+    }
+
+    # start 10.x AGM from below
     if ($ignorecerts)
     {
         $hostVersionInfo = (get-host).Version.Major
@@ -166,6 +242,7 @@ function Connect-AGM
     {
     $agmuser = Read-Host "AGM user"
     }
+
 
     if (!($passwordfile))
     {
@@ -513,7 +590,7 @@ function Get-AGMTimeZoneHandling
 
 
 
-function Get-GBDRManagementConsole ([string]$project,[string]$region)
+function Get-GoogleBackupManagementConsole ([string]$project,[string]$location)
 {
     <#  
     .SYNOPSIS
@@ -526,7 +603,7 @@ function Get-GBDRManagementConsole ([string]$project,[string]$region)
     Written by Anthony Vandewerdt
 
     .EXAMPLE
-    Get-AGMTimeZoneHandling
+    Get-GoogleBackupManagementConsole -project project1 -location asia-southeast1
     Show whether the AGM Module is using local or UTC
  
     #>
@@ -535,14 +612,14 @@ function Get-GBDRManagementConsole ([string]$project,[string]$region)
     {
         Get-AGMErrorMessage -messagetoprint "Please specify project with -project"
     }
-    if (!($region))
+    if (!($location))
     {
-        Get-AGMErrorMessage -messagetoprint "Please specify region with -region"
+        Get-AGMErrorMessage -messagetoprint "Please specify region with location"
     }
     
     Try
     {
-        $resp = Invoke-RestMethod -Method GET -Headers @{ Authorization = "Bearer $(gcloud auth print-access-token)" } -Uri "https://backupdr.googleapis.com/v1/projects/$project/locations/$region/managementServers"
+        $resp = Invoke-RestMethod -Method GET -Headers @{ Authorization = "Bearer $(gcloud auth print-access-token)" } -Uri "https://backupdr.googleapis.com/v1/projects/$project/locations/$location/managementServers"
     }
     Catch
     {
@@ -647,32 +724,7 @@ function Connect-GBDRManagementConsole
     }
     elseif ($resp.id)
     {
-        $sessionid = $resp.id
-    }
-    else 
-    {
-        Get-AGMErrorMessage -messagetoprint "Failed to get a sessionid"
-        return
-    }
-    # we promote the user
-    $Url = "https://" +$agmip +"/actifio/manageacl/promoteUser"
-    Try
-    {
-        $resp = Invoke-RestMethod -Method PUT -Headers @{ Authorization = "Bearer $token"; "backupdr-management-session" = "Actifio $sessionid" } -Uri $Url
-    }
-    Catch
-    {
-        $RestError = $_
-    }
-    if ($RestError)
-    {
-        $loginfailedsniff = Test-AGMJSON $RestError
-        $loginfailedsniff
-        return
-    }
-    elseif ($resp.xml)
-    {
-        $GLOBAL:AGMSESSIONID = $sessionid
+        $GLOBAL:AGMSESSIONID = $resp.id
         $GLOBAL:AGMIP = $agmip
         $GLOBAL:AGMTimezone = "local"
         $GLOBAL:AGMToken = $token
@@ -693,7 +745,7 @@ function Connect-GBDRManagementConsole
     }
     else 
     {
-        Get-AGMErrorMessage -messagetoprint "Failed to promote the user"
+        Get-AGMErrorMessage -messagetoprint "Failed to get a sessionid"
         return
     }
 }
