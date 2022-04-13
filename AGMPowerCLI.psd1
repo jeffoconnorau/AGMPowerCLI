@@ -203,7 +203,7 @@ PrivateData = @{
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
         ## [0.0.0.35] 2022-04-13
-        
+        Option -o to show filterable fields did not work on PS 5.
 
         ## [0.0.0.34] 2022-04-13
         Add Appliance API commands:  Get-AGMAPIApplianceInfo, Get-AGMAPIApplianceReport, Set-AGMAPIApplianceTask
