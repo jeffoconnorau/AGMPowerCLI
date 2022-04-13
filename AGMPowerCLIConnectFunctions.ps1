@@ -66,7 +66,7 @@ function Connect-AGM
     #>
 
     
-    Param([String]$agmip,[String]$agmuser,[String]$agmpassword,[String]$passwordfile,[switch][alias("q")]$quiet, [switch][alias("p")]$printsession,[switch][alias("i")]$ignorecerts,[int]$actmaxapilimit)
+    Param([String]$agmip,[String]$agmuser,[String]$agmpassword,[String]$oauth2ClientId,[String]$passwordfile,[switch][alias("q")]$quiet, [switch][alias("p")]$printsession,[switch][alias("i")]$ignorecerts,[int]$actmaxapilimit)
 
     # max objects returned will be unlimited.   Otherwise user can supply a limit
     if (!($agmmaxapilimit))
@@ -80,22 +80,98 @@ function Connect-AGM
     $agmip = Read-Host "IP or Name of AGM"
     }
 
-# based on the action, do the right thing.
-if ( $certaction -eq "i" -or $certaction -eq "I" )
-{
-    $hostVersionInfo = (get-host).Version.Major
-    if ( $hostVersionInfo -lt "6" )
+    # based on the action, do the right thing.
+    if ( $certaction -eq "i" -or $certaction -eq "I" )
     {
-        psfivecerthandler
+        $hostVersionInfo = (get-host).Version.Major
+        if ( $hostVersionInfo -lt "6" )
+        {
+            psfivecerthandler
+        }
+        else 
+        {
+            # set IGNOREACTCERTS so that we ignore self-signed certs
+            $env:IGNOREACTCERTS = "y"
+        }
     }
-    else 
+
+    # OATH handling
+    if ($oauth2ClientId)
     {
-        # set IGNOREACTCERTS so that we ignore self-signed certs
-        $env:IGNOREACTCERTS = "y"
+        # first we get a token
+        $Url = "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/$agmuser" +":generateIdToken"
+        $body = '{"audience": "' +$oauth2ClientId +'", "includeEmail":"true"}'
+        $RestError = $null
+        Try
+        {
+            $resp = Invoke-RestMethod -Method POST -Headers @{ Authorization = "Bearer $(gcloud auth print-access-token)" }  -body $body -ContentType "application/json" -Uri $url
+        }
+        Catch
+        {
+            $RestError = $_
+        }
+        if ($RestError)
+        {
+            
+            $loginfailedsniff = Test-AGMJSON $RestError
+            $loginfailedsniff
+            return
+        }
+        elseif ($resp.token)
+        {
+            $token = $resp.token
+        }
+        else 
+        {
+            Get-AGMErrorMessage -messagetoprint "Failed to get a token"
+            return
+        }
+        # now we get a sessionID
+
+        $Url = "https://" +$agmip +"/actifio/session"
+        Try
+        {
+            $resp = Invoke-RestMethod -Method POST -Headers @{ Authorization = "Bearer $token" } -Uri $Url
+        }
+        Catch
+        {
+            $RestError = $_
+        }
+        if ($RestError)
+        {
+            $loginfailedsniff = Test-AGMJSON $RestError
+            $loginfailedsniff
+            return
+        }
+        elseif ($resp.id)
+        {
+            $GLOBAL:AGMSESSIONID = $resp.id
+            $GLOBAL:AGMIP = $agmip
+            $GLOBAL:AGMTimezone = "local"
+            $GLOBAL:AGMToken = $token
+            if ($quiet)
+            {
+                return
+            }
+            elseif ($printsession)
+            {
+                Write-Host "$agmsessionid"
+                return
+            }
+            else 
+            {
+                Write-Host "Login Successful!"
+                return
+            }
+        }
+        else 
+        {
+            Get-AGMErrorMessage -messagetoprint "Failed to get a sessionid"
+            return
+        }
     }
-}
 
-
+    # start 10.x AGM from below
     if ($ignorecerts)
     {
         $hostVersionInfo = (get-host).Version.Major
@@ -166,6 +242,7 @@ if ( $certaction -eq "i" -or $certaction -eq "I" )
     {
     $agmuser = Read-Host "AGM user"
     }
+
 
     if (!($passwordfile))
     {
@@ -506,5 +583,54 @@ function Get-AGMTimeZoneHandling
     else 
     {
         Write-Host "Currently timezone in use is $GLOBAL:AGMTimezone"
+    }
+}
+
+
+
+
+
+function Get-GoogleBackupManagementConsole ([string]$project,[string]$location)
+{
+    <#  
+    .SYNOPSIS
+    Displays details of Google Backup and DR Management Console
+
+    .DESCRIPTION
+    The user needs to specify a project ID and region
+
+    .NOTES
+    Written by Anthony Vandewerdt
+
+    .EXAMPLE
+    Get-GoogleBackupManagementConsole -project project1 -location asia-southeast1
+    Show whether the AGM Module is using local or UTC
+ 
+    #>
+
+    if (!($project))
+    {
+        Get-AGMErrorMessage -messagetoprint "Please specify project with -project"
+    }
+    if (!($location))
+    {
+        Get-AGMErrorMessage -messagetoprint "Please specify region with location"
+    }
+    
+    Try
+    {
+        $resp = Invoke-RestMethod -Method GET -Headers @{ Authorization = "Bearer $(gcloud auth print-access-token)" } -Uri "https://backupdr.googleapis.com/v1/projects/$project/locations/$location/managementServers"
+    }
+    Catch
+    {
+        $RestError = $_
+    }
+    if ($RestError) 
+    {
+        Test-AGMJSON "$RestError"
+    }
+    elseif ($resp.managementServers)
+    {
+        $resp.managementServers
     }
 }

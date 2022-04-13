@@ -260,9 +260,23 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             {
                 if ($head)
                 {
-                    $resp = Invoke-WebRequest -Method "head" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
-                } else {
-                    $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                    if ($AGMToken)
+                    {
+                        $resp = Invoke-WebRequest -Method "head" -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                    }
+                    else {
+                        $resp = Invoke-WebRequest -Method "head" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                    }
+                } 
+                else 
+                {
+                    if ($AGMToken)
+                    {
+                        $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                    }
+                    else {
+                        $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+                    }
                 }
             }
         }
@@ -538,7 +552,16 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
         }
         else
         {
-            $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" ; accept = "application/json" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+            if ($AGMToken) 
+            {
+                $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" ; accept = "application/json" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+                
+            }
+            else 
+            {
+                $resp = Invoke-RestMethod -Method $method -Headers @{ Authorization = "Actifio $AGMSESSIONID" ; accept = "application/json" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+            }
+            
         }
     }
     Catch
@@ -646,7 +669,15 @@ Function Put-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body)
         }
         else
         {
-            $resp = Invoke-RestMethod -Method put -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+            if ($AGMToken)
+            {
+                $resp = Invoke-RestMethod -Method put -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+            }
+            else 
+            {
+                $resp = Invoke-RestMethod -Method put -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -body $body -ContentType "application/json" -Uri "$url" -TimeoutSec $timeout 
+            }
+            
         }
     }
     Catch
@@ -785,4 +816,278 @@ Function Convert-AGMDuration ($duration)
         $totalhours = "00" 
     }
     $totalhours + $convertedtime.ToString("\:mm\:ss")
+}
+
+####   Appliance Delegation
+
+Function Get-AGMAPIApplianceInfo ([String]$applianceid,[string]$command,[string]$arguments,[int]$timeout)
+{
+    <#  
+    .SYNOPSIS
+    Fetch info output from Appliances
+
+    .NOTES
+    Written by Anthony Vandewerdt
+    
+    #>
+
+
+    if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
+    {
+        Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM"
+        return
+    }
+
+    if (!($timeout))
+    {
+         $timeout = 20
+    }
+
+    if (!($applianceid))
+    {
+        [string]$applianceid = Read-Host "applianceid"
+    }
+    if (!($command))
+    {
+        [string]$command = Read-Host "Command"
+    }
+    Try
+    {
+        $url = "https://$AGMIP/actifio/appliancedelegation/$applianceid/api/info/" + "$command" 
+        if  ($arguments)
+        {
+            $url = $url +"?" +$arguments
+        }
+        if ($IGNOREAGMCERTS)
+        {
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+        }
+        else
+        {
+            if ($AGMToken)
+            {
+                $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            }
+            else 
+            {
+                $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            }
+        }
+    }
+    Catch
+    {
+        if ( $((get-host).Version.Major) -gt 5 )
+        {
+            $RestError = $_
+        }
+        else 
+        {
+            if ($_.Exception.Response)
+            {
+                $result = $_.Exception.Response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($result)
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $RestError = $reader.ReadToEnd();
+            }
+            else 
+            {
+                Get-AGMErrorMessage  -messagetoprint  "No response was received from $AGMIP  Timeout is set to $timeout seconds"
+                return
+            }
+        }
+    }
+    if ($RestError)
+    {
+        Test-AGMJSON $RestError 
+    }
+    elseif ($resp.result)
+    {
+        $resp.result
+    }
+    else 
+    {
+        $resp    
+    }      
+}
+
+Function Get-AGMAPIApplianceReport ([String]$applianceid,[string]$command,[string]$arguments,[int]$timeout)
+{
+    <#  
+    .SYNOPSIS
+    Fetch report output from Appliances
+
+    .NOTES
+    Written by Anthony Vandewerdt
+    
+    #>
+
+    if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
+    {
+        Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM"
+        return
+    }
+
+    if (!($timeout))
+    {
+         $timeout = 20
+    }
+
+    if (!($applianceid))
+    {
+        [string]$applianceid = Read-Host "applianceid"
+    }
+    if (!($command))
+    {
+        [string]$command = Read-Host "Endpoint"
+    }
+    Try
+    {
+        $url = "https://$AGMIP/actifio/appliancedelegation/$applianceid/api/report/" + "$command" 
+        if  ($arguments)
+        {
+            $url = $url +"?" +$arguments
+        }
+        if ($IGNOREAGMCERTS)
+        {
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+        }
+        else
+        {
+            if ($AGMToken)
+            {
+                $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            }
+            else
+            {
+                $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            }
+        }
+    }
+    Catch
+    {
+        if ( $((get-host).Version.Major) -gt 5 )
+        {
+            $RestError = $_
+        }
+        else 
+        {
+            if ($_.Exception.Response)
+            {
+                $result = $_.Exception.Response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($result)
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $RestError = $reader.ReadToEnd();
+            }
+            else 
+            {
+                Get-AGMErrorMessage  -messagetoprint  "No response was received from $AGMIP  Timeout is set to $timeout seconds"
+                return
+            }
+        }
+    }
+    if ($RestError)
+    {
+        Test-AGMJSON $RestError 
+    }
+    elseif ($resp.result)
+    {
+        $resp.result
+    }
+    else 
+    {
+        $resp    
+    }      
+}
+
+Function Set-AGMAPIApplianceTask ([String]$applianceid,[string]$command,[string]$arguments,[int]$timeout)
+{
+    <#  
+    .SYNOPSIS
+    Fetch info output from Appliances
+
+    .NOTES
+    Written by Anthony Vandewerdt
+    
+    #>
+
+
+    if ( (!($AGMSESSIONID)) -or (!($AGMIP)) )
+    {
+        Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM"
+        return
+    }
+
+    if (!($timeout))
+    {
+         $timeout = 20
+    }
+
+    if (!($applianceid))
+    {
+        [string]$applianceid = Read-Host "applianceid"
+    }
+    if (!($command))
+    {
+        [string]$command = Read-Host "Command"
+    }
+    Try
+    {
+        $url = "https://$AGMIP/actifio/appliancedelegation/$applianceid/api/task/" + "$command" 
+        if  ($arguments)
+        {
+            $url = $url +"?" +$arguments
+        }
+        if ($IGNOREAGMCERTS)
+        {
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method "Post" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+        }
+        else
+        {
+            if ($AGMToken)
+            {
+                $resp = Invoke-RestMethod -Method "Post" -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" }  -Uri "$url" -TimeoutSec $timeout 
+            }
+            else 
+            {
+                $resp = Invoke-RestMethod -Method "Post" -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "$url" -TimeoutSec $timeout 
+            }
+        }
+    }
+    Catch
+    {
+        if ( $((get-host).Version.Major) -gt 5 )
+        {
+            $RestError = $_
+        }
+        else 
+        {
+            if ($_.Exception.Response)
+            {
+                $result = $_.Exception.Response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($result)
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $RestError = $reader.ReadToEnd();
+            }
+            else 
+            {
+                Get-AGMErrorMessage  -messagetoprint  "No response was received from $AGMIP  Timeout is set to $timeout seconds"
+                return
+            }
+        }
+    }
+    if ($RestError)
+    {
+        Test-AGMJSON $RestError 
+    }
+    elseif ($resp.result)
+    {
+        $resp.result
+    }
+    else 
+    {
+        $resp    
+    }      
 }
