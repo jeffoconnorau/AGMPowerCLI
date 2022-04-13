@@ -313,7 +313,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             {
                 if ($options)
                 {
-                    $grab = $resp | ConvertTo-JSON -depth 8 | ConvertFrom-Json -AsHashtable 
+                    $grab = $resp | ConvertTo-JSON -depth 8 | ConvertFrom-Json 
                     
                     if ($grab.Values)
                     {

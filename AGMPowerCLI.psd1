@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.34'
+ModuleVersion = '0.0.0.35'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -202,6 +202,9 @@ PrivateData = @{
 
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
+        ## [0.0.0.35] 2022-04-13
+        
+
         ## [0.0.0.34] 2022-04-13
         Add Appliance API commands:  Get-AGMAPIApplianceInfo, Get-AGMAPIApplianceReport, Set-AGMAPIApplianceTask
 
