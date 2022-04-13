@@ -317,7 +317,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                     if ($grab.filterablefields)
                     {
                         $grab = $grab.filterablefields
-                        $grab | Sort-Object
+                        $grab | Sort-Object field
                     }
                 }
                 else 
