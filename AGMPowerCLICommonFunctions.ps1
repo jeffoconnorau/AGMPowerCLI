@@ -313,11 +313,11 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             {
                 if ($options)
                 {
-                    $grab = $grab.'GET(list)'
+                    $grab = $resp.'GET(list)'
                     if ($grab.filterablefields)
                     {
                         $grab = $grab.filterablefields
-                        $grab | Sort-Object field
+                        $grab | Sort-Object
                     }
                 }
                 else 
