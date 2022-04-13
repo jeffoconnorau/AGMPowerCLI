@@ -313,13 +313,11 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             {
                 if ($options)
                 {
-                    $grab = $resp | ConvertTo-JSON -depth 8 | ConvertFrom-Json -AsHashtable 
-                    
-                    if ($grab.Values)
+                    $grab = $resp.'GET(list)'
+                    if ($grab.filterablefields)
                     {
-                        $grab1 = $grab.Values.filterablefields  | Sort-Object -property field
-                        $grab2 = foreach ($line in $grab1) { write-host $line.field "(" $line.type ")" }
-                        $grab2
+                        $grab = $grab.filterablefields
+                        $grab | Sort-Object field
                     }
                 }
                 else 
