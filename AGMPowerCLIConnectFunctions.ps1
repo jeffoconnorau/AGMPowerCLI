@@ -613,7 +613,7 @@ function Get-GBDRConsole ([string]$project,[string]$location)
     }
     if (!($location))
     {
-        Get-AGMErrorMessage -messagetoprint "Please specify region with location"
+        Get-AGMErrorMessage -messagetoprint "Please specify -location"
     }
     
     Try
