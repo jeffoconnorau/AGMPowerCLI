@@ -314,7 +314,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
                 if ($options)
                 {
                     $grab = $resp | ConvertTo-JSON -depth 8 | ConvertFrom-Json 
-                    
+                    $resp
                     if ($grab.Values)
                     {
                         $grab1 = $grab.Values.filterablefields  | Sort-Object -property field
