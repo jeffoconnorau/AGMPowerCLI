@@ -590,11 +590,11 @@ function Get-AGMTimeZoneHandling
 
 
 
-function Get-GoogleBackupManagementConsole ([string]$project,[string]$location)
+function Get-GBDRConsole ([string]$project,[string]$location)
 {
     <#  
     .SYNOPSIS
-    Displays details of Google Backup and DR Management Console
+    Displays details of GBDR Management Console
 
     .DESCRIPTION
     The user needs to specify a project ID and region
@@ -603,8 +603,7 @@ function Get-GoogleBackupManagementConsole ([string]$project,[string]$location)
     Written by Anthony Vandewerdt
 
     .EXAMPLE
-    Get-GoogleBackupManagementConsole -project project1 -location asia-southeast1
-    Show whether the AGM Module is using local or UTC
+    Get-GBDRConsole -project project1 -location asia-southeast1
  
     #>
 
