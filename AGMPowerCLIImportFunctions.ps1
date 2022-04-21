@@ -73,3 +73,80 @@ Function Import-AGMOnVault ([string]$diskpoolid,[string]$applianceid,[string]$ap
         Post-AGMAPIData  -endpoint $endpoint
     }
 }
+
+
+Function Import-AGMPDSnapshot ([string]$diskpoolid,[string]$applianceid,[string]$appid,[switch][alias("f")]$forget,[switch][alias("o")]$ownershiptakeover,[string]$jsonbody,[string]$label) 
+{
+    <#
+    .SYNOPSIS
+    Imports or forgets PD Snapshot images
+    There is no Import-AGMPDSnapshot command.   You can do import and forget from this function. 
+
+    .EXAMPLE
+    Import-AGMPDSnapshot -diskpoolid 20060633 -applianceid 1415019931 
+
+    Imports all PD Snapshot images from disk pool ID 20060633 onto Appliance ID 1415019931
+
+    .EXAMPLE
+    Import-AGMPDSnapshot -diskpoolid 20060633 -applianceid 1415019931 -appid 4788
+    
+    Imports all PD Snapshot images from disk pool ID 20060633 and App ID 4788 onto Appliance ID 1415019931
+
+    .EXAMPLE
+    Import-AGMPDSnapshot -diskpoolid 20060633 -applianceid 1415019931 -appid 4788 -owner
+    
+    Imports all PD Snapshot images from disk pool ID 20060633 and App ID 4788 onto Appliance ID 1415019931 and takes ownership
+
+    .EXAMPLE
+    Import-AGMPDSnapshot -diskpoolid 20060633 -applianceid 1415019931 -appid 4788 -forget
+    
+    Forgets all PD Snapshot images imported from disk pool ID 20060633 and App ID 4788 onto Appliance ID 1415019931
+
+    .DESCRIPTION
+    A function to import PD Snapshot images
+    Learn Appliance ID with Get-AGMAppliance
+    Learn Diskpool ID with Get-AGMDiskPool
+    Learn Application ID with Get-AGMApplication
+
+    #>
+
+    if (!($diskpoolid))
+    {
+        [string]$diskpoolid = Read-Host "Diskpool ID to import from"
+    }
+
+    if (!($applianceid))
+    {
+        [string]$applianceid = Read-Host "Appliance ID to import into"
+    }
+
+    if ($ownershiptakeover)
+    {
+        $owner="true"
+    }
+    else 
+    {
+        $owner="false"
+    }
+
+    if ($forget)
+    {
+        $action = "forget"
+    }
+    else 
+    {
+        $action = "import"
+    }
+
+
+    if($appid)
+    {   
+        $endpoint = "/diskpool/$diskpoolid/vaultclusters/$applianceid/$appid" + "?action=$action&owner=$owner&nowait=true&jobclass=1"
+        Post-AGMAPIData  -endpoint $endpoint
+    }
+    else 
+    {
+        $endpoint = "/diskpool/$diskpoolid/vaultclusters/$applianceid" + "?action=$action&owner=$owner&nowait=true&jobclass=1"
+        Post-AGMAPIData  -endpoint $endpoint
+    }
+}
