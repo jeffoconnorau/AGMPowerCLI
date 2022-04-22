@@ -81,7 +81,7 @@ function Connect-AGM
     }
     if (!($agmtimeout))
     {
-        $agmtimeout = 60
+        [int]$agmtimeout = 60
     }
 
 
