@@ -307,6 +307,10 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             {
                 Test-AGMJSON $RestError 
             }
+            elseif ($resp -contains "JWT has expired") {
+                Get-AGMErrorMessage  -messagetoprint  $resp
+                return
+            }
             else
             {
             if ( (!($resp.items)) -or ($itemoverride -eq $true) )
