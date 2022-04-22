@@ -204,7 +204,7 @@ PrivateData = @{
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
         ## [0.0.0.36] 2022-04-22
-        Add Import-AGMPDSnapshot,   allowed user to set timeout with -agmtimeout
+        Add Import-AGMPDSnapshot,   allowed user to set timeout with -agmtimeout and set default to 60 seconds
 
         ## [0.0.0.35] 2022-04-13
         Option -o to show filterable fields did not work on PS 5.
