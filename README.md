@@ -278,9 +278,11 @@ Multiple filtervalues can be used and will combine results.  Note also they need
 
 #### Timeouts
 
-The default timeout is set to 60 seconds.   You can change this by adding **-agmtimeout XX** to the **connect-agm** command where **XX** is the desired value.
+The default timeout for initial logins is set to 60 seconds.   
 
-So to login with a 10 second  timeout:
+For all other functions (after initial login) you can change the timeout by adding **-agmtimeout XX** to the **connect-agm** command where **XX** is the desired value.
+
+So to set a 10 second timeout for all functions after login:
 ```
 Connect-AGM 10.61.5.114 admin -passwordfile "c:\temp\password.key" -ignorecerts -agmtimeout 10
 ```

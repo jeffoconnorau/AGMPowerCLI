@@ -194,7 +194,7 @@ function Connect-AGM
     {
         Try
         {
-            $resp = Invoke-RestMethod -Uri https://$agmip -TimeoutSec $agmtimeout
+            $resp = Invoke-RestMethod -Uri https://$agmip -TimeoutSec 60
         }
         Catch
         {
@@ -285,11 +285,11 @@ function Connect-AGM
         $hostVersionInfo = (get-host).Version.Major
         if ( $hostVersionInfo -lt "6" )
         {
-            $resp = Invoke-RestMethod -Method POST -Uri $Url -Credential $creds  -TimeoutSec $agmtimeout
+            $resp = Invoke-RestMethod -Method POST -Uri $Url -Credential $creds -TimeoutSec 60
         }
         else 
         {
-            $resp = Invoke-RestMethod -SkipCertificateCheck -Method POST -Uri $Url -Credential $creds  -TimeoutSec $agmtimeout
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method POST -Uri $Url -Credential $creds -TimeoutSec 60
         }
     }
     Catch
@@ -298,7 +298,7 @@ function Connect-AGM
     }
     if ($RestError -like "The operation was canceled.")
     {
-        Get-AGMErrorMessage -messagetoprint "No response was received from $agmip after $agmtimeout seconds"
+        Get-AGMErrorMessage -messagetoprint "No response was received from $agmip after 60 seconds"
         return;
     }
     elseif ($RestError -like "Connection refused")
