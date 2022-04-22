@@ -203,8 +203,8 @@ PrivateData = @{
 
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
-        ## [0.0.0.36] 2022-04-21
-        Add Import-AGMPDSnapshot
+        ## [0.0.0.36] 2022-04-22
+        Add Import-AGMPDSnapshot,   allowed user to set timeout with -agmtimeout
 
         ## [0.0.0.35] 2022-04-13
         Option -o to show filterable fields did not work on PS 5.

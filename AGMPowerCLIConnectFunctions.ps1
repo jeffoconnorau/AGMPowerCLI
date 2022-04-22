@@ -66,19 +66,24 @@ function Connect-AGM
     #>
 
     
-    Param([String]$agmip,[String]$agmuser,[String]$agmpassword,[String]$oauth2ClientId,[String]$passwordfile,[switch][alias("q")]$quiet, [switch][alias("p")]$printsession,[switch][alias("i")]$ignorecerts,[int]$actmaxapilimit)
+    Param([String]$agmip,[String]$agmuser,[String]$agmpassword,[String]$oauth2ClientId,[String]$passwordfile,[switch][alias("q")]$quiet, [switch][alias("p")]$printsession,[switch][alias("i")]$ignorecerts,[int]$actmaxapilimit,[int]$agmtimeout)
 
     # max objects returned will be unlimited.   Otherwise user can supply a limit
     if (!($agmmaxapilimit))
     {
         $agmmaxapilimit = 0
     }
-    $global:agmmaxapilimit = $agmmaxapilimit
+    $GLOBAL:agmmaxapilimit = $agmmaxapilimit
 
     if (!($agmip))
     {
     $agmip = Read-Host "IP or Name of AGM"
     }
+    if (!($agmtimeout))
+    {
+        $agmtimeout = 60
+    }
+
 
     # based on the action, do the right thing.
     if ( $certaction -eq "i" -or $certaction -eq "I" )
@@ -149,6 +154,7 @@ function Connect-AGM
             $GLOBAL:AGMIP = $agmip
             $GLOBAL:AGMTimezone = "local"
             $GLOBAL:AGMToken = $token
+            $GLOBAL:AGMTIMEOUT = $agmtimeout
             if ($quiet)
             {
                 return
@@ -181,14 +187,14 @@ function Connect-AGM
         }
         else 
         {
-            $global:IGNOREAGMCERTS = "y"
+            $GLOBAL:IGNOREAGMCERTS = "y"
         }
     }
     else
     {
         Try
         {
-            $resp = Invoke-RestMethod -Uri https://$agmip -TimeoutSec 20
+            $resp = Invoke-RestMethod -Uri https://$agmip -TimeoutSec $agmtimeout
         }
         Catch
         {
@@ -196,7 +202,7 @@ function Connect-AGM
         }
         if ($RestError -like "The operation was canceled.")
         {
-            Get-AGMErrorMessage -messagetoprint "No response was received from $agmip after 20 seconds"
+            Get-AGMErrorMessage -messagetoprint "No response was received from $agmip after $agmtimeout seconds"
             return;
         }
         elseif ($RestError -like "Connection refused")
@@ -227,7 +233,7 @@ function Connect-AGM
                 }
                 else 
                 {
-                    $global:IGNOREAGMCERTS = "y"
+                    $GLOBAL:IGNOREAGMCERTS = "y"
                 }
             }
             elseif ( $certaction -eq "c" -or $certaction -eq "C" )
@@ -279,11 +285,11 @@ function Connect-AGM
         $hostVersionInfo = (get-host).Version.Major
         if ( $hostVersionInfo -lt "6" )
         {
-            $resp = Invoke-RestMethod -Method POST -Uri $Url -Credential $creds  -TimeoutSec 20
+            $resp = Invoke-RestMethod -Method POST -Uri $Url -Credential $creds  -TimeoutSec $agmtimeout
         }
         else 
         {
-            $resp = Invoke-RestMethod -SkipCertificateCheck -Method POST -Uri $Url -Credential $creds  -TimeoutSec 20
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method POST -Uri $Url -Credential $creds  -TimeoutSec agmtimeout
         }
     }
     Catch
@@ -292,7 +298,7 @@ function Connect-AGM
     }
     if ($RestError -like "The operation was canceled.")
     {
-        Get-AGMErrorMessage -messagetoprint "No response was received from $agmip after 20 seconds"
+        Get-AGMErrorMessage -messagetoprint "No response was received from $agmip after $agmtimeout seconds"
         return;
     }
     elseif ($RestError -like "Connection refused")
@@ -331,9 +337,10 @@ function Connect-AGM
     }
     else
     {
-        $global:AGMSESSIONID = $resp.session_id
-        $global:AGMIP = $agmip
+        $GLOBAL:AGMSESSIONID = $resp.session_id
+        $GLOBAL:AGMIP = $agmip
         $GLOBAL:AGMTimezone = "local"
+        $GLOBAL:AGMTIMEOUT = $agmtimeout
         if ($quiet)
         {
             return
@@ -403,19 +410,19 @@ function Disconnect-AGM
     {
         if ($quiet)
         {
-            $global:AGMSESSIONID = ""
+            $GLOBAL:AGMSESSIONID = ""
             return
         }
         elseif ($printsession) 
         {
             Write-Host "Successfully deleted session ID $AGMSESSIONID"   
-            $global:AGMSESSIONID = ""
+            $GLOBAL:AGMSESSIONID = ""
             return         
         }
         else 
         {
             Write-Host "Success!"   
-            $global:AGMSESSIONID = ""
+            $GLOBAL:AGMSESSIONID = ""
             return 
         }
     }
@@ -505,7 +512,7 @@ function Set-AGMAPILimit([Parameter(Mandatory = $true)]
 
     #>
 
-    $global:agmmaxapilimit = $userapilimit
+    $GLOBAL:agmmaxapilimit = $userapilimit
 }
 
 function Get-AGMAPILimit
