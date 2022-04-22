@@ -276,6 +276,16 @@ Multiple filtervalues can be used and will combine results.  Note also they need
 | -filtervalue appname~smalldb  | fuzzy search for appname like smalldb,  so you could get SmallDb, smalldb1, smalldbold.
 | filtervalue "appname=smalldb&appname=bigdb" | will show both smalldb and bigdb in the results.
 
+#### Timeouts
+
+The default timeout for initial logins is set to 60 seconds.   
+
+For all other functions (after initial login) you can change the timeout by adding **-agmtimeout XX** to the **connect-agm** command where **XX** is the desired value.
+
+So to set a 10 second timeout for all functions after login:
+```
+Connect-AGM 10.61.5.114 admin -passwordfile "c:\temp\password.key" -ignorecerts -agmtimeout 10
+```
 
 #### API Limit
 

@@ -200,10 +200,10 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
 
 
 
-    # default of 20 seconds is enforced regardless
+    # default of 60 seconds is enforced regardless
     if (!($timeout))
     {
-        $timeout = 20
+        $timeout = $GLOBAL:AGMTIMEOUT
     }
 
     # we always start at apistart of 0 which is the first result
@@ -306,6 +306,10 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             if ($RestError)
             {
                 Test-AGMJSON $RestError 
+            }
+            elseif ($resp -contains "JWT has expired") {
+                Get-AGMErrorMessage  -messagetoprint  $resp
+                return
             }
             else
             {
@@ -522,10 +526,10 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
         $endpoint = "/" + $endpoint
     }
 
-    # default of 20 seconds may be too short
+    # default of 60 seconds may be too short
     if (!($timeout))
     {
-        $timeout = 20
+        $timeout = $GLOBAL:AGMTIMEOUT 
     }
 
     # we need to set the method
@@ -648,10 +652,10 @@ Function Put-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body)
         $endpoint = "/" + $endpoint
     }
 
-    # default of 20 seconds may be too short
+    # default of 60 seconds may be too short
     if (!($timeout))
     {
-        $timeout = 20
+        $timeout = $GLOBAL:AGMTIMEOUT
     }
     if (!($body))
     {
@@ -838,7 +842,7 @@ Function Get-AGMAPIApplianceInfo ([String]$applianceid,[string]$command,[string]
 
     if (!($timeout))
     {
-         $timeout = 20
+         $timeout = $GLOBAL:AGMTIMEOUT
     }
 
     if (!($applianceid))
@@ -928,7 +932,7 @@ Function Get-AGMAPIApplianceReport ([String]$applianceid,[string]$command,[strin
 
     if (!($timeout))
     {
-         $timeout = 20
+         $timeout = $GLOBAL:AGMTIMEOUT
     }
 
     if (!($applianceid))
@@ -1019,7 +1023,7 @@ Function Set-AGMAPIApplianceTask ([String]$applianceid,[string]$command,[string]
 
     if (!($timeout))
     {
-         $timeout = 20
+         $timeout = $GLOBAL:AGMTIMEOUT
     }
 
     if (!($applianceid))

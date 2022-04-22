@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.35'
+ModuleVersion = '0.0.0.36'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -129,6 +129,7 @@ FunctionsToExport = @(
     'Get-AGMVersionDetail',
     'Get-AGMWorkflow',
     'Import-AGMOnVault',
+    'Import-AGMPDSnapshot',
     'New-AGMAppDiscovery',
     'New-AGMAppliance',
     'New-AGMCloudVM',
@@ -202,6 +203,9 @@ PrivateData = @{
 
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
+        ## [0.0.0.36] 2022-04-22
+        Add Import-AGMPDSnapshot,   allowed user to set timeout with -agmtimeout and set default to 60 seconds
+
         ## [0.0.0.35] 2022-04-13
         Option -o to show filterable fields did not work on PS 5.
 
