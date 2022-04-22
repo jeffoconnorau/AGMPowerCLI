@@ -289,7 +289,7 @@ function Connect-AGM
         }
         else 
         {
-            $resp = Invoke-RestMethod -SkipCertificateCheck -Method POST -Uri $Url -Credential $creds  -TimeoutSec agmtimeout
+            $resp = Invoke-RestMethod -SkipCertificateCheck -Method POST -Uri $Url -Credential $creds  -TimeoutSec $agmtimeout
         }
     }
     Catch
