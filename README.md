@@ -232,6 +232,13 @@ connect-agm 10.152.0.5 admin $(gcloud secrets versions access latest --secret=ag
 ```
 Note you can use **-quiet** to suppress messages.   This is handy when scripting.
 
+#### Login using a different TCP Port
+
+If you are connecting to AGM over port forwarding then you will want to override the default TCP port of 443.   To do this simple add your desired port to the AGMIP.   For instance if you are using local port forwarding through a bastion host where port 8443 is being forwarded to port 443:
+```
+Connect-AGM 127.0.0.1:8443 admin -passwordfile "c:\temp\password.key" -ignorecerts
+```
+
 ### 5)  Run your first command:
 
 ```
