@@ -12,7 +12,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.36'
+ModuleVersion = '0.0.0.37'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -134,6 +134,7 @@ FunctionsToExport = @(
     'New-AGMAppliance',
     'New-AGMCloudVM',
     'New-AGMCredential',
+    'New-AGMHost',
     'New-AGMMount',
     'New-AGMOrg',
     'New-AGMRole',
@@ -203,6 +204,9 @@ PrivateData = @{
 
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
+        ## [0.0.0.37] 2022-06-15
+        Add New-AGMHost
+
         ## [0.0.0.36] 2022-04-22
         Add Import-AGMPDSnapshot,   allowed user to set timeout with -agmtimeout and set default to 60 seconds
 
