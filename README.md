@@ -20,6 +20,8 @@ Our intention is that you should install both modules.
 **[User Story: Adding GCP Instances](#user-story-adding-gcp-instances)**<br>
 **[User Story: Bulk expiration](#user-story-bulk-expiration)**<br>
 **[User Story: Appliance management](#user-story-appliance-management)**<br>
+**[Contributing](#contributing)**<br>
+**[License](#license)**<br>
 
 ### What versions of PowerShell will this module work with?
 
@@ -932,4 +934,19 @@ id    name       ipaddress
 PS /Users/avw>
 ```
 
+## Contributing
+
+Have a patch that will benefit this project? Awesome! Follow these steps to have
+it accepted.
+
+1.  Please sign our [Contributor License Agreement](CONTRIB.md).
+1.  Fork this Git repository and make your changes.
+1.  Create a Pull Request.
+1.  Incorporate review feedback to your changes.
+1.  Accepted!
+
+## License
+
+All files in this repository are under the
+[Apache License, Version 2.0](LICENSE) unless noted otherwise.
 
