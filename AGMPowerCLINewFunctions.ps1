@@ -313,6 +313,11 @@ Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,
 
     Adds Host with name prodhost1 and IP address 10.0.0.1 to specified appliance 
 
+    .EXAMPLE
+    New-AGMHost -applianceid "144292692833,144292692900" -hostname "prodhost1" -ipaddress "10.0.0.1" -friendlyname "mainprod" -description "this is prod, be nice" -alternateip "20.0.0.1,30.0.0.1"
+
+    Adds Host with name prodhost1 and IP address 10.0.0.1 to two specified appliances, with a friendlyname, text description and two alternate IPs.
+
     applianceid needs to be a comma separated list of appliance IDs
     alternateip needs to be a comma separated list of IPs
 
