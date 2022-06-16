@@ -24,10 +24,10 @@ GUID = '31f83a9e-9fe8-43b4-9a82-02325de71f2a'
 Author = 'Anthony Vandewerdt'
 
 # Company or vendor of this module
-CompanyName = 'Actifio'
+CompanyName = 'Google'
 
 # Copyright statement for this module
-Copyright = '(c) 2020 Actifio, Inc. All rights reserved'
+Copyright = '(c) 2022 Google, Inc. All rights reserved'
 
 ##################################################################################################################
 # Description of the functionality provided by this module
@@ -205,7 +205,7 @@ PrivateData = @{
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
         ## [0.0.0.37] 2022-06-15
-        Add New-AGMHost
+        Add New-AGMHost, update license info
 
         ## [0.0.0.36] 2022-04-22
         Add Import-AGMPDSnapshot,   allowed user to set timeout with -agmtimeout and set default to 60 seconds
@@ -227,7 +227,7 @@ PrivateData = @{
         Add Remove-AGMAppliance and New-AGMAppliance
 
         ## [0.0.0.30] 2021-09-15
-        Taught Get-CloudVM to use offset and limit correctly, it was only fetching 10 VMs before this and ignoring the limit
+        Taught Get-AGMCloudVM to use offset and limit correctly, it was only fetching 10 VMs before this and ignoring the limit
 
         ## [0.0.0.29] 2021-09-13
         Allow silent install
