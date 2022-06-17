@@ -359,6 +359,7 @@ Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,
     }
     $body = [ordered]@{}
     $body += @{ hosttype = $hosttype;
+    hostname = $hostname;
     ipaddress = $ipaddress;
     alternateip = $alternateipaddresses;
     sources = $sources
@@ -366,6 +367,10 @@ Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,
     if ($description)
     { 
         $body += @{ description = $description }
+    }
+    if ($friendlyname)
+    { 
+        $body += @{ friendlypath = $friendlyname }
     }
     $json = $body | ConvertTo-Json
 
