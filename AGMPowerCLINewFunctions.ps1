@@ -335,11 +335,11 @@ Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,
     }
     if (!($hostname))
     {
-        [string]$projectid = Read-Host "Host name"
+        [string]$hostname = Read-Host "Host name"
     }   
     if (!($ipaddress))
     {
-        [string]$projectid = Read-Host "IP Address"
+        [string]$ipaddress = Read-Host "IP Address"
     }  
     if (!($hostype))
     {

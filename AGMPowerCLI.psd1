@@ -157,6 +157,7 @@ FunctionsToExport = @(
     'Save-AGMPassword',
     'Set-AGMCredential',
     'Set-AGMAPILimit',
+    'Set-AGMHostPort',
     'Set-AGMImage',
     'Set-AGMTimeZoneHandling',
     'Set-AGMOrgApplication',
@@ -167,6 +168,7 @@ FunctionsToExport = @(
     'Remove-AGMApplication',
     'Remove-AGMCredential',
     'Remove-AGMHost',
+    'Remove-AGMHostPort',
     'Remove-AGMImage',
     'Remove-AGMJob',
     'Remove-AGMMigrate',
@@ -219,7 +221,7 @@ PrivateData = @{
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
         ## [0.0.0.37] 2022-06-15
-        Add New-AGMHost, update license info
+        Add New-AGMHost, Set-AGMHostPort,  Remove-AGMHostPort, update license info
 
         ## [0.0.0.36] 2022-04-22
         Add Import-AGMPDSnapshot,   allowed user to set timeout with -agmtimeout and set default to 60 seconds
