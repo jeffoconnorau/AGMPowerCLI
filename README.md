@@ -65,8 +65,8 @@ Many corporate servers will not allow downloads from PowerShell gallery or even 
    ```
    git clone https://github.com/Actifio/AGMPowerCLI.git AGMPowerCLI
    ```
-1.  Now start PWSH and change directory to the AGMPowerCLI directory that should contain our module files.   
-1.  There is an installer, Install-AGMPowerCLI.ps1 so run that with ./Install-AGMPowerCLI.ps1
+2.  Now start PWSH and change directory to the AGMPowerCLI directory that should contain our module files.   
+3.  There is an installer, Install-AGMPowerCLI.ps1 so run that with ./Install-AGMPowerCLI.ps1
 If you find multiple installs, we strongly recommend you delete them all and run the installer again to have just one install.
 
 ##### Manual ZIP Download
