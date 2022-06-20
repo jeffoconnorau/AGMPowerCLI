@@ -57,21 +57,19 @@ To uninstall all older versions run this command:
 $Latest = Get-InstalledModule AGMPowerCLI; Get-InstalledModule AGMPowerCLI -AllVersions | ? {$_.Version -ne $Latest.Version} | Uninstall-Module
 ```
 
-#### Manual install
+Many corporate servers will not allow downloads from PowerShell gallery or even access to GitHub from Production Servers, so for these use the Git download methods below.
 
-Serious corporate servers will not allow downloads from PowerShell gallery or even access to GitHub from Production Servers, so for these we have the following process:
-
-**Clone the Github repo**
+#### Clone the Github repo
 
 1.  Using a GIT client on your Windows or Linux or Mac OS host, clone this GIT repo.   A sample command is:
-```
-git clone https://github.com/Actifio/AGMPowerCLI.git AGMPowerCLI
-```
+   ```
+   git clone https://github.com/Actifio/AGMPowerCLI.git AGMPowerCLI
+   ```
 1.  Now start PWSH and change directory to the AGMPowerCLI directory that should contain our module files.   
 1.  There is an installer, Install-AGMPowerCLI.ps1 so run that with ./Install-AGMPowerCLI.ps1
 If you find multiple installs, we strongly recommend you delete them all and run the installer again to have just one install.
 
-**Manual ZIP Download**
+##### Manual ZIP Download
 
 1.  From GitHub, use the Green Code download button to download the AGMPowerCLI-main repo as a zip file
 1.  Copy the Zip file to the server where you want to install it
