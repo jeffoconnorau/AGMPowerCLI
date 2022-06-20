@@ -109,8 +109,8 @@ function Connect-AGM
         }
         else 
         {
-            # set IGNOREACTCERTS so that we ignore self-signed certs
-            $env:IGNOREACTCERTS = "y"
+            # set IGNOREAGMCERTS so that we ignore self-signed certs
+            $GLOBAL:IGNOREAGMCERTS = "y"
         }
     }
 
@@ -403,7 +403,7 @@ function Disconnect-AGM
     $RestError = $null
     Try
     {
-        if ($IGNOREAGMCERTS)
+        if ($GLOBAL:IGNOREAGMCERTS)
         {
             $resp = Invoke-RestMethod -Method DELETE -SkipCertificateCheck -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "https://$AGMIP/actifio/session/$AGMSESSIONID"
         }
