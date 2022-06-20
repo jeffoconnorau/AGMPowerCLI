@@ -61,6 +61,18 @@ $Latest = Get-InstalledModule AGMPowerCLI; Get-InstalledModule AGMPowerCLI -AllV
 
 Serious corporate servers will not allow downloads from PowerShell gallery or even access to GitHub from Production Servers, so for these we have the following process:
 
+**Clone the Github repo**
+
+1.  Using a GIT client on your Windows or Linux or Mac OS host, clone this GIT repo.   A sample command is:
+```
+git clone https://github.com/Actifio/AGMPowerCLI.git AGMPowerCLI
+```
+1.  Now start PWSH and change directory to the AGMPowerCLI directory that should contain our module files.   
+1.  There is an installer, Install-AGMPowerCLI.ps1 so run that with ./Install-AGMPowerCLI.ps1
+If you find multiple installs, we strongly recommend you delete them all and run the installer again to have just one install.
+
+**Manual ZIP Download**
+
 1.  From GitHub, use the Green Code download button to download the AGMPowerCLI-main repo as a zip file
 1.  Copy the Zip file to the server where you want to install it
 1.  For Windows, Right select on the zip file, choose  Properties and then use the Unblock button next to the message:  "This file came from another computer and might be blocked to help protect  your computer."
