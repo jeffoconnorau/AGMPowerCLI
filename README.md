@@ -29,8 +29,8 @@ It was written and tested for Windows PowerShell 5 and PowerShell V7 with Linux,
 
 ## Usage
 
-| TIP: When installing modules in Windows, either always Run as Administrator or never run as Administrator.   Don't mix it up. |
-| --- |
+> **Note**: When installing modules in Windows, either always Run as Administrator or never run as Administrator.   Don't mix it up. 
+
 
 ### 1) Install or Upgrade AGMPowerCLI
 
