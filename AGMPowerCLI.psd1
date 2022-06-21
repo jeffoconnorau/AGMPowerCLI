@@ -26,7 +26,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.37'
+ModuleVersion = '0.0.0.38'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -220,6 +220,9 @@ PrivateData = @{
 
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
+        ## [0.0.0.38] 2022-06-21
+        Added support for Org ID to new-Host and new-credential.   Added support for OnVault pool in new-credential while improving logic
+
         ## [0.0.0.37] 2022-06-15
         Add New-AGMHost, Set-AGMHostPort,  Remove-AGMHostPort, update license info
         Teach Get-AGMHost to show extra info when ID is specified

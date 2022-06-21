@@ -218,15 +218,26 @@ Function New-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string
     Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/addvm -body $json -limit $limit
 }
 
-Function New-AGMCredential ([string]$name,[string]$zone,[string]$clusterid,[string]$applianceid,$filename,[string]$projectid) 
+Function New-AGMCredential ([string]$name,[string]$zone,[string]$clusterid,[string]$applianceid,$filename,[string]$projectid,[string]$organizationid,[string]$udsuid) 
 {
     <#
     .SYNOPSIS
     Creates a cloud credential
 
     .EXAMPLE
-    New-AGMCredential -name cred1 -zone australia-southeast1-c -clusterid 144292692833 -filename keyfile.json
-    
+    New-AGMCredential -name cred1 -zone australia-southeast1-c -applianceid 144292692833 -filename keyfile.json
+
+    To learn the Appliance ID, use this command and use the clusterid value: Get-AGMAppliance | select clusterid,name
+    Comma separate the Appliance IDs if you have multiple appliances
+
+    You can add org IDs with -organizationid     To learn the IDs, use this command:   
+    Get-AGMOrg | select id,name
+    Comma separate the Org IDs if you have multiple orgs
+
+    To add an onvault pool, use -udsuid  
+    To learn the udsid use this command:
+    Get-AGMDiskPool -filtervalue pooltype=vault | select name,udsuid,@{N='appliancename'; E={$_.cluster.name}},@{N='applianceid'; E={$_.cluster.clusterid}}
+    Ensure the pool exists on all the appliances you are adding the credential to.
 
     .DESCRIPTION
     A function to create cloud credentials
@@ -275,34 +286,52 @@ Function New-AGMCredential ([string]$name,[string]$zone,[string]$clusterid,[stri
         }
     }   
 
-    $sources = ""
+    
+    # cluster needs to be like:  sources":[{"clusterid":"144488110379"},{"clusterid":"143112195179"}]
+    $sources = @()
     foreach ($cluster in $clusterid.Split(","))
     {
-        $sources = $sources +',{"clusterid":"' +$cluster +'"}'
+        $sources += [ordered]@{ clusterid = $cluster }
+    } 
+    $orglist = @()
+    if ($organizationid)
+    {
+        foreach ($org in $organizationid.Split(","))
+        {
+            $orglist += [ordered]@{ id = $org }
+        } 
     }
-    $sources = $sources.substring(1)
+    $body = [ordered]@{}
+    $body += [ordered]@{ name = $name;
+    cloudtype = "GCP";
+    projectid = $projectid;
+    region  = $zone;
+    endpoint = "";
+    sources = $sources;
+    orglist = $orglist
+    }
+    if ($udsuid)
+    {
+        $body += [ordered]@{ vault_udsuid = $udsuid }
+    }
 
-    $json = '{"name":"' +$name +'","cloudtype":"GCP","region":"' +$zone +'","endpoint":"","credential":"'
-    $json = $json + $jsonkey
-    $json = $json +'","orglist":[],"projectid":"' +$projectid +'",'
-    $json = $json +'"sources":[' +$sources +']}'
-
+    $json = $body | ConvertTo-Json -compress
+    # this section is post editing the JSON to add in the credential.  Ideally we should do this using a PS Object rather than an edit like this.
+    $json = $json.Substring(0,$json.Length-1)
+    $json = $json + ',"credential":"' + $jsonkey +'"}'
+    # first we test it
     $testcredential = Post-AGMAPIData  -endpoint /cloudcredential/testconnection -body $json
     if ($testcredential.errors)
     {
         $testcredential
         return
     }
-
-    $json = '{"name":"' +$name +'","cloudtype":"GCP","region":"' +$zone +'","endpoint":"","credential":"'
-    $json = $json + $jsonkey
-    $json = $json +'","orglist":[],'
-    $json = $json +'"sources":[' +$sources +']}'
-
     Post-AGMAPIData  -endpoint /cloudcredential -body $json
+    
+    return
 }
 
-Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,[string]$friendlyname,[string]$description,[string]$ipaddress,[string]$alternateip,[string]$hosttype) 
+Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,[string]$friendlyname,[string]$description,[string]$ipaddress,[string]$alternateip,[string]$hosttype,[string]$organizationid) 
 {
     <#
     .SYNOPSIS
@@ -351,6 +380,11 @@ Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,
     {
         $sources += [ordered]@{ clusterid = $cluster }
     } 
+    $orglist = @()
+    foreach ($org in $organizationid.Split(","))
+    {
+        $orglist += [ordered]@{ id = $org }
+    } 
     
     # alternate IP needs to be like:    "alternateip":["10.20.0.1","10.30.0.1"],
     if ($alternateip)
@@ -362,7 +396,8 @@ Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,
     hostname = $hostname;
     ipaddress = $ipaddress;
     alternateip = $alternateipaddresses;
-    sources = $sources
+    sources = $sources;
+    orglist = $orglist
     }
     if ($description)
     { 
