@@ -1,3 +1,17 @@
+# Copyright 2022 Google Inc. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 #
 # Module manifest for module 'AGMPowerCLI'
 #
@@ -12,7 +26,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.36'
+ModuleVersion = '0.0.0.37'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -24,10 +38,10 @@ GUID = '31f83a9e-9fe8-43b4-9a82-02325de71f2a'
 Author = 'Anthony Vandewerdt'
 
 # Company or vendor of this module
-CompanyName = 'Actifio'
+CompanyName = 'Google'
 
 # Copyright statement for this module
-Copyright = '(c) 2020 Actifio, Inc. All rights reserved'
+Copyright = '(c) 2022 Google, Inc. All rights reserved'
 
 ##################################################################################################################
 # Description of the functionality provided by this module
@@ -134,6 +148,7 @@ FunctionsToExport = @(
     'New-AGMAppliance',
     'New-AGMCloudVM',
     'New-AGMCredential',
+    'New-AGMHost',
     'New-AGMMount',
     'New-AGMOrg',
     'New-AGMRole',
@@ -142,6 +157,7 @@ FunctionsToExport = @(
     'Save-AGMPassword',
     'Set-AGMCredential',
     'Set-AGMAPILimit',
+    'Set-AGMHostPort',
     'Set-AGMImage',
     'Set-AGMTimeZoneHandling',
     'Set-AGMOrgApplication',
@@ -152,6 +168,7 @@ FunctionsToExport = @(
     'Remove-AGMApplication',
     'Remove-AGMCredential',
     'Remove-AGMHost',
+    'Remove-AGMHostPort',
     'Remove-AGMImage',
     'Remove-AGMJob',
     'Remove-AGMMigrate',
@@ -203,6 +220,10 @@ PrivateData = @{
 
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
+        ## [0.0.0.37] 2022-06-15
+        Add New-AGMHost, Set-AGMHostPort,  Remove-AGMHostPort, update license info
+        Teach Get-AGMHost to show extra info when ID is specified
+
         ## [0.0.0.36] 2022-04-22
         Add Import-AGMPDSnapshot,   allowed user to set timeout with -agmtimeout and set default to 60 seconds
 
@@ -223,7 +244,7 @@ PrivateData = @{
         Add Remove-AGMAppliance and New-AGMAppliance
 
         ## [0.0.0.30] 2021-09-15
-        Taught Get-CloudVM to use offset and limit correctly, it was only fetching 10 VMs before this and ignoring the limit
+        Taught Get-AGMCloudVM to use offset and limit correctly, it was only fetching 10 VMs before this and ignoring the limit
 
         ## [0.0.0.29] 2021-09-13
         Allow silent install

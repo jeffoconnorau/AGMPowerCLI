@@ -1,3 +1,17 @@
+# Copyright 2022 Google Inc. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 Function New-AGMAppDiscovery ([string]$hostid,[string]$ipaddress,[string]$applianceid) 
 {
     <#
@@ -288,6 +302,80 @@ Function New-AGMCredential ([string]$name,[string]$zone,[string]$clusterid,[stri
     Post-AGMAPIData  -endpoint /cloudcredential -body $json
 }
 
+Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,[string]$friendlyname,[string]$description,[string]$ipaddress,[string]$alternateip,[string]$hosttype) 
+{
+    <#
+    .SYNOPSIS
+    Adds new Hosts
+
+    .EXAMPLE
+    New-AGMHost -applianceid 144292692833 -hostname "prodhost1" -ipaddress "10.0.0.1"
+
+    Adds Host with name prodhost1 and IP address 10.0.0.1 to specified appliance 
+
+    .EXAMPLE
+    New-AGMHost -applianceid "143112195179,144488110379" -hostname "prodhost1" -ipaddress "10.0.0.1" -friendlyname "mainprod" -description "this is prod, be nice" -alternateip "20.0.0.1,30.0.0.1"
+
+    Adds Host with name prodhost1 and IP address 10.0.0.1 to two specified appliances, with a friendlyname, text description and two alternate IPs.
+
+    To learn applianceid, use this command:  Get-AGMAppliance and use the clusterid as applianceid.  If you have multiple applianceIDs, comma separate them
+    alternateip needs to be a comma separated list of IPs
+
+
+    .DESCRIPTION
+    A function to add Hosts
+
+    #>
+    
+    if ($applianceid) { [string]$clusterid = $applianceid}
+
+    if (!($clusterid))
+    {
+        $clusterid = Read-Host "Cluster ID"
+    }
+    if (!($hostname))
+    {
+        [string]$hostname = Read-Host "Host name"
+    }   
+    if (!($ipaddress))
+    {
+        [string]$ipaddress = Read-Host "IP Address"
+    }  
+    if (!($hostype))
+    {
+        $hosttype = "generic"
+    }
+    # cluster needs to be like:  sources":[{"clusterid":"144488110379"},{"clusterid":"143112195179"}]
+    $sources = @()
+    foreach ($cluster in $clusterid.Split(","))
+    {
+        $sources += [ordered]@{ clusterid = $cluster }
+    } 
+    
+    # alternate IP needs to be like:    "alternateip":["10.20.0.1","10.30.0.1"],
+    if ($alternateip)
+    {
+        $alternateipaddresses = @( $($alternateip.Split(",")) )
+    }
+    $body = [ordered]@{}
+    $body += @{ hosttype = $hosttype;
+    hostname = $hostname;
+    ipaddress = $ipaddress;
+    alternateip = $alternateipaddresses;
+    sources = $sources
+    }
+    if ($description)
+    { 
+        $body += @{ description = $description }
+    }
+    if ($friendlyname)
+    { 
+        $body += @{ friendlypath = $friendlyname }
+    }
+    $json = $body | ConvertTo-Json
+
+    Post-AGMAPIData  -endpoint /host -body $json 
+}
 
 
 Function New-AGMMount ([string]$imageid,[string]$targethostid,[string]$jsonbody,[string]$label) 

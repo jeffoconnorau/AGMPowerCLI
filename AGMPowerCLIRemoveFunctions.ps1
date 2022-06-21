@@ -1,3 +1,17 @@
+# Copyright 2022 Google Inc. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 function Remove-AGMApplication ([Parameter(Mandatory=$true)][string]$appid)
 {
     <#
@@ -150,6 +164,54 @@ function Remove-AGMHost ([string]$id,[string]$clusterid)
     Post-AGMAPIData -endpoint /host/$id -method delete -body $json
 }
 
+Function Remove-AGMHostPort ([string]$clusterid,[string]$applianceid,[string]$hostid,[string]$iscsiname) 
+{
+    <#
+    .SYNOPSIS
+    Removes Host ports
+
+    .EXAMPLE
+    Remove-AGMHost -applianceid 143112195179 -hostid "12345" iscsiname "iqn1"
+
+    Removes iSCSI port name iqn1 to host ID 105008 on appliance ID 143112195179
+
+    To learn applianceid, use this command:  Get-AGMAppliance and use the clusterid as applianceid.  If you have multiple applianceIDs, comma separate them
+    To learn hostid, use this command:  Get-AGMHost
+
+    .DESCRIPTION
+    A function to remove Host ports
+
+    #>
+    
+    if ($applianceid) { [string]$clusterid = $applianceid}
+
+    if (!($clusterid))
+    {
+        $clusterid = Read-Host "Appliance ID"
+    }
+    if (!($hostid))
+    {
+        [string]$hostid = Read-Host "Host ID"
+    }   
+    if (!($iscsiname))
+    {
+        [string]$iscsiname = Read-Host "iSCSI Name"
+    }  
+    # cluster needs to be like:  sources":[{"clusterid":"144488110379"},{"clusterid":"143112195179"}]
+    $sources = @()
+    foreach ($cluster in $clusterid.Split(","))
+    {
+        $sources += [ordered]@{ clusterid = $cluster }
+    } 
+    $iscsiobject = @( $iscsiname )
+    $body = [ordered]@{}
+    $body += @{ sources = $sources;
+        iscsi_name = $iscsiobject 
+    }
+    $json = $body | ConvertTo-Json
+
+    Post-AGMAPIData  -endpoint /host/$hostid/port -method delete -body $json 
+}
 
 function Remove-AGMImage ([string]$imagename,[string]$backupname)
 {
