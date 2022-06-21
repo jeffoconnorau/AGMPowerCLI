@@ -33,16 +33,19 @@ It was written and tested for Windows PowerShell 5 and PowerShell V7 with Linux,
 
 ### 1) Install or Upgrade AGMPowerCLI
 
-Install from PowerShell Gallery (the ProtocolType only needs to be set for Windows PowerShell 5)
+Install from PowerShell Gallery is the simplest approach.
 
+If running PowerShell 5 on Windows first run this:
 ```
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+```
+Now run this command. It is normal to get promoted to upgrade or install the NuGet Provider.  You may see other warnings as well.
+```
 Install-Module -Name AGMPowerCLI
 ```
+If the install worked, you can now move to Step 2.  Many corporate servers will not allow downloads from PowerShell gallery or even access to GitHub from Production Servers, so for these use one of the Git download methods detailed below.
 
-If the install worked, you can now move to Step 2.
-
-#### Upgrades using PowerShell Gallery
+##### Upgrades using PowerShell Gallery
 
 Note if you run 'Install-Module' to update an installed module, it will complain.  You need to run:
 ```
@@ -57,10 +60,7 @@ To uninstall all older versions run this command:
 ```
 $Latest = Get-InstalledModule AGMPowerCLI; Get-InstalledModule AGMPowerCLI -AllVersions | ? {$_.Version -ne $Latest.Version} | Uninstall-Module
 ```
-
-Many corporate servers will not allow downloads from PowerShell gallery or even access to GitHub from Production Servers, so for these use one of the Git download methods detailed below.
-
-#### Clone the Github repo
+#### Install or upgrade using a clone of the GIT repo
 
 1.  Using a GIT client on your Windows or Linux or Mac OS host, clone the AGMPowerCLI GIT repo.   A sample command is shared below.
 2.  Now start PWSH and change directory to the AGMPowerCLI directory that should contain our module files.   
@@ -72,7 +72,7 @@ A sample clone command is:
 ```
 git clone https://github.com/Actifio/AGMPowerCLI.git AGMPowerCLI
 ```
-##### Manual ZIP Download
+#### Install or upgrade using a download of the GIT repo as a ZIP Download
 
 1.  From GitHub, use the Green Code download button to download the AGMPowerCLI-main repo as a zip file
 1.  Copy the Zip file to the server where you want to install it
