@@ -39,7 +39,7 @@ If running PowerShell 5 on Windows first run this:
 ```
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 ```
-Now run this command. It is normal to get promoted to upgrade or install the NuGet Provider.  You may see other warnings as well.
+Now run this command. It is normal to get prompted to upgrade or install the NuGet Provider.  You may see other warnings as well.
 ```
 Install-Module -Name AGMPowerCLI
 ```
