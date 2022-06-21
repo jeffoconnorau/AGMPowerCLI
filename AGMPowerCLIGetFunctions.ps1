@@ -932,7 +932,7 @@ function Get-AGMHost ([string]$id,[string]$hostid,[string]$filtervalue,[string]$
     }
     elseif ($id)
     { 
-        Get-AGMAPIData -endpoint /host/$id -datefields $datefields
+        Get-AGMAPIData -endpoint /host/$id -datefields $datefields -extrarequests "&fetchExtraInfo=true"
     }
     elseif ($filtervalue)
     { 
