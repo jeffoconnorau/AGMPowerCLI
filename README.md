@@ -29,6 +29,8 @@ It was written and tested for Windows PowerShell 5 and PowerShell V7 with Linux,
 
 ## Usage
 
+| TIP: When installing modules in Windows, either always Run as Administrator or never run as Administrator.   Don't mix it up. |
+| --- |
 
 ### 1) Install or Upgrade AGMPowerCLI
 
@@ -57,26 +59,27 @@ To uninstall all older versions run this command:
 $Latest = Get-InstalledModule AGMPowerCLI; Get-InstalledModule AGMPowerCLI -AllVersions | ? {$_.Version -ne $Latest.Version} | Uninstall-Module
 ```
 
-Many corporate servers will not allow downloads from PowerShell gallery or even access to GitHub from Production Servers, so for these use the Git download methods below.
+Many corporate servers will not allow downloads from PowerShell gallery or even access to GitHub from Production Servers, so for these use one of the Git download methods detailed below.
 
 #### Clone the Github repo
 
-1.  Using a GIT client on your Windows or Linux or Mac OS host, clone this GIT repo.   A sample command is:
-   ```
-   git clone https://github.com/Actifio/AGMPowerCLI.git AGMPowerCLI
-   ```
+1.  Using a GIT client on your Windows or Linux or Mac OS host, clone the AGMPowerCLI GIT repo.   A sample command is shared below.
 2.  Now start PWSH and change directory to the AGMPowerCLI directory that should contain our module files.   
 3.  There is an installer, Install-AGMPowerCLI.ps1 so run that with ./Install-AGMPowerCLI.ps1
 
 If you find multiple installs, we strongly recommend you delete them all using the installer option and then run the installer again to have just one install.
 
+A sample clone command is:
+```
+git clone https://github.com/Actifio/AGMPowerCLI.git AGMPowerCLI
+```
 ##### Manual ZIP Download
 
 1.  From GitHub, use the Green Code download button to download the AGMPowerCLI-main repo as a zip file
 1.  Copy the Zip file to the server where you want to install it
 1.  For Windows, Right select on the zip file, choose  Properties and then use the Unblock button next to the message:  "This file came from another computer and might be blocked to help protect  your computer."
 1.  For Windows, now right select and use Extract All to extract the contents of the zip file to a folder.  It doesn't matter where you put the folder.  For Mac it should automatically unzip.  For Linux use the unzip command to unzip the folder or use the PowerShell command Expand-Archive.
-1.  Now start PWSH and change directory to the  AGMPowerCLI-main directory that should contain our module files.   
+1.  Now start PWSH and change directory to the AGMPowerCLI-main directory that should contain our module files.   
 1.  There is an installer, Install-AGMPowerCLI.ps1 so run that with ./Install-AGMPowerCLI.ps1
 If you find multiple installs, we strongly recommend you delete them all and run the installer again to have just one install.
 
