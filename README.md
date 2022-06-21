@@ -29,7 +29,7 @@ It was written and tested for Windows PowerShell 5 and PowerShell V7 with Linux,
 
 ## Usage
 
-> **Note**: When using Microsoft Windows, either always Run PowerShell as Administrator or never run PowerShell as Administrator.   Don't mix things up. 
+> **Note**: When using Microsoft Windows, either always run PowerShell as Administrator or never run PowerShell as Administrator.   Don't mix things up. 
 
 ### 1) Install or Upgrade AGMPowerCLI
 
