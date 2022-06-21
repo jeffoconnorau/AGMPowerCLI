@@ -35,7 +35,7 @@ It was written and tested for Windows PowerShell 5 and PowerShell V7 with Linux,
 
 Install from PowerShell Gallery is the simplest approach.
 
-If running PowerShell 5 on Windows first run this (some older Windows OS try and use downlevel TLS which will result in possibly confusing error messages):
+If running PowerShell 5 on Windows first run this (some older Windows versions are set to use downlevel TLS which will result in confusing error messages):
 ```
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 ```
@@ -43,7 +43,10 @@ Now run this command. It is normal to get prompted to upgrade or install the NuG
 ```
 Install-Module -Name AGMPowerCLI
 ```
-If the install worked, you can now move to Step 2.  Many corporate servers will not allow downloads from PowerShell gallery or even access to GitHub from Production Servers, so for these use one of the Git download methods detailed below.
+If the install worked, you can now move to Step 2.  
+
+Many corporate servers will not allow downloads from PowerShell gallery or even access to GitHub from Production Servers, so for these use one of the Git download methods detailed below.
+
 If you see this error make sure your TLS version has been set:
 
 ```
@@ -54,7 +57,7 @@ WARNING: Unable to resolve package source 'https://www.powershellgallery.com/api
 
 Note if you run 'Install-Module' to update an installed module, it will complain.  You need to run 'Update-module' instead.
 
-If running PowerShell 5 on Windows first run this (some older Windows OS try and use downlevel TLS which will result in possibly confusing error messages):
+If running PowerShell 5 on Windows first run this (some older Windows versions are set to use downlevel TLS which will result in confusing error messages):
 ```
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 ```
