@@ -33,7 +33,7 @@ Function New-AGMAppDiscovery ([string]$hostid,[string]$ipaddress,[string]$applia
         [string]$hostid = Read-Host "Host to perform discovery on (press enter to use IP)"
         if (!($hostid))
         {
-            [string]$ipaddress = Read-Host "Host IP perform discovery on"
+            [string]$ipaddress = Read-Host "Host IP to perform discovery on"
         }
     }
     
@@ -230,13 +230,13 @@ Function New-AGMCredential ([string]$name,[string]$zone,[string]$clusterid,[stri
     To learn the Appliance ID, use this command and use the clusterid value: Get-AGMAppliance | select clusterid,name
     Comma separate the Appliance IDs if you have multiple appliances
 
-    You can add org IDs with -organizationid     To learn the IDs, use this command:   
-    Get-AGMOrg | select id,name
+    You can add org IDs with -organizationid     To learn the Org IDs, use this command:   
+    Get-AGMOrg | select-object id,name
     Comma separate the Org IDs if you have multiple orgs
 
     To add an onvault pool, use -udsuid  
     To learn the udsid use this command:
-    Get-AGMDiskPool -filtervalue pooltype=vault | select name,udsuid,@{N='appliancename'; E={$_.cluster.name}},@{N='applianceid'; E={$_.cluster.clusterid}}
+    Get-AGMDiskPool -filtervalue pooltype=vault | select-object name,udsuid,@{N='appliancename'; E={$_.cluster.name}},@{N='applianceid'; E={$_.cluster.clusterid}}
     Ensure the pool exists on all the appliances you are adding the credential to.
 
     .DESCRIPTION
