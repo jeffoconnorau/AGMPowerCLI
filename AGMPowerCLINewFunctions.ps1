@@ -331,7 +331,7 @@ Function New-AGMCredential ([string]$name,[string]$zone,[string]$clusterid,[stri
     return
 }
 
-Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,[string]$friendlyname,[string]$description,[string]$ipaddress,[string]$alternateip,[string]$hosttype,[string]$organizationid) 
+Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,[string]$friendlyname,[string]$description,[string]$ipaddress,[string]$alternateip,[string]$hosttype,[string]$organizationid,[string]$secret) 
 {
     <#
     .SYNOPSIS
@@ -391,8 +391,13 @@ Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,
     {
         $alternateipaddresses = @( $($alternateip.Split(",")) )
     }
+    $udsagent = [ordered]@{}
+    if ($secret)
+    {
+        $udsagent += [ordered]@{ shared_secret = $secret }
+    }
     $body = [ordered]@{}
-    $body += @{ hosttype = $hosttype;
+    $body += [ordered]@{ hosttype = $hosttype;
     hostname = $hostname;
     ipaddress = $ipaddress;
     alternateip = $alternateipaddresses;
@@ -407,6 +412,11 @@ Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,
     { 
         $body += @{ friendlypath = $friendlyname }
     }
+    if ($scret)
+    {
+        $body += @{ udsagent = $udsagent }
+    }
+
     $json = $body | ConvertTo-Json
 
     Post-AGMAPIData  -endpoint /host -body $json 

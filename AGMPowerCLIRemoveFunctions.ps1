@@ -113,7 +113,7 @@ function Remove-AGMCredential([string]$credentialid,[string]$id,[string]$applian
 
 
 
-function Remove-AGMHost ([string]$id,[string]$clusterid)
+function Remove-AGMHost ([string]$id,[string]$clusterid,[string]$applianceid)
 {
     <#
     .SYNOPSIS
@@ -141,6 +141,10 @@ function Remove-AGMHost ([string]$id,[string]$clusterid)
     if (!($id)) 
     {
         [string]$id = Read-Host "Host ID"
+    }
+    if ($applianceid)
+    {
+        $clusterid = $applianceid
     }
     if (!($clusterid)) 
     {
