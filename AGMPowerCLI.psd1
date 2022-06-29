@@ -220,7 +220,7 @@ PrivateData = @{
 
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
-        ## [0.0.0.38] 2022-06-21
+        ## [0.0.0.38] 2022-06-29
         Added support for Org ID to new-Host and new-credential.   Added support for OnVault pool in new-credential while improving logic.  Added secretkey support to new-host, renamed Get-GBDRConsole to Get-GoogleCloudBackupDRConsole
 
         ## [0.0.0.37] 2022-06-15
