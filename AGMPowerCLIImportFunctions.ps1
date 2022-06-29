@@ -17,33 +17,33 @@ Function Import-AGMOnVault ([string]$diskpoolid,[string]$applianceid,[string]$ap
     <#
     .SYNOPSIS
     Imports or forgets OnVault images
-    There is no Forget-AGMOnvault command.   You can do import and forget from this function. 
+    There is no Forget-AGMOnvault command.   You perform both import and forget from this function. 
 
     .EXAMPLE
     Import-AGMOnVault -diskpoolid 20060633 -applianceid 1415019931 
 
-    Imports all OnVault images from disk pool ID 20060633 onto Appliance ID 1415019931
+    Imports all OnVault images from disk pool ID 20060633 created by Appliance ID 1415019931
 
     .EXAMPLE
     Import-AGMOnVault -diskpoolid 20060633 -applianceid 1415019931 -appid 4788
     
-    Imports all OnVault images from disk pool ID 20060633 and App ID 4788 onto Appliance ID 1415019931
+    Imports all OnVault images from disk pool ID 20060633 and Source App ID 4788 created by Appliance ID 1415019931
 
     .EXAMPLE
     Import-AGMOnVault -diskpoolid 20060633 -applianceid 1415019931 -appid 4788 -owner
     
-    Imports all OnVault images from disk pool ID 20060633 and App ID 4788 onto Appliance ID 1415019931 and takes ownership
+    Imports all OnVault images from disk pool ID 20060633 and Source App ID 4788 created by Appliance ID 1415019931 and takes ownership
 
     .EXAMPLE
     Import-AGMOnVault -diskpoolid 20060633 -applianceid 1415019931 -appid 4788 -forget
     
-    Forgets all OnVault images imported from disk pool ID 20060633 and App ID 4788 onto Appliance ID 1415019931
+    Forgets all OnVault images imported from disk pool ID 20060633 and Source App ID 4788 created by Appliance ID 1415019931
 
     .DESCRIPTION
     A function to import OnVault images
     Learn Appliance ID with Get-AGMAppliance
     Learn Diskpool ID with Get-AGMDiskPool
-    Learn Application ID with Get-AGMApplication
+    Learn Application ID with Get-AGMApplication and use sources.id
 
     #>
 
@@ -54,7 +54,7 @@ Function Import-AGMOnVault ([string]$diskpoolid,[string]$applianceid,[string]$ap
 
     if (!($applianceid))
     {
-        [string]$applianceid = Read-Host "Appliance ID to import into"
+        [string]$applianceid = Read-Host "Appliance ID to import from"
     }
 
     if ($ownershiptakeover)

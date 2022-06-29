@@ -607,15 +607,11 @@ function Get-AGMTimeZoneHandling
     }
 }
 
-
-
-
-
-function Get-GBDRConsole ([string]$project,[string]$location)
+function Get-GoogleCloudBackupDRConsole ([string]$project,[string]$location)
 {
     <#  
     .SYNOPSIS
-    Displays details of GBDR Management Console
+    Displays details of Google Cloud Backup and DR Management Console
 
     .DESCRIPTION
     The user needs to specify a project ID and region
@@ -624,7 +620,7 @@ function Get-GBDRConsole ([string]$project,[string]$location)
     Written by Anthony Vandewerdt
 
     .EXAMPLE
-    Get-GBDRConsole -project project1 -location asia-southeast1
+    Get-GoogleCloudBackupDRConsole -project project1 -location asia-southeast1
  
     #>
 
