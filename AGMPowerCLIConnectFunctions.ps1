@@ -607,7 +607,7 @@ function Get-AGMTimeZoneHandling
     }
 }
 
-function Get-GBDRConsole ([string]$project,[string]$location)
+function Get-GoogleCloudBackupDRConsole ([string]$project,[string]$location)
 {
     <#  
     .SYNOPSIS
@@ -620,7 +620,7 @@ function Get-GBDRConsole ([string]$project,[string]$location)
     Written by Anthony Vandewerdt
 
     .EXAMPLE
-    Get-GBDRConsole -project project1 -location asia-southeast1
+    Get-GoogleCloudBackupDRConsole -project project1 -location asia-southeast1
  
     #>
 
