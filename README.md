@@ -1,5 +1,5 @@
 # AGMPowerCLI
-A Powershell module that allows PowerShell users to issue API calls to Actifio Global Manager.
+A Powershell module that allows PowerShell users to issue API calls to an Actifio Global Manager or a Google Cloud Backup and DR Management Console
 This module is intended to deliver the following:
 
 * Allow the user to create and remove sessions so that API commands can be issued
@@ -21,7 +21,7 @@ Our intention is that you should install both modules.
 **[User Story: Bulk expiration](#user-story-bulk-expiration)**<br>
 **[User Story: Appliance management](#user-story-appliance-management)**<br>
 **[Contributing](#contributing)**<br>
-**[License](#license)**<br>
+**[Disclaimer](#disclaimer)**<br>
 
 ### What versions of PowerShell will this module work with?
 
@@ -962,7 +962,6 @@ PS /Users/avw>
 ```
 
 ## Contributing
-
 Have a patch that will benefit this project? Awesome! Follow these steps to have
 it accepted.
 
@@ -973,7 +972,8 @@ it accepted.
 1.  Accepted!
 
 ## License
-
 All files in this repository are under the
 [Apache License, Version 2.0](LICENSE) unless noted otherwise.
 
+## Disclaimer
+This is not an official Google product.
