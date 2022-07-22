@@ -214,7 +214,7 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
 
 
 
-    # default of 60 seconds is enforced regardless
+    # default of 300 seconds is enforced regardless
     if (!($timeout))
     {
         $timeout = $GLOBAL:AGMTIMEOUT
@@ -540,7 +540,7 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
         $endpoint = "/" + $endpoint
     }
 
-    # default of 60 seconds may be too short
+    # default of 300 seconds may be too short
     if (!($timeout))
     {
         $timeout = $GLOBAL:AGMTIMEOUT 
@@ -666,7 +666,7 @@ Function Put-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body)
         $endpoint = "/" + $endpoint
     }
 
-    # default of 60 seconds may be too short
+    # default of 300 seconds may be too short
     if (!($timeout))
     {
         $timeout = $GLOBAL:AGMTIMEOUT

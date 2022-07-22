@@ -215,7 +215,7 @@ Function New-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string
     }
     $json = $body | ConvertTo-Json
     
-    Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/addvm -body $json -limit $limit
+    Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/addvm -body $json
 }
 
 Function New-AGMCredential ([string]$name,[string]$zone,[string]$clusterid,[string]$applianceid,$filename,[string]$projectid,[string]$organizationid,[string]$udsuid) 

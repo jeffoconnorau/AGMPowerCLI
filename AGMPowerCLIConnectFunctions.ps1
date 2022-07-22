@@ -95,7 +95,7 @@ function Connect-AGM
     }
     if (!($agmtimeout))
     {
-        [int]$agmtimeout = 60
+        [int]$agmtimeout = 300
     }
 
 
