@@ -222,6 +222,7 @@ PrivateData = @{
         ReleaseNotes = '
         ## [0.0.0.39] 2022-07-22
         Default timeout of 60 seconds is causing timeouts on GCE Instance operations.   Increasing to 300 seconds
+        Remove-AGMSLA will error if a non-protected Appid is specified rather than requesting an SLA ID
 
         ## [0.0.0.38] 2022-06-29
         Added support for Org ID to new-Host and new-credential.   Added support for OnVault pool in new-credential while improving logic.  Added secretkey support to new-host, renamed Get-GBDRConsole to Get-GoogleCloudBackupDRConsole
