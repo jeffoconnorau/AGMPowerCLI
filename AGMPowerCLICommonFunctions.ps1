@@ -836,7 +836,7 @@ Function Convert-AGMDuration ($duration)
 
 ####   Appliance Delegation
 
-Function Get-AGMAPIApplianceInfo ([String]$applianceid,[string]$command,[string]$arguments,[int]$timeout)
+Function Get-AGMAPIApplianceInfo ([String]$applianceid,[String]$id,[string]$command,[string]$arguments,[int]$timeout)
 {
     <#  
     .SYNOPSIS
@@ -853,6 +853,8 @@ Function Get-AGMAPIApplianceInfo ([String]$applianceid,[string]$command,[string]
         Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM"
         return
     }
+    if ($id)
+    { $applianceid = $id}
 
     if (!($timeout))
     {
