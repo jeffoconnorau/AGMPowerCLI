@@ -26,7 +26,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.38'
+ModuleVersion = '0.0.0.39'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -220,6 +220,8 @@ PrivateData = @{
 
         # ReleaseNotes of this modulegte
         ReleaseNotes = '
+        ## [0.0.0.39] 2022-07-22
+
         ## [0.0.0.38] 2022-06-29
         Added support for Org ID to new-Host and new-credential.   Added support for OnVault pool in new-credential while improving logic.  Added secretkey support to new-host, renamed Get-GBDRConsole to Get-GoogleCloudBackupDRConsole
 

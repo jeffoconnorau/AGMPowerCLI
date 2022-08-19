@@ -603,12 +603,26 @@ Function Get-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string
 
     $cluster = @{ clusterid = $clusterid}
     $body = [ordered]@{}
+    # Google cloud backup and DR is looking for projectid, not project
+    if ($AGMToken)
+    {
+        $body += @{ cluster = $cluster;
+        region = $zone;
+        projectid = $projectid;
+        offset = $offset;
+        limit = $limit
+        actifioroles = @($filter)
+        }
+    }
+    else 
+    {
     $body += @{ cluster = $cluster;
-    region = $zone;
-    project = $projectid;
-    offset = $offset;
-    limit =$limit
-    actifioroles = @($filter)
+        region = $zone;
+        project = $projectid;
+        offset = $offset;
+        limit = $limit
+        actifioroles = @($filter)
+        }
     }
     $json = $body | ConvertTo-Json
     Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/vm -body $json 

@@ -207,15 +207,30 @@ Function New-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string
 
     $cluster = @{ clusterid = $clusterid}
     $body = [ordered]@{}
-    $body += @{ cluster = $cluster;
-    region = $zone;
-    listonly = $false;
-    vmids = $($instanceid.Split(","))
-    project = $projectid;
+    if ($AGMToken)
+    {
+        $body += @{ cluster = $cluster;
+        region = $zone;
+        listonly = $false;
+        vmids = $($instanceid.Split(","))
+        projectid = $projectid;
+        }
     }
+    else 
+    {
+        $body += @{ cluster = $cluster;
+            region = $zone;
+            listonly = $false;
+            vmids = $($instanceid.Split(","))
+            project = $projectid;
+            }
+    }
+
+
+
     $json = $body | ConvertTo-Json
     
-    Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/addvm -body $json -limit $limit
+    Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/addvm -body $json
 }
 
 Function New-AGMCredential ([string]$name,[string]$zone,[string]$clusterid,[string]$applianceid,$filename,[string]$projectid,[string]$organizationid,[string]$udsuid) 

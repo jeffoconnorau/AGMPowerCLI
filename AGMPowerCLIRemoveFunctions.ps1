@@ -373,7 +373,15 @@ function Remove-AGMSLA ([string]$id,[string]$slaid,[string]$appid)
 
     if ( ($appid) -and (!($slaid)) )
     {
-        $slaid = (Get-AGMSLA -filtervalue appid=$appid).id
+        $slagrab = Get-AGMSLA -filtervalue appid=$appid
+        if ($slagrab.count -eq 0)
+        {
+            Get-AGMErrorMessage -messagetoprint "Failed to find an SLA for appid $appid"
+            return
+        }
+        else {
+            $slaid = $slagrab.id
+        }
     }
 
     if (!($slaid))
