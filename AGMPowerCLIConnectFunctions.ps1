@@ -488,8 +488,8 @@ Function Save-AGMPassword([string]$filename,[string]$password)
 	# prompt for password 
     if (!($password))
     {
-	    $password = Read-Host -AsSecureString "Password"
-	    $password | ConvertFrom-SecureString | Out-File $filename
+	    $passwordenc = Read-Host -AsSecureString "Password"
+	    $passwordenc | ConvertFrom-SecureString | Out-File $filename
     }
     else 
     {
