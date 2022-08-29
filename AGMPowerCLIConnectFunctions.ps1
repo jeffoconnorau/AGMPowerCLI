@@ -501,7 +501,7 @@ Function Save-AGMPassword([string]$filename,[string]$password)
 	if ( $? )
 	{
 		write-host "Password saved to $filename."
-		write-host "You may now use -passwordfile with Connect-Act to provide a saved password file."
+		write-host "You may now use -passwordfile with Connect-AGM to provide a saved password file."
 	}
 	else 
 	{
