@@ -442,7 +442,7 @@ function Disconnect-AGM
     }
 } 
 
-Function Save-AGMPassword([string]$filename)
+Function Save-AGMPassword([string]$filename,[string]$password)
 {
 	<#
 	.SYNOPSIS
@@ -451,6 +451,10 @@ Function Save-AGMPassword([string]$filename)
 	.EXAMPLE
 	Save-AGMPassword -filename admin-pass.key
 	Save the password for use later.
+
+    .EXAMPLE
+    Save-AGMPassword -filename ./5b-admin-pass -password "passw0rd"
+    Save the specified plaintext password to the specified file name
 
 	.DESCRIPTION
 	Store the credentials in a file which can be used to login to AGM.
@@ -482,14 +486,22 @@ Function Save-AGMPassword([string]$filename)
 	}
 
 	# prompt for password 
-	$password = Read-Host -AsSecureString "Password"
+    if (!($password))
+    {
+	    $passwordenc = Read-Host -AsSecureString "Password"
+	    $passwordenc | ConvertFrom-SecureString | Out-File $filename
+    }
+    else 
+    {
+        $passwordenc = $password | ConvertTo-SecureString -AsPlainText -Force
+        $passwordenc | ConvertFrom-SecureString | Out-File $filename
+    }
 
-	$password | ConvertFrom-SecureString | Out-File $filename
 
 	if ( $? )
 	{
-		Write-Host "Password saved to $filename."
-		Write-Host "You may now use -passwordfile with Connect-AGM to provide a saved password file."
+		write-host "Password saved to $filename."
+		write-host "You may now use -passwordfile with Connect-Act to provide a saved password file."
 	}
 	else 
 	{
