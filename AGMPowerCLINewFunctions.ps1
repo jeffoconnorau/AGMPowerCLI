@@ -245,6 +245,9 @@ Function New-AGMConsistencyGroup ([string]$clusterid,[string]$applianceid,[strin
 
     To learn applianceid, use this command:  Get-AGMAppliance and use the clusterid as applianceid. 
     To learn host ID, use this command:  Get-AGMHost
+    
+    Once you have created the Consistency Group you can add applications to it with Set-AGMConsistencyGroupMember 
+    Once you have created the Consistency Group you can change the name and description with Set-AGMConsistencyGroup
 
     .DESCRIPTION
     A function to add a Consistency Group 

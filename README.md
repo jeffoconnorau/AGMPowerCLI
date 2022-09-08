@@ -961,6 +961,51 @@ id    name       ipaddress
 PS /Users/avw>
 ```
 
+## User Story: Consistency Group management
+
+There are five commands that you can use to manage consistency groups
+
+* Get-AGMConsistencyGroup
+* New-AGMConsistencyGroup
+* Remove-AGMConsistencyGroup
+* Set-AGMConsistencyGroup
+* Set-AGMConsistencyGroupMember
+
+To create a consistency group we need to learn the ID of Appliance we want to create it on and the ID of the Host that it will use applications from:
+
+* Get-AGMAppliance
+* Get-AGMHost
+
+We can then use a command like this to create it. Note this group has no members in it:
+```
+New-AGMConsistencyGroup -groupname "ProdGroup" -description "This is the prod group" -applianceid 70194 -hostid  70631
+```
+Learn the consistencygroup ID with:
+
+* Get-AGMConsistencyGroup
+
+You can edit the name or description with the following syntax (changing group ID to suit):
+```
+Set-AGMConsistencyGroup -groupname "bettername" -description "Even better description" -applianceid 70194 -groupid 353953
+```
+Now we need to add applications to the group.   We need to know the application IDs
+Learn member APP IDs with with a filter like this:
+```
+$targethost = 70631
+Get-AGMApplication -filtervalue hostid=$targethost | select id,appname
+```
+We can then add selected applications to the group with syntax like this.   Comma separate multiple IDs:
+```
+Set-AGMConsistencyGroupMember -groupid 353953 -applicationid "210647,210645" -add
+```
+We can remove them from the group with syntax like this:
+```
+Set-AGMConsistencyGroupMember -groupid 353953 -applicationid "210647,210645" -remove
+```
+We can delete  the group with syntax like this: 
+```
+Remove-AGMConsistencyGroup 353953
+```
 ## Contributing
 Have a patch that will benefit this project? Awesome! Follow these steps to have
 it accepted.
