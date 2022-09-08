@@ -2,6 +2,9 @@
 
 Started Change log file as per release 0.0.0.39
 
+## AGMPowerCLI  0.0.0.41
+* Added New-AGMConsistencyGroup, Remove-AGMConsistencyGroup, Set-AGMConsistencyGroup and Set-AGMConsistencyGroupMember 
+
 ## AGMPowerCLI  0.0.0.40
 * Added -password to Save-AGMPassword
 
