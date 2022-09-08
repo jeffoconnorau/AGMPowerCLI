@@ -12,6 +12,122 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+
+Function Set-AGMConsistencyGroup ([string]$clusterid,[string]$applianceid,[string]$groupid,[string]$groupname,[string]$description) 
+{
+    <#
+    .SYNOPSIS
+    A command to set the group name or description of a consistency group
+
+    .EXAMPLE
+    Set-AGMConsistencyGroup -applianceid 143112195179 -groupid "12345" -groupname "newname" -description "better description than the last one"
+
+    To learn applianceid, use this command:  Get-AGMAppliance and use the clusterid as applianceid.  
+    To learn groupid, use this command:  Get-AGMConsistencyGroup
+
+    .DESCRIPTION
+    A function to modify Consistency Groups
+
+    #>
+    
+    if ($applianceid) { [string]$clusterid = $applianceid}
+
+    if (!($clusterid))
+    {
+        $clusterid = Read-Host "Appliance ID"
+    }
+    if (!($groupid))
+    {
+        [string]$groupid = Read-Host "Group ID"
+    }   
+ 
+    # cluster needs to be like:  sources":[{"clusterid":"144488110379"},{"clusterid":"143112195179"}]
+    $sources = @()
+    foreach ($cluster in $clusterid.Split(","))
+    {
+        $sources += [ordered]@{ id = $cluster }
+    } 
+
+    # {"groupname":"teddybear","description":"WANT A BETTER","cluster":{"id":"70194"},"host":{},"id":"353953"}
+    # {"groupname":"teddybear","description":"WANT A BETTER2","cluster":{"id":"70194"},"host":{"id":"70631"},"id":"353953"}
+
+    $body = [ordered]@{}
+    if ($description)
+    { 
+        $body += @{ description = $description }
+    }
+    if ($groupname)
+    { 
+        $body += @{ groupname = $groupname }
+    }
+    $body += [ordered]@{ cluster = $sources;
+    id = $groupid 
+    }
+    $json = $body | ConvertTo-Json
+
+    PUT-AGMAPIData  -endpoint /consistencygroup/$groupid -body $json 
+}
+
+Function Set-AGMConsistencyGroupMember ([string]$groupid,[switch]$add,[switch]$remove,[string]$applicationid) 
+{
+    <#
+    .SYNOPSIS
+    A command to set the members of a consistency group
+
+    .EXAMPLE
+    Set-AGMConsistencyGroupMember -groupid "12345" -add -applicationid "1234"
+    To add application ID 1233 to groupid 12345
+
+    .EXAMPLE
+    Set-AGMConsistencyGroupMember -groupid "12345" -add -applicationid "1234,5678"
+    To add application ID 1233 and 5678 to groupid 12345
+
+     .EXAMPLE
+    Set-AGMConsistencyGroupMember -groupid "12345" -remove -applicationid "1234"
+    To remove application ID 1233 from groupid 12345
+
+    To learn groupid, use this command:  Get-AGMConsistencyGroup
+    To learn application ID, use this command: Get-AGMApplication
+
+    .DESCRIPTION
+    A function to modify Consistency Group members
+
+    #>
+    
+    if (!($groupid))
+    {
+        [string]$groupid = Read-Host "Group ID"
+    }    
+    if ( (!($add)) -and (!($remove)) )
+    {
+        Get-AGMErrorMessage -messagetoprint "You need to specify either -add or -remove"
+        return
+    }
+    if (($add) -and ($remove))
+    {
+        Get-AGMErrorMessage -messagetoprint "Do not specify add and remove at the same time"
+        return
+    }
+
+    # [{"action":"add","members":[210645]}]
+    # [{"action":"remove","members":[210647]}]
+    # [{"action":"add","members":[210647,210645]}]
+
+    $body1 = [ordered]@{}
+    if ($add)
+    {
+        $json = '[{"action":"add","members":[' +$applicationid +']}]'
+    }
+    if ($remove)
+    {
+        $json = '[{"action":"remove","members":[' +$applicationid +']}]'
+    }
+
+    Post-AGMAPIData -endpoint /consistencygroup/$groupid/member -body $json 
+}
+
+
 Function Set-AGMCredential ([string]$name,[string]$zone,[string]$id,[string]$credentialid,[string]$clusterid,[string]$applianceid,$filename,[string]$projectid) 
 {
     <#

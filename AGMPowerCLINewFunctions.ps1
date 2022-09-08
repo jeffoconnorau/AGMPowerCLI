@@ -233,6 +233,64 @@ Function New-AGMCloudVM ([string]$zone,[string]$id,[string]$credentialid,[string
     Post-AGMAPIData  -endpoint /cloudcredential/$credentialid/discovervm/addvm -body $json
 }
 
+
+Function New-AGMConsistencyGroup ([string]$clusterid,[string]$applianceid,[string]$hostid,[string]$description,[string]$groupname) 
+{
+    <#
+    .SYNOPSIS
+    Adds new Consistency Group (CG)
+
+    .EXAMPLE
+    New-AGMConsistencyGroup -applianceid 144292692833 -groupname "prodhost1" -description "this is a CG" -hostid 12344
+
+    To learn applianceid, use this command:  Get-AGMAppliance and use the clusterid as applianceid. 
+    To learn host ID, use this command:  Get-AGMHost
+
+    .DESCRIPTION
+    A function to add a Consistency Group 
+
+    #>
+    
+    if ($applianceid) { [string]$clusterid = $applianceid}
+
+    if (!($clusterid))
+    {
+        $clusterid = Read-Host "Cluster ID"
+    }
+    if (!($hostid))
+    {
+        [string]$hostid = Read-Host "Host ID"
+    }   
+    if (!($groupname))
+    {
+        [string]$groupname = Read-Host "Group Name"
+    }
+
+    # cluster needs to be like:  sources":[{"clusterid":"144488110379"},{"clusterid":"143112195179"}]
+    $sources = @()
+    foreach ($cluster in $clusterid.Split(","))
+    {
+        $sources += [ordered]@{ id = $cluster }
+    } 
+
+    #  {"groupname":"testme","description":"description","cluster":{"id":"70194"},"host":{"id":"70631"}}
+    
+    $body = [ordered]@{}
+    $body += [ordered]@{ groupname = $groupname;
+    cluster = $sources;
+    host = [ordered]@{ id = $hostid }
+    }
+    if ($description)
+    { 
+        $body += @{ description = $description }
+    }
+
+    $json = $body | ConvertTo-Json
+
+    Post-AGMAPIData  -endpoint /consistencygroup -body $json 
+}
+
+
 Function New-AGMCredential ([string]$name,[string]$zone,[string]$clusterid,[string]$applianceid,$filename,[string]$projectid,[string]$organizationid,[string]$udsuid) 
 {
     <#
@@ -427,7 +485,7 @@ Function New-AGMHost ([string]$clusterid,[string]$applianceid,[string]$hostname,
     { 
         $body += @{ friendlypath = $friendlyname }
     }
-    if ($scret)
+    if ($secret)
     {
         $body += @{ udsagent = $udsagent }
     }

@@ -66,7 +66,29 @@ function Remove-AGMAppliance ([string]$applianceid,[string]$id)
     Post-AGMAPIData -endpoint /cluster/$applianceid -method delete
 }
 
+function Remove-AGMConsistencyGroup ([Parameter(Mandatory=$true)][string]$appid)
+{
+    <#
+    .SYNOPSIS
+    Deletes a nominated consistency group
 
+    .EXAMPLE
+    Remove-AGMConsistencyGroup
+    You will be prompted for an Consistency Group ID
+
+    .EXAMPLE
+    Remove-AGMConsistencyGroup 2133445
+    Deletes Consistencyy Group ID 2133445
+    Learn the ID with Get-AGMConsistencyGroup
+
+
+    .DESCRIPTION
+    A function to delete consistency group
+
+    #>
+
+    Post-AGMAPIData -endpoint /consistencygroup/$appid -method delete
+}
 
 function Remove-AGMCredential([string]$credentialid,[string]$id,[string]$applianceid,[string]$clusterid)
 {
