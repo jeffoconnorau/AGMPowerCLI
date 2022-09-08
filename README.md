@@ -20,6 +20,7 @@ Our intention is that you should install both modules.
 **[User Story: Adding GCP Instances](#user-story-adding-gcp-instances)**<br>
 **[User Story: Bulk expiration](#user-story-bulk-expiration)**<br>
 **[User Story: Appliance management](#user-story-appliance-management)**<br>
+**[User Story: Consistency Group management](#consistency-group-management)**<br>
 **[Contributing](#contributing)**<br>
 **[Disclaimer](#disclaimer)**<br>
 
