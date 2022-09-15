@@ -1,5 +1,5 @@
 # AGMPowerCLI
-A Powershell module that allows PowerShell users to issue API calls to an Actifio Global Manager or a Google Cloud Backup and DR Management Console
+A Powershell module to issue API calls to an Actifio Global Manager or a Google Cloud Backup and DR Management Console
 
 ### Table of Contents
 **[Usage](#usage)**<br>
