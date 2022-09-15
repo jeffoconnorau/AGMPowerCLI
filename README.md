@@ -1,15 +1,5 @@
 # AGMPowerCLI
 A Powershell module that allows PowerShell users to issue API calls to an Actifio Global Manager or a Google Cloud Backup and DR Management Console
-This module is intended to deliver the following:
-
-* Allow the user to create and remove sessions so that API commands can be issued
-* Issue commands to API end points 
-
-There is a partner module:  AGMPowerLib found here:  https://github.com/Actifio/AGMPowerLib
-The AGMPowerLib module contains what we call composite functions, these being complex combination of API endpoints.   
-We chose to separate the two modules (a module for end points versus a module for composite functions), to make it easier to differentiate if you are working with a single end-point or working with a composite collection of endpoints.  
-
-Our intention is that you should install both modules.
 
 ### Table of Contents
 **[Usage](#usage)**<br>
@@ -23,6 +13,28 @@ Our intention is that you should install both modules.
 **[User Story: Consistency Group management](#user-story-consistency-group-management)**<br>
 **[Contributing](#contributing)**<br>
 **[Disclaimer](#disclaimer)**<br>
+
+## What does this module do?
+This module is intended to deliver the following:
+
+* Allow the user to create and remove sessions so that API commands can be issued
+* Issue commands to API end points 
+
+There is a partner module:  AGMPowerLib found here:  https://github.com/Actifio/AGMPowerLib
+The AGMPowerLib module contains what we call composite functions, these being complex combination of API endpoints.   
+We chose to separate the two modules (a module for end points versus a module for composite functions), to make it easier to differentiate if you are working with a single end-point or working with a composite collection of endpoints.  
+
+Our intention is that you should install both modules.
+
+### What Actifio/Google products can I use AGMPowerCLI with?
+AGMPowerCLI connects to and interacts with the following products/devices:
+
+| Product | Device | Can connect to:
+| ---- | ---- | --------
+| Actifio | AGM  | yes         
+| Actifio | Sky | no        
+| Google Cloud Backup and DR | Management Console |  yes
+| Google Cloud Backup and DR | Backup/recovery appliance |  no
 
 ### What versions of PowerShell will this module work with?
 
