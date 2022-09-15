@@ -2,6 +2,7 @@
 A Powershell module to issue API calls to an Actifio Global Manager or a Google Cloud Backup and DR Management Console
 
 ### Table of Contents
+**[What does this module do?](#what-does-this-module-do)**<br>
 **[Usage](#usage)**<br>
 **[What else do I need to know?](#what-else-do-i-need-to-know)**<br>
 **[User Story: Bulk unprotection of VMs](#user-story-bulk-unprotection-of-vms)**<br>
