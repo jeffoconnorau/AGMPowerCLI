@@ -226,8 +226,8 @@ If you need some examples on the command:
 ```
 Get-Help Connect-AGM -examples
 ```
-
-### 3a)  Save your password locally
+ 
+### 3a)  Save your AGM password locally (Actifio only, for Google Cloud Backup and DR see GCBDR.md)
 
 Create an encrypted password file using the AGMPowerCLI **Save-AGMPassword** function:
 ```
@@ -237,7 +237,7 @@ Save-AGMPassword -filename "C:\temp\password.key"
 The Save-AGMPassword function creates an encrypted password file on Windows, but on Linux and Mac it only creates an encoded password file.  
 Note that you can also use this file with the Connect-Act command from ActPowerCLI.
 
-##### Sharing Windows key files
+##### Sharing Windows AGM key files
 
 Currently if a Windows key file is created by a specific user, it cannot be used by a different user.    You will see an error like this:
 ```
@@ -245,7 +245,7 @@ Key not valid for use in specified state.
 ```
 This will cause issues when running saved scripts when two different users want to run the same script with the same keyfile.    To work around this issue, please have each user create a keyfile for their own use.   Then when running a shared script, each user should execute the script specifying their own keyfile.  This can be done by using a parameter file for each script.
 
-### 3b)  Save your password remotely
+### 3b)  Save your AGM password remotely (Actifio only, for Google Cloud Backup and DR see GCBDR.md)
 
 You can save your password in a secret manager and call it during login.   For example you could do this:
 
@@ -258,8 +258,8 @@ You can save your password in a secret manager and call it during login.   For e
 ```
 gcloud secrets versions access latest --secret=agmadminpassword
 ```
-
-### 4)  Login to your appliance
+ 
+### 4)  Login to your AGM  (Actifio only, for Google Cloud Backup and DR see GCBDR.md)
 
 To login to an AGM (10.61.5.114) as admin and enter password interactively:
 ```
