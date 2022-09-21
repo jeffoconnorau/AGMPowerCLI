@@ -227,7 +227,9 @@ If you need some examples on the command:
 Get-Help Connect-AGM -examples
 ```
  
-### 3a)  Save your AGM password locally - Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
+### 3a)  Save your AGM password locally - Actifio only
+
+This if for Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
 
 Create an encrypted password file using the AGMPowerCLI **Save-AGMPassword** function:
 ```
@@ -245,7 +247,9 @@ Key not valid for use in specified state.
 ```
 This will cause issues when running saved scripts when two different users want to run the same script with the same keyfile.    To work around this issue, please have each user create a keyfile for their own use.   Then when running a shared script, each user should execute the script specifying their own keyfile.  This can be done by using a parameter file for each script.
 
-### 3b)  Save your AGM password remotely - Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
+### 3b)  Save your AGM password remotely - Actifio only
+
+This if for Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
 
 You can save your password in a secret manager and call it during login.   For example you could do this:
 
@@ -259,7 +263,9 @@ You can save your password in a secret manager and call it during login.   For e
 gcloud secrets versions access latest --secret=agmadminpassword
 ```
  
-### 4)  Login to your AGM - Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
+### 4)  Login to your AGM - Actifio only
+
+This is for Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
 
 To login to an AGM (10.61.5.114) as admin and enter password interactively:
 ```
