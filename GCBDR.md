@@ -6,8 +6,8 @@ To perform Google Cloud Backup and DR PowerShell operations, you need the follow
 
 1. A Service Account with the correct roles needs to be selected or created in the relevant project  (that's the project that has access to the Management Console)
 1. A host to run that service account, either:
-* A Linux or Windows GCE Instance running as the service account above and which has GCloud CLI and optionally PowerShell installed.
-* A Linux, Mac or Windows host which has GCloud CLI and optionally PowerShell installed and which has a downloaded JSON key for the relevant service account.  
+    1. A Linux or Windows GCE Instance running as the service account above and which has GCloud CLI and PowerShell installed.
+    1. A Linux, Mac or Windows host which has GCloud CLI and PowerShell installed and which has a downloaded JSON key for the relevant service account.  
 
 ## Getting Management Console details
 
@@ -28,7 +28,7 @@ In this example (yours will be different!):
 
 ## Creating your Service Account
 
-From Google Console IAM & Admin panel, go to Service Account and choose Create Service Account.  You can also modify an existing one if desired.
+From Google Console IAM & Admin panel in the project where Backup and DR was activated, go to Service Account and choose Create Service Account.  You can also modify an existing one if desired.
 
 Give the account a name and ensure it has at least the following three roles:
 
@@ -41,7 +41,7 @@ In this example this is the service account that was created:
 
 * Service Account:   powershell@avwservicelab1.iam.gserviceaccount.com
 
-Note that you may find the two Service account roles get excess permissions like this:
+Note that you may over time find the two Service account roles get excess permissions like this:
 
 * Service Account Token Creator.    7/9 excess permissions
 * Service Account User               4/5 excess permissions
@@ -55,7 +55,7 @@ In your project create or select an instance that you want to use for API operat
 
 2.   Activate your service account on a host
 
-In option 2,  we are going to use a GCE instance or external host/VM to run our API commands/automation, but we are going to 'activate' the Service account using a JSON Key.   The host needs the gcloud CLI installed.
+In option 2,  we are going to use a GCE instance or external host/VM to run our API commands/automation, but we are going to 'activate' the Service account using a JSON Key.   The host needs the **gcloud** CLI installed.
 
 We need to activate our service account since we are not executing this command from a GCE instance already running as that SA.
 So firstly we need to download a JSON key from the Google console and copy that key to our relevant host:
@@ -64,10 +64,10 @@ So firstly we need to download a JSON key from the Google console and copy that 
 1. Select your Service Account
 1. Go to Keys
 1. Select Add Key → Create new key
-1. Leave key type on JSON and select CREATE
+1. Leave key type as JSON and select CREATE
 1. Copy the downloaded key to the relevant host
 
-Note that some projects may restrict key creation or set time limits on expiration. 
+Note that some projects may restrict key creation or set time limits on their expiration. 
 
 Now from the host where your service account key is eventually placed we need to activate it:
 ```
@@ -79,7 +79,7 @@ At this point we can proceed with the next step.
 
 ### Management server details check - PowerShell
 
-We can confirm our management console details as follows (needs AGMPowerCLI  module installed):
+We can confirm our management console details as follows:
 ```
 PS /> Get-GoogleCloudBackupDRConsole -project avwservicelab1 -location asia-southeast1
 
@@ -92,14 +92,12 @@ managementUri  : @{webUi=https://agm-666993295923.backupdr.actifiogo.com; api=ht
 type           : BACKUP_RESTORE
 oauth2ClientId : 486522031570-fimdb0rbeamc17l3akilvquok1dssn6t.apps.googleusercontent.com
 ```
-
-
 ### Simplified User Add solution
 To ensure the user has the correct role the first time it logs in, manually adding the user to the Management Console BEFORE the first login is recommended.    After you create the user in Google IAM,  login to your Management Console,  go to  Manage → Users and select Create User
 
 Now enter the Service account email as the Username and select the relevant roles.   
 
-You can now proceed to login having 'pre-added' user and assigned it a role.
+You can now proceed to login having 'pre-added' user and assigned it a Management Console role.
 
 
 ### Login process - PowerShell
@@ -108,14 +106,7 @@ This uses the two existing PowerShell modules, AGMPowerCLI and AGMPowerLib.
 These modules can be used with both an Actifio GO AGM and Backup and DR Management Consoles.  The only difference is that we specify the service account as **-agmuser**, we do NOT need to specify a password, but we instead need to specify the oauth2ClientId using **-oauth2ClientId**.   If you do not specify the oauth2clientid then the login will fail.
 
 
-#### First time login:
-
-Create a Token and Session ID using **connect-AGM**.  Do this every time you need to login.
-Set a role - Has to be done the first time you login to place your user into a Management Console Role.  Use the AGM GUI to set a role for your user, login again as your user and you are now ready to begin work.
-
-#### Subsequent logins:
-
-Create a Token and Session ID using connect-AGM.  Do this every time you need to login.
+#### Login to the Management Console
 
 To login use syntax like this:
 ```
@@ -126,7 +117,7 @@ Here is an example:
 PS /> connect-agm -agmip agm-666993295923.backupdr.actifiogo.com -agmuser powershell@avwservicelab1.iam.gserviceaccount.com -oauth2ClientId 486522031570-fimdb0rbeamc17l3akilvquok1dssn6t.apps.googleusercontent.com
 Login Successful!
 ```
-If your user does not have a role set, use the Management Console GUI to set it as per the API instructions above.
+If your user does not have a role set, use the Management Console GUI to set it as per the instructions in Simplified User Add solution.
 
 We can start issuing commands.  If your commands fail, then your user does not have a role set.   Set your role using the management console and then login again.
 ```
@@ -146,13 +137,12 @@ localnode       : backup-server-36842
 clusterid       : 145126716485
 createdate      : 2022-03-25 04:33:00
 ```
-Windows works the same way.
 
 ## Converting Scripts From Actifio GO to Backup and DR
 
 There are three considerations when converting from Actifio GO:
 
-1. Is the automation using AGM API commands or Sky API commands (or Sky SSH)
+1. Is the automation using AGM API commands or Sky API commands or Sky SSH
 1. Configuration of the host where the automation is running 
 1. The user ID being used by the automation for authentication
 
@@ -161,9 +151,9 @@ Let's look at each point:
 ### AGM API vs Sky API
 
 Backup and DR only supports AGM API commands, sent to the Management Console.   If your automation is targeting a Sky Appliance using udsinfo and udstask commands sent either via ActPowerCLI (PowerShell), REST API command or an SSH session, then it cannot be used with Backup and DR and will need to be re-written.   If your automation is already using AGM API commands (or AGMPowerCLI), then very few changes will be needed.
-Automation Host Configuration
+### Automation Host Configuration
 
-The automation host for Backup and DR API calls will need the gcloud CLI installed. Once installed the gcloud CLI will need access to a Google Cloud Service Account (with the correct roles), either through being executed on a GCE Instance running as that SA, or by using an activated JSON key for that service account.   The setup tasks for this typically only need to be done once, and are detailed in the sections titled: Option 1: GCE Instance running as the service account and Option 2: Activate your service account on a management host.  
+The automation host for Backup and DR API calls will need the gcloud CLI installed. Once installed the gcloud CLI will need access to a Google Cloud Service Account (with the correct roles), either through being executed on a GCE Instance running as that SA, or by using an activated JSON key for that service account.   The setup tasks for this typically only need to be done once, and are detailed in the sections above.
 
 If using JSON keys, and the JSON keys expire, then a process to renew the keys will need to be established.
 
@@ -176,9 +166,9 @@ Actifio GO:   In this logon example we specify three things:   agmip, agmuser an
 connect-agm -agmip 192.168.1.100 -agmuser admin -passwordfile c:\pass.key
 ```
 Backup and DR:   The changes needed are:
-Change the agmip to the Management Console name
-Change agmuser to the SA
-Replace passwordfile with oauth2ClientId
+1. Change the agmip to the Management Console name
+1. Change agmuser to the SA
+1. Replace passwordfile with oauth2ClientId
 
 For example:
 ```
