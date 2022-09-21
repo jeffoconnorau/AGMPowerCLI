@@ -229,7 +229,7 @@ Get-Help Connect-AGM -examples
  
 ### 3a)  Save your AGM password locally - Actifio only
 
-This if for Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
+This is for Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
 
 Create an encrypted password file using the AGMPowerCLI **Save-AGMPassword** function:
 ```
@@ -249,7 +249,7 @@ This will cause issues when running saved scripts when two different users want 
 
 ### 3b)  Save your AGM password remotely - Actifio only
 
-This if for Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
+This is for Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
 
 You can save your password in a secret manager and call it during login.   For example you could do this:
 
