@@ -1043,7 +1043,7 @@ id     name
 70194  backup-server-32897
 ```
 ### Running info commands
-We can use **Get-AGMAPIApplianceInfo** to send info (also known as udsinfo) commands.
+We can use **Get-AGMAPIApplianceInfo** to send info (also known as udsinfo) commands.   In this example we send the **udsinfo lshost** command to the appliance with ID 70194.
 ```
 PS > Get-AGMAPIApplianceInfo -applianceid 70194 -command lshost | select id,hostname
 
@@ -1053,7 +1053,7 @@ id     hostname
 57610  winsrv2019-1
 57612  winsrv2019-2
 ```
-If you want info about a specific host ID, you could use this command:
+To get info about a specific host ID, you could use this command:
 ```
 Get-AGMAPIApplianceInfo -applianceid 70194 -command lshost -arguments "argument=16432"
 ```
