@@ -12,6 +12,7 @@ A Powershell module to issue API calls to an Actifio Global Manager or a Google 
 **[User Story: Bulk expiration](#user-story-bulk-expiration)**<br>
 **[User Story: Appliance management](#user-story-appliance-management)**<br>
 **[User Story: Consistency Group management](#user-story-consistency-group-management)**<br>
+**[User Story: Running appliance info and report commands](#user-story-running-appliance-info-and-report-commands)**<br>
 **[Contributing](#contributing)**<br>
 **[Disclaimer](#disclaimer)**<br>
 
@@ -1025,6 +1026,80 @@ Set-AGMConsistencyGroupMember -groupid 353953 -applicationid "210647,210645" -re
 We can delete  the group with syntax like this: 
 ```
 Remove-AGMConsistencyGroup 353953
+```
+
+## User Story: Running appliance info and report commands
+
+> **Note**:   If you want to manage appliance parameters such as slots, use the **Get-AGMLibApplianceParameter** and **Set-AGMLibApplianceParameter** commands documented here:
+https://github.com/Actifio/AGMPowerLib#user-story-appliance-parameter-management-and-slot-limits
+
+You can run info and report commands on an appliance using AGMPowerCLI.  To do this we need to tell the Management Console which appliance to run the command on. So first learn your appliance ID with **Get-AGMAppliance**.  In this example the appliance we want to work with is ID 70194.
+```
+PS > Get-AGMAppliance | select id,name
+
+id     name
+--     ----
+406219 backup-server-29736
+70194  backup-server-32897
+```
+### Running info commands
+We can use **Get-AGMAPIApplianceInfo** to send info (also known as udsinfo) commands.
+```
+PS > Get-AGMAPIApplianceInfo -applianceid 70194 -command lshost | select id,hostname
+
+id     hostname
+--     --------
+16432  tiny
+57610  winsrv2019-1
+57612  winsrv2019-2
+```
+If you want info about a specific host ID, you could use this command:
+```
+Get-AGMAPIApplianceInfo -applianceid 70194 -command lshost -arguments "argument=16432"
+```
+You can also filter by using a command like this:
+```
+Get-AGMAPIApplianceInfo -applianceid 70194 -command lshost -arguments "filtervalue=hostname=tiny"
+```
+
+### Running report commands
+
+We can use **Get-AGMAPIApplianceReport** to send report commands.  If you want to know which commands you can send, start with *reportlist*.
+```
+PS > Get-AGMAPIApplianceReport -applianceid 70194 -command reportlist
+
+ReportName             ReportFunction                                                                           RequiredRoleRights
+----------             --------------                                                                           ------------------
+reportadvancedsettings Show all Advanced policy options that have been set                                      AdministratorRole
+```
+In this example we run the *reportapps* command:
+```
+PS > Get-AGMAPIApplianceReport -applianceid 70194 -command reportapps | select hostname,appname,"MDLStat(GB)"
+
+HostName      AppName            MDLStat(GB)
+--------      -------            -----------
+tiny          tiny               20.000
+windows       windows            50.000
+win-target    win-target         50.000
+postgres1melb postgresql_5432    0.046
+sap-prod      act                70.000
+windows       WINDOWS\SQLEXPRESS 0.437
+centos1       centos1            4.051
+centos2       centos2            3.855
+centos3       centos3            4.098
+ubuntu1       ubuntu1            29.199
+ubuntu2       ubuntu2            31.855
+ubuntu3       ubuntu3            26.191
+winsrv2019-1  WinSrv2019-1       37.332
+winsrv2019-2  WinSrv2019-2       36.062
+```
+We then send an argument of **-a tiny** to restrict the output to applications with a name of **tiny**
+```
+PS > Get-AGMAPIApplianceReport -applianceid 70194 -command reportapps -arguments "-a tiny" | select hostname,appname,"MDLStat(GB)"
+
+HostName AppName MDLStat(GB)
+-------- ------- -----------
+tiny     tiny    20.000
 ```
 ## Contributing
 Have a patch that will benefit this project? Awesome! Follow these steps to have
