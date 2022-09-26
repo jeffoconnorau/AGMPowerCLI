@@ -1030,8 +1030,7 @@ Remove-AGMConsistencyGroup 353953
 
 ## User Story: Running appliance info and report commands
 
-> **Note**:   If you want to manage appliance parameters such as slots, use the **Get-AGMLibApplianceParameter** and **Set-AGMLibApplianceParameter** commands documented here:
-https://github.com/Actifio/AGMPowerLib#user-story-appliance-parameter-management-and-slot-limits
+> **Note**:   If you want to manage appliance parameters such as slots, use the **Get-AGMLibApplianceParameter** and **Set-AGMLibApplianceParameter** commands documented [here](https://github.com/Actifio/AGMPowerLib#user-story-appliance-parameter-management-and-slot-limits).
 
 You can run info and report commands on an appliance using AGMPowerCLI.  To do this we need to tell the Management Console which appliance to run the command on. So first learn your appliance ID with **Get-AGMAppliance**.  In this example the appliance we want to work with is ID 70194.
 ```
