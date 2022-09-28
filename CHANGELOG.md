@@ -2,6 +2,9 @@
 
 Started Change log file as per release 0.0.0.39
 
+## AGMPowerCLI 0.0.0.42
+* Taught Disconnect-AGM to work with GCBDR
+
 ## AGMPowerCLI  0.0.0.41
 * Added New-AGMConsistencyGroup, Remove-AGMConsistencyGroup, Set-AGMConsistencyGroup and Set-AGMConsistencyGroupMember 
 
