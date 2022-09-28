@@ -409,7 +409,14 @@ function Disconnect-AGM
         }
         else 
         {
-            $resp = Invoke-RestMethod -Method DELETE -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "https://$AGMIP/actifio/session/$AGMSESSIONID"
+            if ($AGMToken)
+            {
+                $resp = Invoke-RestMethod -Method "Get" -Headers @{ Authorization = "Bearer $AGMToken"; "backupdr-management-session" = "Actifio $AGMSESSIONID" } -Uri "https://$AGMIP/actifio/session/$AGMSESSIONID" -TimeoutSec 60 
+            }
+            else 
+            {
+                $resp = Invoke-RestMethod -Method DELETE -Headers @{ Authorization = "Actifio $AGMSESSIONID" } -Uri "https://$AGMIP/actifio/session/$AGMSESSIONID"
+            }
         }
     }
     Catch
