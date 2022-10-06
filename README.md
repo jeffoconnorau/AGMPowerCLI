@@ -1046,6 +1046,10 @@ HostName AppName MDLStat(GB)
 -------- ------- -----------
 tiny     tiny    20.000
 ```
+If you need to send multiple parameters separate them with an **&**, for example, this command send the **reportimages** command to appliance ID 406219 with the **-a 0** and **-s** parameters and exports it to CSV.
+```
+Get-AGMAPIApplianceReport -applianceid 406219 -command reportimages -arguments "-a 0&-s" |  Export-Csv disks.csv
+```
 ## Contributing
 Have a patch that will benefit this project? Awesome! Follow these steps to have
 it accepted.
