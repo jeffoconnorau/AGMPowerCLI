@@ -505,60 +505,6 @@ PS /Users/anthony> $LASTEXITCODE
  # Working with Common Functions in AGMPowerCLI versus Composite Functions in AGMPowerLib
  
  The goal of AGMPowerCLI is to expose all the REST API end points that are available on an AGM so you can automate functions using PowerShell.  However this requires a knowledge of the END points and particularly for commands that create new things (like mounts), these commands need a body that is made of well formed JSON.  For this reason we have started a second module that is dedicated to composite functions.   A composite function is a function that contains multiple end-points or a function that includes guided wizards.   
- 
- ## Common Functions
- 
- There are several functions exported out of the file AGMPowerCLICommonFunctions.ps1 that are intended to be backbone functions for all of the functions that need to interact with AGM.   While power users may choose to work with them directly, using them is optional, especially as we add more functions to AGMPowerLib.
- 
-### Get-AGMAPIData
-This command sends a Get API call to an AGM.   Normally this function is not called directly, but by another function, such as Get-AGMUser.
-However power users can use this function to simplify their own scripts if they so choose.
-
-Here is an example, where we do the following:
-
-1. Access the /application endpoint
-1. Use a filtervalue to search in the appname field for apps that are like smalldb.  
-1. Request the syncdate field get converted from epoch time to IS08601
-1. Limit the number of objects (Apps) returned to one.
-1. Sort by ID desc.   Now we are only getting back on application,  but by using this sort, we will get the most recently created one.
-
-```
-Get-AGMAPIData -endpoint /application -filtervalue appname~smalldb -datefields "syncdate" -limit 1 -sort id:desc
-```
-
-Now to be clear, we could do exactly the same thing with this command:
-```
-Get-AGMApplication -filtervalue appname~smalldb -limit 1 -sort id:desc
-```
- 
-### Post-AGMAPIData
-This command sends a Post API call to an AGM.  Normally this function is not called directly, but by another function.  However power users can use this function to simplify their own scripts if they so choose.
-Here is an example, we create an org and return data relevant to that new org.  Note the returned data will be formatted JSON.  
-The command does:
-
-1.  Connects to the /org endpoint
-1.  Sends a body composed of well formed JSON that supplies the Org name and Ord Description
-1.  Requests that in the data that gets returned, that the modify date and createdate fields are concerted from epoch time to ISO8601
-
-```
-Post-AGMAPIData -endpoint /org -body '{ "description": "Melbourne test team","name": "MelTeam1" }' -datefields "modifydate,createdate"
-```
-We could do exactly the same with:
-
-```
-New-AGMOrg -orgname MelTeam1 -description "Melbourne test team"
-
-```    
-In this example we delete an org (ID 53688920):
-
-```
-Post-AGMAPIData -endpoint /org/53688920 -method "delete"
-```
-We could do exactly the same with:
-```
-Remove-AGMOrg 54382768
-```
-
 
 # User Stories
 
