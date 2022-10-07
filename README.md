@@ -284,7 +284,7 @@ Note you can use **-quiet** to suppress messages.   This is handy when scripting
 
 #### Login using a different TCP Port
 
-This is for Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
+This is for Actifio only.
 
 If you are connecting to AGM over port forwarding then you will want to override the default TCP port of 443.   To do this simple add your desired port to the AGMIP.   For instance if you are using local port forwarding through a bastion host where port 8443 is being forwarded to port 443:
 ```
@@ -357,12 +357,12 @@ In the example below, we login and search for snapshot jobs and find there are o
 ```
 PS /Users/anthony/git/ActPowerCLI> Connect-Act 172.24.1.117 av -passwordfile avpass.key -ignorecerts
 Login Successful!
-PS /Users/anthony/git/AGMPowerCLI> $jobs = Get-AGMJobHistory -filtervalue jobclass=snapshot
-PS /Users/anthony/git/AGMPowerCLI> $jobs.id.count
+PS > $jobs = Get-AGMJobHistory -filtervalue jobclass=snapshot
+PS > $jobs.id.count
 32426
-PS /Users/anthony/git/AGMPowerCLI> Set-AGMAPILimit 100
-PS /Users/anthony/git/AGMPowerCLI> $jobs = Get-AGMJobHistory -filtervalue jobclass=snapshot
-PS /Users/anthony/git/AGMPowerCLI> $jobs.id.count
+PS > Set-AGMAPILimit 100
+PS > $jobs = Get-AGMJobHistory -filtervalue jobclass=snapshot
+PS > $jobs.id.count
 100
 ```
 
@@ -546,8 +546,8 @@ Because we have a CSV file of affected VMs we can run this simple PowerShell scr
 
 Import the list and validate the import worked by displaying the imported variable.  In this example we have only four apps.
 ```
-PS /Users/anthonyv> $appstounmanage = Import-Csv -Path .\missingvms.csv
-PS /Users/anthonyv> $appstounmanage
+PS > $appstounmanage = Import-Csv -Path .\missingvms.csv
+PS > $appstounmanage
 
 appname      appid
 -------      --
@@ -613,7 +613,7 @@ Get-AGMApplication -filtervalue appname=bastion
 ```
 The term we look for is “Managed” = True 
 ```
-PS /Users/avw> Get-AGMApplication -filtervalue apptype=GCPInstance | select appname,apptype,managed,id, @{N='sltid'; E={$_.sla.slt.id}}, @{N='slpid'; E={$_.sla.slp.id}} | ft
+PS > Get-AGMApplication -filtervalue apptype=GCPInstance | select appname,apptype,managed,id, @{N='sltid'; E={$_.sla.slt.id}}, @{N='slpid'; E={$_.sla.slp.id}} | ft
 
 appname     apptype     managed id     sltid slpid
 -------     -------     ------- --     ----- -----
@@ -643,10 +643,10 @@ Get-AGMApplication -filtervalue appname=bastion
 ```
 Here is an example:
 ```
-PS /Users/avw> $appdata = Get-AGMApplication -filtervalue appname=bastion
-PS /Users/avw> $appdata.host.ipaddress
+PS > $appdata = Get-AGMApplication -filtervalue appname=bastion
+PS > $appdata.host.ipaddress
 10.152.0.3
-PS /Users/avw>
+PS >
 ```
 
 ## User Story: Managing GCP Cloud Credentials
@@ -655,7 +655,7 @@ PS /Users/avw>
 #### Listing Cloud Credentials
 
 ```
-PS /Users/avw/Downloads> Get-AGMCredential
+PS /Downloads> Get-AGMCredential
 
 @type          : cloudCredentialRest
 id             : 218150
@@ -672,7 +672,7 @@ serviceaccount : avwlabowner@avwlab2.iam.gserviceaccount.com
 
 
 ```
-PS /Users/avw/Downloads> New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824"
+PS /Downloads> New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824"
 
 @type          : cloudCredentialRest
 id             : 219764
@@ -688,7 +688,7 @@ serviceaccount : avw-gcsops@glabco.iam.gserviceaccount.com
 
 Situation where key cannot manage project
 ```
-PS /Users/avw/Downloads> New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824" -projectid glabco1
+PS /Downloads> New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824" -projectid glabco1
 
 @type                    errors
 -----                    ------
@@ -696,7 +696,7 @@ testCredentialResultRest {@{errorcode=4000; errormsg=No privileges for project o
 ```
 Duplicate name
 ```
-PS /Users/avw/Downloads> New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824"
+PS /Downloads> New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824"
 
 err_code err_message
 -------- -----------
@@ -740,7 +740,7 @@ $discovery.items.vm | select vmname,instanceid
 ```
 For example:
 ```
-PS /Users/avw> $discovery.items.vm | select vmname,instanceid
+PS > $discovery.items.vm | select vmname,instanceid
 
 vmname      instanceid
 ------      ----------
@@ -749,7 +749,7 @@ agm         6655459695622225630
 ```
 The total number of VMs that were found and the total number fetched will be different.  In this example, 57 VMs can be found, but only 50 were fetched as the limit defaults to 50:
 ```
-PS /Users/avw> Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid avwlab2
+PS > Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid avwlab2
 
 count items                             totalcount
 ----- -----                             ----------
@@ -757,24 +757,24 @@ count items                             totalcount
 ```
 By setting the limit to 60 we now fetch all 57 VMs:
 ```
-PS /Users/avw> Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid avwlab2 -limit 60
+PS > Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid avwlab2 -limit 60
 
 count items                             totalcount
 ----- -----                             ----------
    57 {@{vm=}, @{vm=}, @{vm=}, @{vm=}…}         57
 
-PS /Users/avw>
+PS >
 ```
 
 Or we could fetch the first 50 in one command and then in a second command, set an offset of 1, which will fetch all VMs from 51 onwards (offset it added to limit to denote the starting point).  In this example we fetch the remaining 7 VMs (since the limit is 50):
 ```
-PS /Users/avw> Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid avwlab2 -limit 50 -offset 1
+PS > Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid avwlab2 -limit 50 -offset 1
 
 count items                             totalcount
 ----- -----                             ----------
     7 {@{vm=}, @{vm=}, @{vm=}, @{vm=}…}         57
 
-PS /Users/avw>
+PS >
 ```
 
 
@@ -791,11 +791,11 @@ New-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid "avwlab2" 
 
 #### Deleting a Cloud Credential
 ```
-PS /Users/avw/Downloads> Remove-AGMCredential -credentialid 219764 -applianceid "145759989824,144292692833"
+PS /Downloads> Remove-AGMCredential -credentialid 219764 -applianceid "145759989824,144292692833"
 ```
 Update existing credential with new key and change its name
 ```
-PS /Users/avw/Downloads> Set-AGMCredential -id 219764  -name test1 -filename ./glabco-4b72ba3d6a69.json
+PS /Downloads> Set-AGMCredential -id 219764  -name test1 -filename ./glabco-4b72ba3d6a69.json
 
 @type          : cloudCredentialRest
 id             : 219764
@@ -814,8 +814,8 @@ serviceaccount : avw-gcsops@glabco.iam.gserviceaccount.com
 
 You may have a requirement to expire large numbers of images at one time.   One way to approach this is to use the Remove-AGMImage command in a loop. However this may fail as shown in the example below.  The issue is that the first expiration job is still running while you attempt to execute the following jobs, which causes a collission:
 ```
-PS /Users/avw> $images = Get-AGMImage -filtervalue appid=35590 | select backupname
-PS /Users/avw> $images
+PS > $images = Get-AGMImage -filtervalue appid=35590 | select backupname
+PS > $images
 
 backupname
 ----------
@@ -828,7 +828,7 @@ Image_0265223
 Image_0262151
 Image_0259079
 
-PS /Users/avw> foreach ($image in $images)
+PS > foreach ($image in $images)
 >> {
 >> remove-agmimage -imagename $image.backupname
 >> }
@@ -848,8 +848,8 @@ There are two solutions for this.   Either insert a sleep in between each Remove
 
 First we learn the expiration dates
 ```
-PS /Users/avw> $images = Get-AGMImage -filtervalue appid=35590 | select backupname,expiration
-PS /Users/avw> $images
+PS > $images = Get-AGMImage -filtervalue appid=35590 | select backupname,expiration
+PS > $images
 
 backupname    expiration
 ----------    ----------
@@ -859,7 +859,7 @@ Image_0265223 2021-09-16 10:07:43
 ```
 We then change them all to a date prior to today and confirm they changed:
 ```
-PS /Users/avw> foreach ($image in $images) { Set-AGMImage -imagename $image.backupname -expiration "2021-09-14" }
+PS > foreach ($image in $images) { Set-AGMImage -imagename $image.backupname -expiration "2021-09-14" }
 
 xml                            backupRest
 ---                            ----------
@@ -867,8 +867,8 @@ version="1.0" encoding="UTF-8" backupRest
 version="1.0" encoding="UTF-8" backupRest
 version="1.0" encoding="UTF-8" backupRest
 
-PS /Users/avw> $images = Get-AGMImage -filtervalue appid=35590 | select backupname,expiration
-PS /Users/avw> $images
+PS > $images = Get-AGMImage -filtervalue appid=35590 | select backupname,expiration
+PS > $images
 
 backupname    expiration
 ----------    ----------
@@ -876,7 +876,7 @@ Image_0267271 2021-09-14 00:00:00
 Image_0266247 2021-09-14 00:00:00
 Image_0265223 2021-09-14 00:00:00
 
-PS /Users/avw>
+PS >
 ```
 The images will expire over the next hour.
 
@@ -886,7 +886,7 @@ The images will expire over the next hour.
 
 You may want to add or remove an Appliance from AGM.   You can list all the Appliances with this command:
 ```
-PS /Users/avw> Get-AGMAppliance | select id,name,ipaddress
+PS > Get-AGMAppliance | select id,name,ipaddress
 
 id    name       ipaddress
 --    ----       ---------
@@ -895,8 +895,8 @@ id    name       ipaddress
 ```
 We can then remove the Appliance by specifying the ID of the appliance with this command:
 ```
-PS /Users/avw> Remove-AGMAppliance 45408
-PS /Users/avw> Get-AGMAppliance | select id,name,ipaddress
+PS > Remove-AGMAppliance 45408
+PS > Get-AGMAppliance | select id,name,ipaddress
 
 id   name       ipaddress
 --   ----       ---------
@@ -904,7 +904,7 @@ id   name       ipaddress
 ```
 We can add the Appliance back with this command.  Note we can do a dryrun to make sure the add will work, but you don't need to.  The main thing with a dry run is we need to see an approval token because that is key to actually adding the appliance.  
 ```
-PS /Users/avw> New-AGMAppliance -ipaddress 10.194.0.38 -username admin -password password -dryrun | select-object approvaltoken,cluster,report
+PS > New-AGMAppliance -ipaddress 10.194.0.38 -username admin -password password -dryrun | select-object approvaltoken,cluster,report
 
 approvaltoken          cluster                                                      report
 -------------          -------                                                      ------
@@ -912,20 +912,20 @@ approvaltoken          cluster                                                  
 ```
 This is the same command but without the dryrun.   After the command finishes, we list the Appliances to see our new one has been added:
 ```
-PS /Users/avw> New-AGMAppliance -ipaddress 10.194.0.38 -username admin -password password  | select-object cluster,report
+PS > New-AGMAppliance -ipaddress 10.194.0.38 -username admin -password password  | select-object cluster,report
 
 cluster                                                                                                               report
 -------                                                                                                               ------
 @{id=45582; href=https://10.194.0.3/actifio/cluster/45582; clusterid=141925880424; ipaddress=10.194.0.38; masterid=0} {"errcode":0,"summary"...
 
-PS /Users/avw> Get-AGMAppliance | select id,name,ipaddress
+PS > Get-AGMAppliance | select id,name,ipaddress
 
 id    name       ipaddress
 --    ----       ---------
 45582 backdrsky2 10.194.0.38
 7286  backupsky1 10.194.0.20
 
-PS /Users/avw>
+PS >
 ```
 
 ## User Story: Consistency Group management
@@ -1046,7 +1046,8 @@ HostName AppName MDLStat(GB)
 -------- ------- -----------
 tiny     tiny    20.000
 ```
-If you need to send multiple parameters separate them with an **&**, for example, this command send the **reportimages** command to appliance ID 406219 with the **-a 0** and **-s** parameters and exports it to CSV.
+#### Running a commnd with multiple arguments
+If you need to send multiple arguments separate them with an **&**, for example, this command send the **reportimages** command to appliance ID 406219 with the **-a 0** and **-s** parameters and exports it to CSV.
 ```
 Get-AGMAPIApplianceReport -applianceid 406219 -command reportimages -arguments "-a 0&-s" |  Export-Csv disks.csv
 ```
