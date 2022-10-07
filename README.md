@@ -1066,7 +1066,7 @@ Using the IDs we can then form a command like this one:
 ```
 New-AGMOrg -orgname "prod1" -description "this is prod org" -hostlist "460500,442009" -slplist "441943" -sltlist "108758" -poollist "441941"
 ```
-I can then grab the contents of the Org by learning the ID of the Org:
+We can then grab the contents of the Org by learning the ID of the Org:
 ```
 Get-AGMOrg
 ```
