@@ -13,6 +13,7 @@ A Powershell module to issue API calls to an Actifio Global Manager or a Google 
 **[User Story: Appliance management](#user-story-appliance-management)**<br>
 **[User Story: Consistency Group management](#user-story-consistency-group-management)**<br>
 **[User Story: Running appliance info and report commands](#user-story-running-appliance-info-and-report-commands)**<br>
+**[User Story: Org Creation](#user-story-org-creation)**<br>
 **[Contributing](#contributing)**<br>
 **[Disclaimer](#disclaimer)**<br>
 
@@ -1050,6 +1051,58 @@ tiny     tiny    20.000
 If you need to send multiple arguments separate them with an **&**, for example, this command send the **reportimages** command to appliance ID 406219 with the **-a 0** and **-s** parameters and exports it to CSV.
 ```
 Get-AGMAPIApplianceReport -applianceid 406219 -command reportimages -arguments "-a 0&-s" |  Export-Csv disks.csv
+```
+
+## User Story: Org Creation
+
+If we want to create an Org we need to get the IDs of the various resources we want to put into the org.   We could run a series of commands like this:
+```
+Get-AGMHost | Select-Object id,name
+Get-AGMSLP | Select-Object id,name
+Get-AGMSLP | Select-Object id,name
+Get-AGMDiskpool | Select-Object id,name
+```
+Using the IDs we can then form a command like this one:
+```
+New-AGMOrg -orgname "prod1" -description "this is prod org" -hostlist "460500,442009" -slplist "441943" -sltlist "108758" -poollist "441941"
+```
+I can then grab the contents of the Org by learning the ID of the Org:
+```
+Get-AGMOrg
+```
+Then grab all the contents of the org and display the resources:
+```
+$org = Get-AGMOrg -orgid 526553
+$org.resourcecollection
+```
+Output will look like this:
+```
+PS > $org = Get-AGMOrg -orgid 526553
+PS > $org.resourcecollection
+
+sltlist       : {108758}
+hostlist      : {442009, 460500}
+slplist       : {441943}
+poollist      : {441941}
+sltlistcount  : 1
+hostlistcount : 2
+slplistcount  : 1
+poollistcount : 1
+```
+We then realize we added the wrong host ID.   We need to remove 460500 and add 449560.   First we remove 460500 by setting the Org to **0**
+```
+ Set-AGMOrgHost -orglist "0" -hostid 460500
+ ```
+ We then add 449560 to Org ID 526553
+ ```
+ Set-AGMOrgHost -orglist "526553" -hostid 449560
+ ```
+ We then validate, confirming 460500 is gone and 449560 has been added.
+ ```
+PS > $org = Get-AGMOrg -orgid 526553
+PS > $org.resourcecollection.hostlist
+442009
+449560
 ```
 ## Contributing
 Have a patch that will benefit this project? Awesome! Follow these steps to have
