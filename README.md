@@ -284,6 +284,8 @@ Note you can use **-quiet** to suppress messages.   This is handy when scripting
 
 #### Login using a different TCP Port
 
+This is for Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
+
 If you are connecting to AGM over port forwarding then you will want to override the default TCP port of 443.   To do this simple add your desired port to the AGMIP.   For instance if you are using local port forwarding through a bastion host where port 8443 is being forwarded to port 443:
 ```
 Connect-AGM 127.0.0.1:8443 admin -passwordfile "c:\temp\password.key" -ignorecerts
@@ -335,6 +337,8 @@ Multiple filtervalues can be used and will combine results.  Note also they need
 
 #### Timeouts
 
+This is for Actifio only. Click [here](https://github.com/Actifio/AGMPowerCLI/blob/main/GCBDR.md "GCBDR") for Google Cloud Backup and DR
+
 The default timeout for initial logins is set to 60 seconds.   
 
 For all other functions (after initial login) you can change the timeout by adding **-agmtimeout XX** to the **connect-agm** command where **XX** is the desired value.
@@ -367,39 +371,36 @@ You can reset the limit to 'unlimited' by setting it to '0'.
 #### Get-AGMApplication
 
 Fetch Applications to get their ID, protection status, host info.   In this example we know that smalldb3 is a unique value.
-
+```
 Get-AGMApplication -keyword smalldb3
-
-
-
+```
 ### 7)  Disconnect from your appliance
 Once you are finished, make sure to disconnect (logout).   If you are running many scripts in quick succession, each script should connect and then disconnect, otherwise each session will be left open to time-out on its own.
 ```
 Disconnect-AGM
 ```
-
-
-
 # What else do I need to know?
-
 
 ##  Time Zone handling
 
-By default all dates shown will be in the local session timezone as shown by Get-TimeZone.  There are two commands to help you:
+By default all dates shown will be in the local session timezone as shown by Get-TimeZone.
 ```
 Get-AGMTimeZoneHandling
+```
+You can change the timezone setting to local or UTC with the following two commands:
+```
 Set-AGMTimeZoneHandling -l
 Set-AGMTimeZoneHandling -u 
 ```
 In this example we see timestamps are being shown in local TZ (Melbourne), so we switch to UTC and grab a date example:
 
 ```
-PS /Users/anthony/git/AGMPowerCLI> Get-AGMTimeZoneHandling
+PS > Get-AGMTimeZoneHandling
 Currently timezone in use is local which is (UTC+10:00) Australian Eastern Standard Time
-PS /Users/anthony/git/AGMPowerCLI> Set-AGMTimeZoneHandling -u
-PS /Users/anthony/git/AGMPowerCLI> Get-AGMTimeZoneHandling
+PS > Set-AGMTimeZoneHandling -u
+PS > Get-AGMTimeZoneHandling
 Currently timezone in use is UTC
-PS /Users/anthony/git/AGMPowerCLI> Get-AGMUser -filtervalue name=av | select createdate
+PSI> Get-AGMUser -filtervalue name=av | select createdate
 
 createdate
 ----------
@@ -408,10 +409,10 @@ createdate
 We then switch the timestamps back to local and validate the output of the same command shows Melbourne local time:
 
 ```
-PS /Users/anthony/git/AGMPowerCLI> Set-AGMTimeZoneHandling -l
-PS /Users/anthony/git/AGMPowerCLI> Get-AGMTimeZoneHandling
+PS > Set-AGMTimeZoneHandling -l
+PS > Get-AGMTimeZoneHandling
 Currently timezone in use is local which is (UTC+10:00) Australian Eastern Standard Time
-PS /Users/anthony/git/AGMPowerCLI> Get-AGMUser -filtervalue name=av | select createdate
+PS > Get-AGMUser -filtervalue name=av | select createdate
 
 createdate
 ----------
@@ -422,11 +423,11 @@ createdate
 
 All date fields are returned by AGM as EPOCH time (an offset from Jan 1, 1970).  The Module transforms these using the timezone discussed above.   If an EPOCH time is shown (which will be a long number), then this field has been missed and needs to be added to the transform effort.  Please open an issue to let us know.
 
-
 ## What about Self Signed Certs?
 
-At this time we only offer the choice to ignore the cert.   Clearly you can manually import the cert and trust it, or you can install a trusted cert on your AGM to avoid the issue altogether.
+Google Cloud Backup and DR does not use self signed certs so no handling here is necessary.
 
+For an Actifio AGM we only offer the choice to ignore the cert.   Clearly you can manually import the cert and trust it, or you can install a trusted cert on your AGM to avoid the issue altogether.
 
 ## Detecting errors and failures
 
@@ -434,21 +435,21 @@ One design goal of AGMPowerCLI is for all user messages to be easy to understand
 
 Successful login:
 ```
-PS /Users/anthony> Connect-AGM 172.24.1.180 av passw0rd -i
+PS > Connect-AGM 172.24.1.180 av passw0rd -i
 Login Successful!
-PS /Users/anthony> $?
+PS > $?
 True
 ```
 
 Unsuccessful login:
 ```
-PS /Users/anthony> Connect-AGM 172.24.1.180 av password -i
+PS > Connect-AGM 172.24.1.180 av password -i
 
 err_code errormessage
 -------- ------------
    10011 Login failed
 
-PS /Users/anthony> $?
+PS > $?
 True
 ```
 
@@ -458,21 +459,21 @@ Lets repeat the same exercise but using -q for quiet login
 In a successful login the variable $loginattempt is empty
 
 ```
-PS /Users/anthony> $loginattempt = Connect-AGM 172.24.1.180 av passw0rd -i -q
-PS /Users/anthony> $loginattempt
+PS > $loginattempt = Connect-AGM 172.24.1.180 av passw0rd -i -q
+PS > $loginattempt
 ```
 
 But an unsuccessful login can be 'seen'.  
 
 ```
-PS /Users/anthony> $loginattempt = Connect-AGM 172.24.1.180 av password -i -q
-PS /Users/anthony> $loginattempt
+PS > $loginattempt = Connect-AGM 172.24.1.180 av password -i -q
+PS > $loginattempt
 
 err_code errormessage
 -------- ------------
    10011 Login failed
 
-PS /Users/anthony> $loginattempt.errormessage
+PS > $loginattempt.errormessage
 java.lang.SecurityException: Login failed.
 ```
 
@@ -498,7 +499,7 @@ if ($loginattempt.errormessage)
 We can then read for this exit code like this:
 
 ```
-PS /Users/anthony> $LASTEXITCODE
+PS > $LASTEXITCODE
 1
 ```
 
@@ -531,7 +532,6 @@ This is the command we thus run (connect-agm logs us into the appliance).
 We grab just the Appname  (which is the VMname) and AppID of each affected VM and reduce to a unique list in a CSV file
 
 ```
-connect-agm 
 Get-AGMJobHistory -filtervalue "errorcode=933&startdate>2020-09-01"  | select appname,appid | sort-object appname | Get-Unique -asstring | Export-Csv -Path .\missingvms.csv -NoTypeInformation
 ```
 ### 2). Edit your list if needed
