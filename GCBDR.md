@@ -92,8 +92,8 @@ managementUri  : @{webUi=https://agm-666993295923.backupdr.actifiogo.com; api=ht
 type           : BACKUP_RESTORE
 oauth2ClientId : 486522031570-fimdb0rbeamc17l3akilvquok1dssn6t.apps.googleusercontent.com
 ```
-### Simplified User Add solution
-To ensure the user has the correct role the first time it logs in, manually adding the user to the Management Console BEFORE the first login is recommended.    After you create the user in Google IAM,  login to your Management Console,  go to  Manage → Users and select Create User
+### Add the Service Account to the Management Console as a user with role
+To ensure the user has the correct role the first time it logs in, manually add the user to the Management Console BEFORE the first login.    After you create the user in Google IAM,  login to your Management Console,  go to  Manage → Users and select Create User
 
 Now enter the Service account email as the Username and select the relevant roles.   
 
