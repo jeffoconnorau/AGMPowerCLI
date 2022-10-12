@@ -93,11 +93,11 @@ type           : BACKUP_RESTORE
 oauth2ClientId : 486522031570-fimdb0rbeamc17l3akilvquok1dssn6t.apps.googleusercontent.com
 ```
 ### Add the Service Account to the Management Console as a user with role
-To ensure the user has the correct role the first time it logs in, manually add the user to the Management Console BEFORE the first login.    After you create the user in Google IAM,  login to your Management Console,  go to  Manage → Users and select Create User
+To ensure the user has the correct role the first time it logs in, manually add the user to the Management Console BEFORE the first login.    After you create the user in Google IAM,  login to your Management Console,  go to  Manage → Users and select **Create User**
 
-Now enter the Service account email as the Username and select the relevant roles.   
+Now enter the Service account email as the Username and select the relevant roles and **Save User**.   
 
-You can now proceed to login having 'pre-added' user and assigned it a Management Console role.
+You can now proceed to login having 'pre-added' the user and assigned it a Management Console role.
 
 
 ### Login process - PowerShell
