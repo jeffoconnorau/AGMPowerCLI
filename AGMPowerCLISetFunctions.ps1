@@ -495,3 +495,56 @@ Function Set-AGMSLA ([string]$id,[string]$slaid,[string]$appid,[string]$logicalg
         Put-AGMAPIData  -endpoint /logicalgroup/$logicalgroupid/sla -body $jsonbody
     }
 }
+
+Function Set-AGMUser ([string]$userid,[string]$timezone,[string]$rolelist,[string]$orglist) 
+{
+    <#
+    .SYNOPSIS
+    Changes a User
+
+    .EXAMPLE
+    Set-AGMUser -userid 123 -rolelist "2,3" -orglist "4,5"
+
+    Sets a user to use the specified roles and orgs.
+    IMPORTANT - The rolelist and orglist will REPLACE the existing roles and orgs, not ADD to them. USE WITH CARE
+
+    .DESCRIPTION
+    A function to change a User
+
+    #>
+
+   
+    if (!($userid))
+    {
+        Get-AGMErrorMessage -messagetoprint "Specify a user id (that can be learned with Get-AGMUSer) with -userid"
+        return
+    }
+
+    if ($rolelist)
+    {
+        $rolebody = @()
+        foreach ($role in $rolelist.Split(","))
+        {   
+            $rolebody += New-Object -TypeName psobject -Property @{id="$role"}
+        }
+    }
+    if ($orglist)
+    {
+        $orgbody = @()
+        foreach ($org in $orglist.Split(","))
+        {   
+            $orgbody += New-Object -TypeName psobject -Property @{id="$org"}
+        }
+    }
+   $body = [ordered]@{
+        name = $name;
+        dataaccesslevel = "0";
+        timezone = $timezone;
+        rolelist = $rolebody
+        orglist = $orgbody
+    }
+    if ($AGMToken) { Set-AGMPromoteUser }
+    $jsonbody = $body | ConvertTo-Json
+
+    Put-AGMAPIData  -endpoint /user/$userid -body $jsonbody
+}

@@ -465,9 +465,16 @@ Function Test-AGMJSON()
             }
             if ($testoutput.err_code -eq 10011)
             {
-                Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM" 
+                if ($AGMToken)
+                {
+                    Get-AGMErrorMessage -messagetoprint "Not logged in or session expired or user is not promoted. Please login using Connect-AGM and/or run Set-AGMPromoteUser" 
+                }
+                else 
+                {
+                    Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM" 
+                }
+
             }
-            $testoutput
         }
         Return
     }
@@ -1108,4 +1115,28 @@ Function Set-AGMAPIApplianceTask ([String]$applianceid,[string]$command,[string]
     {
         $resp    
     }      
+}
+
+
+function Set-AGMPromoteUser
+{
+    <#  
+    .SYNOPSIS
+    Promotes a Management Console user 
+
+    .DESCRIPTION
+    Run this function to promote the user
+
+    .NOTES
+    Written by Anthony Vandewerdt
+
+    .EXAMPLE
+    Set-AGMPromoteUser
+ 
+    #>
+   
+    $jsonbody = '{"id":"' +$AGMSESSIONID +'","size":11}'
+
+    $promote = Put-AGMAPIData  -endpoint /manageacl/promoteUser -body $jsonbody
+
 }

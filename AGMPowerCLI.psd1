@@ -26,7 +26,7 @@
 RootModule = 'AGMPowerCLI.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.42'
+ModuleVersion = '0.0.0.43'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -154,6 +154,7 @@ FunctionsToExport = @(
     'New-AGMOrg',
     'New-AGMRole',
     'New-AGMSLA',
+    'New-AGMUser',
     'Set-AGMAPIApplianceTask',
     'Save-AGMPassword',
     'Set-AGMCredential',
@@ -162,11 +163,13 @@ FunctionsToExport = @(
     'Set-AGMConsistencyGroupMember',
     'Set-AGMHostPort',
     'Set-AGMImage',
+    'Set-AGMPromoteUser',
     'Set-AGMTimeZoneHandling',
     'Set-AGMOrgApplication',
     'Set-AGMOrgHost',
     'Set-AGMOrgLogicalGroup',
     'Set-AGMSLA',
+    'Set-AGMUser',
     'Remove-AGMAppliance',
     'Remove-AGMApplication',
     'Remove-AGMConsistencyGroup',

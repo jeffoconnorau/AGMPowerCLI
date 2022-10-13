@@ -436,7 +436,7 @@ function Remove-AGMUser([Parameter(Mandatory=$true)][string]$id)
 
     #>
 
-    
+    if ($AGMToken) { Set-AGMPromoteUser }
     Post-AGMAPIData -endpoint /user/$id -method "delete"
 }
 

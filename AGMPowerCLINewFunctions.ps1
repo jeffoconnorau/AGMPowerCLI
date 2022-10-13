@@ -619,3 +619,65 @@ Function New-AGMSLA ([string]$appid,[string]$slpid,[string]$sltid,[string]$jsonb
 
     Post-AGMAPIData  -endpoint /sla -body $jsonbody
 }
+
+Function New-AGMUser ([string]$name,[string]$timezone,[string]$rolelist,[string]$orglist) 
+{
+    <#
+    .SYNOPSIS
+    Creates a User
+
+    .EXAMPLE
+    New-AGMUser -name "user@user.user" -rolelist "2,3" -orglist "4,5"
+
+    Creates a new user
+
+    .DESCRIPTION
+    A function to create a User
+
+    #>
+
+    if (!($name))
+    {
+        Get-AGMErrorMessage -messagetoprint "Specify a username in email format with -name"
+        return
+    }
+
+    if ($name -notlike "*@*") 
+    { 
+        Get-AGMErrorMessage -messagetoprint "Specify a username in email format with -name"
+        return
+    }
+
+    if (!($rolelist))
+    {
+        Get-AGMErrorMessage -messagetoprint "Specify a comma separated rolelist with -rolelist"
+        return
+    }
+    if ($rolelist)
+    {
+        $rolebody = @()
+        foreach ($role in $rolelist.Split(","))
+        {   
+            $rolebody += New-Object -TypeName psobject -Property @{id="$role"}
+        }
+    }
+    if ($orglist)
+    {
+        $orgbody = @()
+        foreach ($org in $orglist.Split(","))
+        {   
+            $orgbody += New-Object -TypeName psobject -Property @{id="$org"}
+        }
+    }
+   $body = [ordered]@{
+        name = $name;
+        dataaccesslevel = "0";
+        timezone = $timezone;
+        rolelist = $rolebody
+        orglist = $orgbody
+    }
+    if ($AGMToken) { Set-AGMPromoteUser }
+    $jsonbody = $body | ConvertTo-Json
+
+    Post-AGMAPIData  -endpoint /user -body $jsonbody
+}
