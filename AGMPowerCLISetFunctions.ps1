@@ -543,7 +543,6 @@ Function Set-AGMUser ([string]$userid,[string]$timezone,[string]$rolelist,[strin
         rolelist = $rolebody
         orglist = $orgbody
     }
-    if ($AGMToken) { Set-AGMPromoteUser }
     $jsonbody = $body | ConvertTo-Json
 
     Put-AGMAPIData  -endpoint /user/$userid -body $jsonbody
