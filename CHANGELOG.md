@@ -2,6 +2,11 @@
 
 Started Change log file as per release 0.0.0.39
 
+## AGMPowerCLI 0.0.0.43
+* Add Set-AGMPromoteUser
+* Auto run Set-AGMPromoteUser when Remove-AGMUser is used with GCBDR
+* Add New-AGMUser and Set-AGMUser
+
 ## AGMPowerCLI 0.0.0.42
 * Taught Disconnect-AGM to work with GCBDR
 

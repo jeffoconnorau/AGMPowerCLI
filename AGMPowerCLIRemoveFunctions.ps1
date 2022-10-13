@@ -436,7 +436,6 @@ function Remove-AGMUser([Parameter(Mandatory=$true)][string]$id)
 
     #>
 
-    
     Post-AGMAPIData -endpoint /user/$id -method "delete"
 }
 

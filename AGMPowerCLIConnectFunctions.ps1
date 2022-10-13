@@ -669,3 +669,4 @@ function Get-GoogleCloudBackupDRConsole ([string]$project,[string]$location)
         $resp.managementServers
     }
 }
+
