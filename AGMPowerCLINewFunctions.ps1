@@ -642,10 +642,13 @@ Function New-AGMUser ([string]$name,[string]$timezone,[string]$rolelist,[string]
         return
     }
 
-    if ($name -notlike "*@*") 
-    { 
-        Get-AGMErrorMessage -messagetoprint "Specify a username in email format with -name"
-        return
+    if ($AGMToken)
+    {
+        if ($name -notlike "*@*") 
+        { 
+            Get-AGMErrorMessage -messagetoprint "Specify a username in email format with -name"
+            return
+        }
     }
 
     if (!($rolelist))
