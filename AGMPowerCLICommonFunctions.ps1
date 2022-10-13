@@ -465,15 +465,7 @@ Function Test-AGMJSON()
             }
             if ($testoutput.err_code -eq 10011)
             {
-                if ($AGMToken)
-                {
-                    Get-AGMErrorMessage -messagetoprint "Not logged in or session expired or user is not promoted. Please login using Connect-AGM and/or run Set-AGMPromoteUser" 
-                }
-                else 
-                {
-                    Get-AGMErrorMessage -messagetoprint "Not logged in or session expired. Please login using Connect-AGM" 
-                }
-
+                Get-AGMErrorMessage -messagetoprint "User does not have permission to perform this action" 
             }
         }
         Return
