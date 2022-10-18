@@ -1127,8 +1127,8 @@ function Set-AGMPromoteUser
  
     #>
    
-    $jsonbody = '{"id":"' +$AGMSESSIONID +'","size":11}'
+    #$jsonbody = '{"id":"' +$AGMSESSIONID +'","size":11}'
 
-    $promote = Put-AGMAPIData  -endpoint /manageacl/promoteUser -body $jsonbody
+    Put-AGMAPIData  -endpoint /manageacl/promoteUser
 
 }
