@@ -13,6 +13,8 @@ A Powershell module to issue API calls to an Actifio Global Manager or a Google 
 **[User Story: Appliance management](#user-story-appliance-management)**<br>
 **[User Story: Consistency Group management](#user-story-consistency-group-management)**<br>
 **[User Story: Running appliance info and report commands](#user-story-running-appliance-info-and-report-commands)**<br>
+**[User Story: Setting Appliance timezone](#user-story-setting-appliance-timezone)**<br>
+**[User Story: Setting Appliance discovery schedule](#user-story-setting-appliance-discovery-schedule)**<br>
 **[User Story: Org Creation](#user-story-org-creation)**<br>
 **[Contributing](#contributing)**<br>
 **[Disclaimer](#disclaimer)**<br>
@@ -1052,6 +1054,79 @@ If you need to send multiple arguments separate them with an **&**, for example,
 ```
 Get-AGMAPIApplianceReport -applianceid 406219 -command reportimages -arguments "-a 0&-s" |  Export-Csv disks.csv
 ```
+## User Story: Setting Appliance timezone
+To display Appliance timezone, learn the appliance ID and then query the relevant appliance:
+```
+PS /> Get-AGMAppliance | select id,name
+
+id     name
+--     ----
+591780 backup-server-67154
+406219 backup-server-29736
+
+PS /> Get-AGMAppliance 406219 | select timezone
+
+timezone
+--------
+UTC
+```
+To set Appliance timezone, use the following syntax, making sure to specify a valid timezone:
+
+```
+PS > $timezone = "Australia/Sydney"
+PS > $applianceid = 406219
+PS > Set-AGMAPIApplianceTask -applianceid $applianceid -command "chcluster" -arguments "timezone=$timezone&argument=11"
+
+status
+------
+     0
+
+```
+Now wait 3 minutes (this takes a little time to update).   If you see the old timezone, please wait a little longer.
+```
+PS > Get-AGMAppliance 406219 | select timezone
+
+timezone
+--------
+Australia/Sydney
+```
+
+## User Story: Setting Appliance discovery schedule
+
+To set the start time when auto discovery runs (instead of the default 2am), first learn the appliance ID:
+```
+PS /> Get-AGMAppliance | select id,name
+
+id     name
+--     ----
+591780 backup-server-67154
+406219 backup-server-29736
+```
+Display if an existing schedule is set (if no schedule is shown, then the default of 2am is in use):
+```
+PS /> $applianceid = 406219
+PS /> Get-AGMAPIApplianceInfo -applianceid $applianceid -command getschedule -arguments "name=autodiscovery"
+time  frequency
+----  ---------
+10:00 daily
+```
+To set the schedule use the following syntax.  In this example we set it to 9am rather than 10am.
+```
+PS /> $applianceid = 406219
+PS /> Set-AGMAPIApplianceTask -applianceid $applianceid -command setschedule -arguments "name=autodiscovery&frequency=daily&time=09:00"
+
+status
+------
+     0
+
+PS /> Get-AGMAPIApplianceInfo -applianceid $applianceid -command getschedule -arguments "name=autodiscovery"
+
+time  frequency
+----  ---------
+09:00 daily
+```
+
+
 
 ## User Story: Org Creation
 
