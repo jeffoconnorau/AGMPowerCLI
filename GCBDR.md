@@ -1,8 +1,8 @@
 # Overview
-This document describes how to configure PowerShell access to the Google Cloud Backup and DR Management Console.  This document will also provide guidance if you are converting from Actifio GO
+This document describes how to configure PowerShell access to the Backup and DR Management Console.  This document will also provide guidance if you are converting from Actifio GO
 
 ## Prerequisites
-To perform Google Cloud Backup and DR PowerShell operations, you need the following:
+To perform Backup and DR PowerShell operations, you need the following:
 
 1. A Service Account with the correct roles needs to be selected or created in the relevant project  (that's the project that has access to the Management Console)
 1. A host to run that service account, either:
@@ -11,24 +11,17 @@ To perform Google Cloud Backup and DR PowerShell operations, you need the follow
 
 ## Getting Management Console details
 
-Once you have deployed Backup and DR, then a management console will be configured.   It is useful to know the project that your management console is peered to and the region where it was deployed:
-
-In this example as we can see:
-
-* Project:  avwservicelab1
-* Location: asia-southeast1
-
-Open the Show API Credentials twisty to learn the Management Console API URL and OAuth 2.0 client ID.  You will need these.
+Once you have deployed Backup and DR, then a management console will be configured.     Open the Show API Credentials twisty to learn the Management Console API URL and OAuth 2.0 client ID.  You will need these.
 
 In this example (yours will be different!):
 
-* Management Console URL:  https://agm-666993295923.backupdr.actifiogo.com/actifio
-* OAuth 2.0 client ID:     486522031570-fimdb0rbeamc17l3akilvquok1dssn6t.apps.googleusercontent.com
+* Management Console URL:  ```https://agm-666993295923.backupdr.actifiogo.com/actifio```
+* OAuth 2.0 client ID:     ```486522031570-fimdb0rbeamc17l3akilvquok1dssn6t.apps.googleusercontent.com```
 
 
 ## Creating your Service Account
 
-From Google Console IAM & Admin panel in the project where Backup and DR was activated, go to Service Account and choose Create Service Account.  You can also modify an existing one if desired.
+From Cloud Console IAM & Admin panel in the project where Backup and DR was activated, go to **Service Account** and choose **Create Service Account**.  You can also modify an existing one if desired.
 
 Give the account a name and ensure it has at least the following three roles:
 
@@ -36,7 +29,7 @@ Give the account a name and ensure it has at least the following three roles:
 * ```Service Account Token Creator```
 * ```Backup and DR User``` or ```Backup and DR Admin```
 
-Note you can also use two service accounts.   The first one will be the 'activated' one (that is either attached to the relevant Compute Engine Instance or that is activated using a JSON key) and has the two ```Service Account``` roles and the second account is the one that has a ```Backup and DR``` IAM role.  You use the second one when running ```Connect-AGM```.
+Note you can also use two service accounts.   The first one will be the _activated_ one (that is either attached to the relevant Compute Engine Instance or that is activated using a JSON key) and has the two ```Service Account``` roles and the second account is the one that has a ```Backup and DR``` IAM role.  You use the second one when running ```Connect-AGM```.
 
 
 In this example this is the service account that was created:
@@ -46,22 +39,22 @@ In this example this is the service account that was created:
 Decide where/how you will run your service account. You have two options:
 1. Compute Engine Instance with attached service account
 
-In option 1 we are going to use a Compute Engine instance to run our API commands/automation and because a GCCompute EngineE Instance can have an attached Service Account, we can avoid the need to install a service key on that host.   The host needs the gcloud CLI installed (which is automatic if you use a Google image to create the instance).  
+In option 1 we are going to use a Compute Engine instance to run our API commands/automation and because a Compute Engine Instance can have an attached Service Account, we can avoid the need to install a service key on that host.   The host needs the GCloud CLI installed (which is automatic if you use a Google image to create the instance).  
 
 In your project create or select an instance that you want to use for API operations.   Ensure the service account that is attached to the instance has the permissions detailed above.  You can use an existing instance or create a new one.   If you need to change/set the Service Account, the instance needs to be powered off.
 
-2.   Activate your service account on a host
+2. Activate your service account on a host
 
-In option 2,  we are going to use a Compute Engine instance or external host/VM to run our API commands/automation, but we are going to 'activate' the Service account using a JSON Key.   The host needs the **gcloud** CLI installed.
+In option 2, we are going to use a Compute Engine instance or external host/VM to run our API commands/automation, but we are going to 'activate' the Service account using a JSON Key.   The host needs the **gcloud** CLI installed.
 
-We need to activate our service account since we are not executing this command from a GCE instance already running as that SA.
-So firstly we need to download a JSON key from the Google console and copy that key to our relevant host:
+We need to activate our service account since we are not executing this command from a Compute Engine instance with an attached service account.
+So firstly we need to download a JSON key from the Google Cloud Console and copy that key to our relevant host:
 
-1. Go to IAM & Admin →  Service Accounts
+1. Go to **IAM & Admin** →  **Service Accounts**
 1. Select your Service Account
-1. Go to Keys
-1. Select Add Key → Create new key
-1. Leave key type as JSON and select CREATE
+1. Go to **Keys**
+1. Select **Add Key** → **Create new key**
+1. Leave key type as JSON and select **CREATE**
 1. Copy the downloaded key to the relevant host
 
 Note that some projects may restrict key creation or set time limits on their expiration. 
@@ -90,16 +83,16 @@ type           : BACKUP_RESTORE
 oauth2ClientId : 486522031570-fimdb0rbeamc17l3akilvquok1dssn6t.apps.googleusercontent.com
 ```
 ### Add the Service Account to the Management Console as a user with Management Console role
-To ensure the user has the correct Management Console role (which is different to an IAM role) the first time it logs in, manually add the user to the Management Console BEFORE the first login.    After you create the user in Google IAM,  login to your Management Console,  go to  Manage → Users and select **Create User**
+To ensure the user has the correct Management Console role (which is different to an IAM role) the first time it logs in, manually add the user to the Management Console BEFORE the first login.    After you create the user in Google IAM,  login to your Management Console,  go to  **Manage** → **Users** and select **Create User**
 
 Now enter the Service account email as the Username and select the relevant roles and **Save User**.   
 
-You can now proceed to login having 'pre-added' the user and assigned it a Management Console role.
+You can now proceed to login having _pre-added_ the user and assigned it a Management Console role.
 
 
 ### Login process - PowerShell
 
-This uses the two existing PowerShell modules, AGMPowerCLI and AGMPowerLib.
+This uses the two existing PowerShell modules, ```AGMPowerCLI`` and ```AGMPowerLib```.
 These modules can be used with both an Actifio GO AGM and Backup and DR Management Consoles.  The only difference is that we specify the service account as **-agmuser**, we do NOT need to specify a password, but we instead need to specify the oauth2ClientId using **-oauth2ClientId**.   If you do not specify the oauth2clientid then the login will fail.
 
 
@@ -114,7 +107,7 @@ Here is an example:
 PS /> connect-agm -agmip agm-666993295923.backupdr.actifiogo.com -agmuser powershell@avwservicelab1.iam.gserviceaccount.com -oauth2ClientId 486522031570-fimdb0rbeamc17l3akilvquok1dssn6t.apps.googleusercontent.com
 Login Successful!
 ```
-If your user does not have a role set, use the Management Console GUI to set it as per the instructions in Simplified User Add solution.
+If your user does not have a Management Console role set, use the Management Console GUI to set it as per the instructions in Simplified User Add solution.
 
 We can start issuing commands.  If your commands fail, then your user does not have a role set.   Set your role using the management console and then login again.
 ```
