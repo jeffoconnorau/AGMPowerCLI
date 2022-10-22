@@ -6,7 +6,7 @@ To perform Google Cloud Backup and DR PowerShell operations, you need the follow
 
 1. A Service Account with the correct roles needs to be selected or created in the relevant project  (that's the project that has access to the Management Console)
 1. A host to run that service account, either:
-    1. A Linux or Windows GCE Instance running as the service account above and which has GCloud CLI and PowerShell installed.
+    1. A Linux or Windows Compute Engine Instance with an attached service account which has GCloud CLI and PowerShell installed.
     1. A Linux, Mac or Windows host which has GCloud CLI and PowerShell installed and which has a downloaded JSON key for the relevant service account.  
 
 ## Getting Management Console details
@@ -32,30 +32,27 @@ From Google Console IAM & Admin panel in the project where Backup and DR was act
 
 Give the account a name and ensure it has at least the following three roles:
 
-* Backup and DR User
-* Service Account User
-* Service Account Token Creator
+* ```Service Account User```
+* ```Service Account Token Creator```
+* ```Backup and DR User``` or ```Backup and DR Admin```
+
+Note you can also use two service accounts.   The first one will be the 'activated' one (that is either attached to the relevant Compute Engine Instance or that is activated using a JSON key) and has the two ```Service Account``` roles and the second account is the one that has a ```Backup and DR``` IAM role.  You use the second one when running ```Connect-AGM```.
 
 
 In this example this is the service account that was created:
 
 * Service Account:   powershell@avwservicelab1.iam.gserviceaccount.com
 
-Note that you may over time find the two Service account roles get excess permissions like this:
-
-* Service Account Token Creator.    7/9 excess permissions
-* Service Account User               4/5 excess permissions
- 
 Decide where/how you will run your service account. You have two options:
-1. GCE Instance running as the service account
+1. Compute Engine Instance with attached service account
 
-In option 1 we are going to use a GCE instance to run our API commands/automation and because a GCE Instance can 'run' as a Service Account, we can avoid the need to install a service key on that host.   The host needs the gcloud CLI installed (which is automatic if you use a Google image to create the instance).  
+In option 1 we are going to use a Compute Engine instance to run our API commands/automation and because a GCCompute EngineE Instance can have an attached Service Account, we can avoid the need to install a service key on that host.   The host needs the gcloud CLI installed (which is automatic if you use a Google image to create the instance).  
 
-In your project create or select an instance that you want to use for API operations.   Ensure the instance is 'running' as the Service account that has the permissions detailed above..  You can use an existing instance or create a new one.   If you need to change/set the Service Account, the instance needs to be powered off.
+In your project create or select an instance that you want to use for API operations.   Ensure the service account that is attached to the instance has the permissions detailed above.  You can use an existing instance or create a new one.   If you need to change/set the Service Account, the instance needs to be powered off.
 
 2.   Activate your service account on a host
 
-In option 2,  we are going to use a GCE instance or external host/VM to run our API commands/automation, but we are going to 'activate' the Service account using a JSON Key.   The host needs the **gcloud** CLI installed.
+In option 2,  we are going to use a Compute Engine instance or external host/VM to run our API commands/automation, but we are going to 'activate' the Service account using a JSON Key.   The host needs the **gcloud** CLI installed.
 
 We need to activate our service account since we are not executing this command from a GCE instance already running as that SA.
 So firstly we need to download a JSON key from the Google console and copy that key to our relevant host:
@@ -92,8 +89,8 @@ managementUri  : @{webUi=https://agm-666993295923.backupdr.actifiogo.com; api=ht
 type           : BACKUP_RESTORE
 oauth2ClientId : 486522031570-fimdb0rbeamc17l3akilvquok1dssn6t.apps.googleusercontent.com
 ```
-### Add the Service Account to the Management Console as a user with role
-To ensure the user has the correct role the first time it logs in, manually add the user to the Management Console BEFORE the first login.    After you create the user in Google IAM,  login to your Management Console,  go to  Manage → Users and select **Create User**
+### Add the Service Account to the Management Console as a user with Management Console role
+To ensure the user has the correct Management Console role (which is different to an IAM role) the first time it logs in, manually add the user to the Management Console BEFORE the first login.    After you create the user in Google IAM,  login to your Management Console,  go to  Manage → Users and select **Create User**
 
 Now enter the Service account email as the Username and select the relevant roles and **Save User**.   
 
