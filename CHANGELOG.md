@@ -3,7 +3,7 @@
 Started Change log file as per release 0.0.0.39
 
 ## AGMPowerCLI 0.0.0.44
-* 
+* If service account token generator role was missing, no error was printing in PS7.  
 
 ## AGMPowerCLI 0.0.0.43
 * Add Set-AGMPromoteUser
