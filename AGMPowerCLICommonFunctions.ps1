@@ -467,9 +467,9 @@ Function Test-AGMJSON()
             {
                 Get-AGMErrorMessage -messagetoprint "User does not have permission to perform this action" 
             }
-            if ($testoutput.error.message)
+            if ($testoutput.error)
             {
-                Get-AGMErrorMessage -messagetoprint $testoutput.error.message
+                $testoutput.error
             }
         }
         Return
