@@ -131,9 +131,9 @@ function Connect-AGM
         }
         if ($RestError)
         {
-            
             $loginfailedsniff = Test-AGMJSON $RestError
             $loginfailedsniff
+            $resp
             return
         }
         elseif ($resp.token)
