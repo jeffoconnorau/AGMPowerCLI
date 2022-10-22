@@ -467,6 +467,10 @@ Function Test-AGMJSON()
             {
                 Get-AGMErrorMessage -messagetoprint "User does not have permission to perform this action" 
             }
+            if ($testoutput.error)
+            {
+                $testoutput.error
+            }
         }
         Return
     }
@@ -1127,8 +1131,8 @@ function Set-AGMPromoteUser
  
     #>
    
-    $jsonbody = '{"id":"' +$AGMSESSIONID +'","size":11}'
+    #$jsonbody = '{"id":"' +$AGMSESSIONID +'","size":11}'
 
-    $promote = Put-AGMAPIData  -endpoint /manageacl/promoteUser -body $jsonbody
+    Put-AGMAPIData  -endpoint /manageacl/promoteUser
 
 }

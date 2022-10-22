@@ -117,6 +117,7 @@ function Connect-AGM
     # OATH handling
     if ($oauth2ClientId)
     {
+   
         # first we get a token
         $Url = "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/$agmuser" +":generateIdToken"
         $body = '{"audience": "' +$oauth2ClientId +'", "includeEmail":"true"}'
@@ -131,7 +132,6 @@ function Connect-AGM
         }
         if ($RestError)
         {
-            
             $loginfailedsniff = Test-AGMJSON $RestError
             $loginfailedsniff
             return
