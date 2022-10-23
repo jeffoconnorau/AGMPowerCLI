@@ -23,14 +23,10 @@ In this example (yours will be different!):
 
 From Cloud Console IAM & Admin panel in the project where Backup and DR was activated, go to **Service Account** and choose **Create Service Account**.  You can also modify an existing one if desired.
 
-Give the account a name and ensure it has at least the following three roles:
+Give the account a name and ensure it has at least the following roles:
 
-* ```Service Account User```
-* ```Service Account Token Creator```
+* ```Service Account OpenID Connect Identity Token Creator```
 * ```Backup and DR User``` or ```Backup and DR Admin```
-
-Note you can also use two service accounts.   The first one will be the _activated_ one (that is either attached to the relevant Compute Engine Instance or that is activated using a JSON key) and has the two ```Service Account``` roles and the second account is the one that has a ```Backup and DR``` IAM role.  You use the second one when running ```Connect-AGM```.
-
 
 In this example this is the service account that was created:
 
