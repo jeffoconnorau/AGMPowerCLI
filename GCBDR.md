@@ -23,14 +23,18 @@ In this example (yours will be different!):
 
 From Cloud Console IAM & Admin panel in the project where Backup and DR was activated, go to **Service Account** and choose **Create Service Account**.  You can also modify an existing one if desired.
 
-Give the account a name and ensure it has at least the following roles:
+Ensure it has one of the two following roles:
 
+
+* ```Backup and DR User``` 
+* ```Backup and DR Admin```
+
+You then need to to go to IAM & Admin > Service Accounts.  Find that service account, select it, go to PERMISSIONS, select GRANT ACCESS, enter the principal (email address) of the service account we will activate or attach with one of the following roles (you don't need both).  You can assign this to the same service account that was assigned the ```Backup and DR``` role:
+
+* ```Service Account Token Creator```
 * ```Service Account OpenID Connect Identity Token Creator```
-* ```Backup and DR User``` or ```Backup and DR Admin```
 
-In this example this is the service account that was created:
-
-* Service Account:   powershell@avwservicelab1.iam.gserviceaccount.com
+> **Note**: Do not assign either of these ```Token Creator``` roles to a service account at the project level.  Doing so will allow that account to _impersonate_ any other service account, which will make that user able to login as any user that has access to a **Backup and DR** role.
 
 Decide where/how you will run your service account. You have two options:
 1. Compute Engine Instance with attached service account
