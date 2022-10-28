@@ -321,10 +321,6 @@ Function Get-AGMAPIData ([String]$filtervalue,[String]$keyword, [string]$search,
             {
                 Test-AGMJSON $RestError 
             }
-            elseif ($resp -contains "JWT has expired") {
-                Get-AGMErrorMessage  -messagetoprint  $resp
-                return
-            }
             else
             {
             if ( (!($resp.items)) -or ($itemoverride -eq $true) )
@@ -453,7 +449,14 @@ Function Test-AGMJSON()
         }
         if (!$validJson) 
         {
-            Write-Host "$args"
+            if ($args -like "JWT has expired") {
+                Get-AGMErrorMessage  -messagetoprint  "AGM session has expired. Please login again using Connect-AGM"
+                return
+            }
+            else {
+                Get-AGMErrorMessage  -messagetoprint  $args
+                # Write-Host "$args"
+            }      
         }
         else
         {
@@ -462,12 +465,14 @@ Function Test-AGMJSON()
             if ($testoutput.err_message)
             {
                 $testoutput.err_message = $testoutput.err_message -replace "`n",","
+                
             }
-            if ($testoutput.err_code -eq 10011)
+            elseif ($testoutput.err_code -eq 10011)
             {
                 Get-AGMErrorMessage -messagetoprint "User does not have permission to perform this action" 
+                
             }
-            if ($testoutput.error)
+            elseif ($testoutput.error)
             {
                 $testoutput.error
             }
