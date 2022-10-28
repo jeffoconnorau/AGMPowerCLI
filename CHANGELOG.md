@@ -2,6 +2,9 @@
 
 Started Change log file as per release 0.0.0.39
 
+## AGMPowerCLI 0.0.0.45
+* Get-AGMSLTPolicy will now support -sltid as well as -id, plus -policyid to display just one policy and -settableoption to display any policy options
+
 ## AGMPowerCLI 0.0.0.44
 * If service account token generator role was missing, no error was printing in PS7.  
 
