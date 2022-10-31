@@ -449,10 +449,9 @@ Function Test-AGMJSON()
         }
         if (!$validJson) 
         {
-            if (($isthisjson = "OpenID Connect token expired: JWT has expired") -and ($agmautologin -eq $true))
+            if ($isthisjson = "OpenID Connect token expired: JWT has expired") 
             {
                 Get-AGMErrorMessage  -messagetoprint $isthisjson 
-                #Connect-AGM -agmip $agmip -agmuser $agmautouser -oauth2ClientId $agmautooath2clientid -quiet
             }
             else {
                 Get-AGMErrorMessage  -messagetoprint $isthisjson 
