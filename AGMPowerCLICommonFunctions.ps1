@@ -449,14 +449,14 @@ Function Test-AGMJSON()
         }
         if (!$validJson) 
         {
-            if ($args -like "JWT has expired") {
-                Get-AGMErrorMessage  -messagetoprint  "AGM session has expired. Please login again using Connect-AGM"
-                return
+            if (($isthisjson = "OpenID Connect token expired: JWT has expired") -and ($agmautologin -eq $true))
+            {
+                Get-AGMErrorMessage  -messagetoprint $isthisjson 
+                #Connect-AGM -agmip $agmip -agmuser $agmautouser -oauth2ClientId $agmautooath2clientid -quiet
             }
             else {
-                Get-AGMErrorMessage  -messagetoprint  $args
-                # Write-Host "$args"
-            }      
+                Get-AGMErrorMessage  -messagetoprint $isthisjson 
+            }
         }
         else
         {

@@ -80,7 +80,7 @@ function Connect-AGM
     #>
 
     
-    Param([String]$agmip,[String]$agmuser,[String]$agmpassword,[String]$oauth2ClientId,[String]$passwordfile,[switch][alias("q")]$quiet, [switch][alias("p")]$printsession,[switch][alias("i")]$ignorecerts,[int]$actmaxapilimit,[int]$agmtimeout)
+    Param([String]$agmip,[String]$agmuser,[String]$agmpassword,[String]$oauth2ClientId,[String]$passwordfile,[switch][alias("q")]$quiet, [switch][alias("p")]$printsession,[switch][alias("i")]$ignorecerts,[int]$actmaxapilimit,[int]$agmtimeout,[switch][alias("a")]$agmautologin)
 
     # max objects returned will be unlimited.   Otherwise user can supply a limit
     if (!($agmmaxapilimit))
@@ -169,6 +169,12 @@ function Connect-AGM
             $GLOBAL:AGMTimezone = "local"
             $GLOBAL:AGMToken = $token
             $GLOBAL:AGMTIMEOUT = $agmtimeout
+            #if ($agmautologin -eq $true)
+            #{
+            #    $GLOBAL:agmautouser = $agmuser
+            #    $GLOBAL:agmautooath2clientid = $oauth2ClientId
+            #    $GLOBAL:agmautologin = $true
+            #}
             if ($quiet)
             {
                 return
