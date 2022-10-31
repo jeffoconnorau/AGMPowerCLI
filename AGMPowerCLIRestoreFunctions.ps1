@@ -20,7 +20,7 @@ Function Restore-AGMApplication ([string]$imageid,[string]$jsonbody)
     Restores an application using a nominated image ID
 
     .EXAMPLE
-    Restore-AGMApplication -id 1234 
+    Restore-AGMApplication -imageid 1234 
 
     Uses image ID 1234 to restore the relevant application (the application that created that image)
 

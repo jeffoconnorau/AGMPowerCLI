@@ -2006,7 +2006,7 @@ function Get-AGMSLT ([string]$id,[string]$sltid,[string]$filtervalue,[switch][al
 }
 
 #SLTPolicy
-function Get-AGMSLTPolicy ([string]$id,[int]$limit)
+function Get-AGMSLTPolicy ([string]$id,[int]$limit,[switch]$settableoption,[string]$policyid,[string]$sltid)
 {
     <#
     .SYNOPSIS
@@ -2017,13 +2017,23 @@ function Get-AGMSLTPolicy ([string]$id,[int]$limit)
     Will display all policies for a requested SLT ID
 
     .EXAMPLE
-    Get-AGMSLTPolicy -id 6452877
-    Will display all policies for SLT ID 6452877
+    Get-AGMSLTPolicy -sltid 70800 
+    Will display all policies for SLT ID 70800
+
+    .EXAMPLE
+    Get-AGMSLTPolicy -sltid 70800 -policyid 105138
+    Will display all policies for policy ID 105138 in SLT ID 70800 
+
+    .EXAMPLE
+    Get-AGMSLTPolicy -sltid 70800 -policyid 105138 -settableoption
+    Will display any policy options for policy ID 105138 in SLT ID 70800 
 
     .DESCRIPTION
     A function to display AGM SLTs
     
     #>
+
+    if ($sltid) { $id = $sltid }
 
     if ( (!($id)) -and (!($options)) )
     {
@@ -2034,7 +2044,18 @@ function Get-AGMSLTPolicy ([string]$id,[int]$limit)
     { 
         $limit = "0"
     }
-    Get-AGMAPIData -endpoint /slt/$id/policy -limit $limit
+    if (($policyid) -and (!($settableoption)))
+    {
+        Get-AGMAPIData -endpoint /slt/$id/policy/$policyid -limit $limit
+    }
+    elseif (($policyid) -and ($settableoption))
+    {
+        Get-AGMAPIData -endpoint /slt/$id/policy/$policyid/settableoption -limit $limit
+    }
+    else {
+        Get-AGMAPIData -endpoint /slt/$id/policy -limit $limit
+    }
+    
 }
 
 #user
