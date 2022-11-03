@@ -449,13 +449,7 @@ Function Test-AGMJSON()
         }
         if (!$validJson) 
         {
-            if ($isthisjson = "OpenID Connect token expired: JWT has expired") 
-            {
-                Get-AGMErrorMessage  -messagetoprint $isthisjson 
-            }
-            else {
-                Get-AGMErrorMessage  -messagetoprint $isthisjson 
-            }
+            Get-AGMErrorMessage  -messagetoprint $isthisjson 
         }
         else
         {
