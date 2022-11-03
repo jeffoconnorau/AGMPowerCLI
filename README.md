@@ -436,7 +436,7 @@ For an Actifio AGM we only offer the choice to ignore the cert.   Clearly you ca
 
 ## Detecting errors and failures
 
-One design goal of AGMPowerCLI is for all user messages to be easy to understand and formatted nicely.   However when a command fails, the return code shown by $? will not indicate this.  For instance in these two examples we try to connect and check $? each time.  However the result is the same for both cases ($? being 'True', as opposed to 'False', meaning the last command was successfully run).
+One design goal of AGMPowerCLI is for all user messages to be easy to understand and formatted nicely.   However when a command fails, the return code shown by ```$?``` will not indicate this.  For instance in these two examples we try to connect and check ```$?``` each time.  However the result is the same for both cases ($? being 'True', as opposed to 'False', meaning the last command was successfully run).
 
 Successful login:
 ```
