@@ -435,7 +435,7 @@ Function Test-AGMJSON()
     
     #>
  
-    
+
     if ($args) 
     {
         Try
@@ -463,7 +463,9 @@ Function Test-AGMJSON()
             elseif ($testoutput.err_message)
             {
                 $testoutput.err_message = $testoutput.err_message -replace "`n",","
-                Get-AGMErrorMessage -messagetoprint $testoutput.err_message
+                write-host "here"
+                $args
+                #Get-AGMErrorMessage -messagetoprint $testoutput.err_message
             }
             elseif ($testoutput.error)
             {
