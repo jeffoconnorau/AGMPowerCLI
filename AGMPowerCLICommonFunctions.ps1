@@ -438,14 +438,25 @@ Function Test-AGMJSON()
 
     if ($args) 
     {
-        Try
+        if ( $((get-host).Version.Major) -gt 5 )
         {
-            $isthisjson = $args | Test-Json -ErrorAction Stop
-            $validJson = $true
+            Try
+            {
+                $isthisjson = $args | Test-Json -ErrorAction Stop
+                $validJson = $true
+            }
+            Catch
+            {
+                $validJson = $false
+            }
         }
-        Catch
-        {
-            $validJson = $false
+        else {
+            try {
+                $isthisjson = ConvertFrom-Json $args -ErrorAction Stop;
+                $validJson = $true;
+            } catch {
+                $validJson = $false;
+            }
         }
         if (!$validJson) 
         {
@@ -458,14 +469,11 @@ Function Test-AGMJSON()
             if ($testoutput.err_code -eq 10011)
             {
                 Get-AGMErrorMessage -messagetoprint "Users current assigned role does not have permission to perform this action." 
-                
             }
             elseif ($testoutput.err_message)
             {
                 $testoutput.err_message = $testoutput.err_message -replace "`n",","
-                write-host "here"
-                $args
-                #Get-AGMErrorMessage -messagetoprint $testoutput.err_message
+                Get-AGMErrorMessage -messagetoprint $testoutput.err_message
             }
             elseif ($testoutput.error)
             {
@@ -590,6 +598,7 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
         }
         else 
         {
+            
             if ($_.Exception.Response)
             {
                 $result = $_.Exception.Response.GetResponseStream()
