@@ -457,7 +457,7 @@ Function Test-AGMJSON()
             # error messages from can Sky have multiple lines, which PS doesn't want to print, so we strip them out to get all the text
             if ($testoutput.err_code -eq 10011)
             {
-                Get-AGMErrorMessage -messagetoprint "User does not have permission to perform this action" 
+                Get-AGMErrorMessage -messagetoprint "Users current assigned role does not have permission to perform this action." 
                 
             }
             elseif ($testoutput.err_message)
