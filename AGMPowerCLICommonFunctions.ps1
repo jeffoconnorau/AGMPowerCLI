@@ -434,8 +434,8 @@ Function Test-AGMJSON()
     Written by Anthony Vandewerdt
     
     #>
-
-
+ 
+    
     if ($args) 
     {
         Try
@@ -558,7 +558,6 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
     {
         $body = '{ "accept": "*/*" }'   
     }
-
     Try
     {
         $url = "https://$AGMIP/actifio" + "$endpoint"  
