@@ -454,6 +454,7 @@ Function Test-AGMJSON()
         else
         {
             $testoutput = $args | ConvertFrom-JSON 
+            $testoutput
             # error messages from can Sky have multiple lines, which PS doesn't want to print, so we strip them out to get all the text
             if ($testoutput.err_code -eq 10011)
             {
