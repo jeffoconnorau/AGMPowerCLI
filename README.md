@@ -386,11 +386,13 @@ Disconnect-AGM
 
 ##  Time Zone handling
 
-By default all dates shown will be in the local session timezone as shown by Get-TimeZone.
+By default all dates shown will be in the local session timezone as shown by the standard PowerShell command ```Get-TimeZone```
 ```
-Get-AGMTimeZoneHandling
+Get-TimeZone
 ```
-You can change the timezone setting to local or UTC with the following two commands:
+This means you will see all logged events in the local time of the host running this PowerShell session.
+
+You can change the AGMPowerCLI timezone setting to local or UTC with the following two commands:
 ```
 Set-AGMTimeZoneHandling -l
 Set-AGMTimeZoneHandling -u 

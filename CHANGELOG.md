@@ -2,6 +2,9 @@
 
 Started Change log file as per release 0.0.0.39
 
+## AGMPowerCLI 0.0.0.46
+* Minor syntax correction in Get-AGMTimeZoneHandling and Set-AGMTimeZoneHandling
+
 ## AGMPowerCLI 0.0.0.45
 * Get-AGMSLTPolicy will now support -sltid as well as -id, plus -policyid to display just one policy and -settableoption to display any policy options
 * If the OpenID Connect token has expired, this will now print as an obvious errormessage

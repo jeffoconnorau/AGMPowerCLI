@@ -578,6 +578,11 @@ function Set-AGMTimeZoneHandling ([switch][alias("l")]$local,[switch][alias("u")
     Show all timestamps in UTC (GMT).
 
     #>
+    if ((!($local)) -and (!($utc)))
+    {
+        Get-AGMErrorMessage -messagetoprint "Please specify either -local or -utc"
+    }
+
 
 
     if ($utc)
@@ -610,15 +615,10 @@ function Get-AGMTimeZoneHandling
  
     #>
 
-
-    if (!($AGMTimezone))
-    {
-        Get-AGMErrorMessage -messagetoprint "Timezone handling has not been set-up.  Run Set-AGMTimeZoneHandling or Connect-Act";
-    }
-    elseif ($AGMTimezone -eq "local")
+    if (($AGMTimezone -eq "local") -or (!($AGMTimezone)))
     {
         $currentlocal = Get-TimeZone
-        Write-Host "Currently timezone in use is $GLOBAL:AGMTimezone which is $currentlocal"
+        Write-Host "Currently timezone in use is local timezone which is $currentlocal"
     }
     else 
     {
