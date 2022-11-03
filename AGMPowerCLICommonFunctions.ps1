@@ -472,8 +472,8 @@ Function Test-AGMJSON()
             }
             elseif ($testoutput.err_message)
             {
-                $testoutput.err_message = $testoutput.err_message -replace "`n",","
-                Get-AGMErrorMessage -messagetoprint $testoutput.err_message
+                $cleanedmessage = $testoutput.err_message -replace "`n",","
+                Get-AGMErrorMessage -messagetoprint $cleanedmessage
             }
             elseif ($testoutput.error)
             {
