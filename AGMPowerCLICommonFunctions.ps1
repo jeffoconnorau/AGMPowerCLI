@@ -455,15 +455,15 @@ Function Test-AGMJSON()
         {
             $testoutput = $args | ConvertFrom-JSON 
             # error messages from can Sky have multiple lines, which PS doesn't want to print, so we strip them out to get all the text
-            if ($testoutput.err_message)
-            {
-                $testoutput.err_message = $testoutput.err_message -replace "`n",","
-                
-            }
-            elseif ($testoutput.err_code -eq 10011)
+            if ($testoutput.err_code -eq 10011)
             {
                 Get-AGMErrorMessage -messagetoprint "User does not have permission to perform this action" 
                 
+            }
+            elseif ($testoutput.err_message)
+            {
+                $testoutput.err_message = $testoutput.err_message -replace "`n",","
+                Get-AGMErrorMessage -messagetoprint $testoutput.err_message
             }
             elseif ($testoutput.error)
             {
