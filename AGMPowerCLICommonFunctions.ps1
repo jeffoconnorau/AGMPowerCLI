@@ -434,47 +434,41 @@ Function Test-AGMJSON()
     Written by Anthony Vandewerdt
     
     #>
-
+ 
 
     if ($args) 
     {
-        Try
+        # we convert to string for PS5 that otherwise will have issues converting Args to json
+        [string]$messagetotest = $args  
+        try 
         {
-            $isthisjson = $args | Test-Json -ErrorAction Stop
-            $validJson = $true
+            $jsonmessage = ConvertFrom-Json $messagetotest -ErrorAction Stop;
+            $validJson = $true;
+        }  catch  {
+            $validJson = $false;
         }
-        Catch
+        # if we hit an error converting from json we will just print what we got after removing carriage returns so we get as much error as possible
+        if ($validJson -eq $false) 
         {
-            $validJson = $false
+            $cleanedmessage = $args -replace "`n",","
+            Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
+            return
         }
-        if (!$validJson) 
+        # if we got here we have valid JSON.  a 10011 is returned from AGM without a message, so we make one
+        if ($jsonmessage.err_code -eq 10011)
         {
-            if ($isthisjson = "OpenID Connect token expired: JWT has expired") 
-            {
-                Get-AGMErrorMessage  -messagetoprint $isthisjson 
-            }
-            else {
-                Get-AGMErrorMessage  -messagetoprint $isthisjson 
-            }
+            Get-AGMErrorMessage -messagetoprint "Users current assigned role does not have permission to perform this action." 
         }
-        else
+        # for regular errors from AGM we will catch them here, again with all the data on one line
+        elseif ($jsonmessage.err_message)
         {
-            $testoutput = $args | ConvertFrom-JSON 
-            # error messages from can Sky have multiple lines, which PS doesn't want to print, so we strip them out to get all the text
-            if ($testoutput.err_message)
-            {
-                $testoutput.err_message = $testoutput.err_message -replace "`n",","
-                
-            }
-            elseif ($testoutput.err_code -eq 10011)
-            {
-                Get-AGMErrorMessage -messagetoprint "User does not have permission to perform this action" 
-                
-            }
-            elseif ($testoutput.error)
-            {
-                $testoutput.error
-            }
+            $cleanedmessage = $jsonmessage.err_message -replace "`n",","
+            Get-AGMErrorMessage -messagetoprint $cleanedmessage
+        }
+        # there are errors returned by Sky, rather than AGM
+        elseif ($jsonmessage.error)
+        {
+            $jsonmessage.error
         }
         Return
     }
@@ -564,7 +558,6 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
     {
         $body = '{ "accept": "*/*" }'   
     }
-
     Try
     {
         $url = "https://$AGMIP/actifio" + "$endpoint"  
@@ -595,6 +588,7 @@ Function Post-AGMAPIData ([int]$timeout,[string]$endpoint,[string]$body,[string]
         }
         else 
         {
+            
             if ($_.Exception.Response)
             {
                 $result = $_.Exception.Response.GetResponseStream()

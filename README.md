@@ -386,11 +386,13 @@ Disconnect-AGM
 
 ##  Time Zone handling
 
-By default all dates shown will be in the local session timezone as shown by Get-TimeZone.
+By default all dates shown will be in the local session timezone as shown by the standard PowerShell command ```Get-TimeZone```
 ```
-Get-AGMTimeZoneHandling
+Get-TimeZone
 ```
-You can change the timezone setting to local or UTC with the following two commands:
+This means you will see all logged events in the local time of the host running this PowerShell session.
+
+You can change the AGMPowerCLI timezone setting to local or UTC with the following two commands:
 ```
 Set-AGMTimeZoneHandling -l
 Set-AGMTimeZoneHandling -u 
@@ -434,7 +436,7 @@ For an Actifio AGM we only offer the choice to ignore the cert.   Clearly you ca
 
 ## Detecting errors and failures
 
-One design goal of AGMPowerCLI is for all user messages to be easy to understand and formatted nicely.   However when a command fails, the return code shown by $? will not indicate this.  For instance in these two examples we try to connect and check $? each time.  However the result is the same for both cases ($? being 'True', as opposed to 'False', meaning the last command was successfully run).
+One design goal of AGMPowerCLI is for all user messages to be easy to understand and formatted nicely.   However when a command fails, the return code shown by ```$?``` will not indicate this.  For instance in these two examples we try to connect and check ```$?``` each time.  However the result is the same for both cases ($? being 'True', as opposed to 'False', meaning the last command was successfully run).
 
 Successful login:
 ```

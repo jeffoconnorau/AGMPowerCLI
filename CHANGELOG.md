@@ -2,6 +2,10 @@
 
 Started Change log file as per release 0.0.0.39
 
+## AGMPowerCLI 0.0.0.46
+* Minor syntax correction in Get-AGMTimeZoneHandling and Set-AGMTimeZoneHandling
+* Test-AGMJson was missing a print line which meant some errors did not print.  It was also not handling PS5 nicely.
+
 ## AGMPowerCLI 0.0.0.45
 * Get-AGMSLTPolicy will now support -sltid as well as -id, plus -policyid to display just one policy and -settableoption to display any policy options
 * If the OpenID Connect token has expired, this will now print as an obvious errormessage
