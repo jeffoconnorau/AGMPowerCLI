@@ -460,13 +460,11 @@ Function Test-AGMJSON()
             try 
             {
                 $jsonmessage = ConvertFrom-Json $messagetotest -ErrorAction Stop;
-                $validJson = $true;
-            } 
-            catch 
-            {
-                $validJson = $false;
+                $validJson = 1;
+            }  catch  {
+                $validJson = 2;
             }
-            if ($validJson -eq $false) 
+            if ($validJson -eq 2) 
             {
                 $messagetotest
                 #$cleanedmessage = $args -replace "`n",","
