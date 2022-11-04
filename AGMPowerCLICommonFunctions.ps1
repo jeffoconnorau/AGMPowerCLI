@@ -450,17 +450,21 @@ Function Test-AGMJSON()
                 $validJson = $false
             }
         }
-        else {
-            try {
+        else 
+        {
+            try 
+            {
                 $isthisjson = ConvertFrom-Json $args -ErrorAction Stop;
                 $validJson = $true;
-            } catch {
+            } 
+            catch 
+            {
                 $validJson = $false;
             }
         }
-        if (!$validJson) 
+        if ($validJson -eq $false) 
         {
-            Get-AGMErrorMessage  -messagetoprint $isthisjson 
+            Get-AGMErrorMessage  -messagetoprint $args 
         }
         else
         {
