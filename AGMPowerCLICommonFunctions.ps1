@@ -445,7 +445,6 @@ Function Test-AGMJSON()
             if ($messagetotest | Test-Json)
             {
                 $jsonmessage = $messagetotest | ConvertFrom-JSON -ErrorAction Stop
-                $validJson = $true
             }
             else
             {
@@ -457,15 +456,14 @@ Function Test-AGMJSON()
         }
         else 
         {
-            $validJson = 1
             try 
             {
                 $jsonmessage = ConvertFrom-Json $messagetotest -ErrorAction Stop;
-                $validJson = 1;
+                $validJson = $true;
             }  catch  {
-                $validJson = 2;
+                $validJson = $false;
             }
-            if ($validJson -eq 2) 
+            if ($validJson -eq $false) 
             {
                 $cleanedmessage = $args -replace "`n",","
                 Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
