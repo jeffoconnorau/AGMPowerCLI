@@ -444,7 +444,7 @@ Function Test-AGMJSON()
 
             if ($messagetotest | Test-Json)
             {
-                $jsonmessage = $args | ConvertFrom-JSON $messagetotest -ErrorAction Stop
+                $jsonmessage = $messagetotest | ConvertFrom-JSON -ErrorAction Stop
                 $validJson = $true
             }
             else
