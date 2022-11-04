@@ -452,7 +452,6 @@ Function Test-AGMJSON()
         }
         else 
         {
-            write-host "5"
             try 
             {
                 $isthisjson = ConvertFrom-Json $args -ErrorAction Stop;
@@ -465,7 +464,8 @@ Function Test-AGMJSON()
         }
         if ($validJson -eq $false) 
         {
-            Get-AGMErrorMessage  -messagetoprint $isthisjson 
+            $cleanedmessage = $args -replace "`n",","
+            Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
         }
         else
         {
