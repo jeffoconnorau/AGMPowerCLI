@@ -440,50 +440,50 @@ Function Test-AGMJSON()
     {
         if ( $((get-host).Version.Major) -gt 5 )
         {
-            Try
+            if ($args | Test-Json)
             {
-                $isthisjson = $args | Test-Json -ErrorAction Stop
+                $jsonmessage = $args | ConvertFrom-JSON $args -ErrorAction Stop
                 $validJson = $true
             }
-            Catch
+            else
             {
-                $validJson = $false
+                # error messages from can Sky have multiple lines, which PS doesn't want to print, so we strip them out to get all the text
+                $cleanedmessage = $args -replace "`n",","
+                Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
+                return
             }
         }
         else 
         {
             try 
             {
-                $isthisjson = ConvertFrom-Json $args -ErrorAction Stop;
+                $jsonmessage = ConvertFrom-Json $args -ErrorAction Stop;
                 $validJson = $true;
             } 
             catch 
             {
                 $validJson = $false;
             }
+            if ($validJson -eq $false) 
+            {
+                $cleanedmessage = $args -replace "`n",","
+                Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
+                return
+            }
         }
-        if ($validJson -eq $false) 
+        # if we got here we have valid JSON
+        if ($jsonmessage.err_code -eq 10011)
         {
-            $cleanedmessage = $args -replace "`n",","
-            Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
+            Get-AGMErrorMessage -messagetoprint "Users current assigned role does not have permission to perform this action." 
         }
-        else
+        elseif ($jsonmessage.err_message)
         {
-            $testoutput = $args | ConvertFrom-JSON 
-            # error messages from can Sky have multiple lines, which PS doesn't want to print, so we strip them out to get all the text
-            if ($testoutput.err_code -eq 10011)
-            {
-                Get-AGMErrorMessage -messagetoprint "Users current assigned role does not have permission to perform this action." 
-            }
-            elseif ($testoutput.err_message)
-            {
-                $cleanedmessage = $testoutput.err_message -replace "`n",","
-                Get-AGMErrorMessage -messagetoprint $cleanedmessage
-            }
-            elseif ($testoutput.error)
-            {
-                $testoutput.error
-            }
+            $cleanedmessage = $jsonmessage.err_message -replace "`n",","
+            Get-AGMErrorMessage -messagetoprint $cleanedmessage
+        }
+        elseif ($jsonmessage.error)
+        {
+            $jsonmessage.error
         }
         Return
     }
