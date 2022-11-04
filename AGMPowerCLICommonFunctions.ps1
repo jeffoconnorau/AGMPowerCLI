@@ -457,6 +457,7 @@ Function Test-AGMJSON()
         }
         else 
         {
+            $validJson = 1
             try 
             {
                 $jsonmessage = ConvertFrom-Json $messagetotest -ErrorAction Stop;
