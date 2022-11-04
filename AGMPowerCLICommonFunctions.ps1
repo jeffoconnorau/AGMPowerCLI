@@ -464,7 +464,7 @@ Function Test-AGMJSON()
         }
         if ($validJson -eq $false) 
         {
-            Get-AGMErrorMessage  -messagetoprint $args 
+            Get-AGMErrorMessage  -messagetoprint $isthisjson 
         }
         else
         {
