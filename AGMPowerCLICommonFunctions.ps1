@@ -457,22 +457,7 @@ Function Test-AGMJSON()
         }
         else 
         {
-            $validJson = 1
-            try 
-            {
-                $jsonmessage = ConvertFrom-Json $messagetotest -ErrorAction Stop;
-                $validJson = 1;
-            }  catch  {
-                $validJson = 2;
-            }
-            if ($validJson -eq 2) 
-            {
-                $messagetotest
-                $validjson
-                #$cleanedmessage = $args -replace "`n",","
-                #Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
-                return
-            }
+            $jsonmessage = ConvertFrom-Json $messagetotest -ErrorAction Stop;
         }
         # if we got here we have valid JSON
         if ($jsonmessage.err_code -eq 10011)
