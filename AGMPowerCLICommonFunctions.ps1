@@ -438,11 +438,13 @@ Function Test-AGMJSON()
 
     if ($args) 
     {
+        $messagetotest = $args
         if ( $((get-host).Version.Major) -gt 5 )
         {
-            if ($args | Test-Json)
+
+            if ($messagetotest | Test-Json)
             {
-                $jsonmessage = $args | ConvertFrom-JSON $args -ErrorAction Stop
+                $jsonmessage = $args | ConvertFrom-JSON $messagetotest -ErrorAction Stop
                 $validJson = $true
             }
             else
@@ -457,7 +459,7 @@ Function Test-AGMJSON()
         {
             try 
             {
-                $jsonmessage = ConvertFrom-Json $args -ErrorAction Stop;
+                $jsonmessage = ConvertFrom-Json $messagetotest -ErrorAction Stop;
                 $validJson = $true;
             } 
             catch 
