@@ -438,37 +438,19 @@ Function Test-AGMJSON()
 
     if ($args) 
     {
-        [string]$messagetotest = $args
-        if ( $((get-host).Version.Major) -gt 5 )
+        [string]$messagetotest = $args  
+        try 
         {
-
-            if ($messagetotest | Test-Json)
-            {
-                $jsonmessage = $messagetotest | ConvertFrom-JSON -ErrorAction Stop
-            }
-            else
-            {
-                # error messages from can Sky have multiple lines, which PS doesn't want to print, so we strip them out to get all the text
-                $cleanedmessage = $args -replace "`n",","
-                Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
-                return
-            }
+            $jsonmessage = ConvertFrom-Json $messagetotest -ErrorAction Stop;
+            $validJson = $true;
+        }  catch  {
+            $validJson = $false;
         }
-        else 
+        if ($validJson -eq $false) 
         {
-            try 
-            {
-                $jsonmessage = ConvertFrom-Json $messagetotest -ErrorAction Stop;
-                $validJson = $true;
-            }  catch  {
-                $validJson = $false;
-            }
-            if ($validJson -eq $false) 
-            {
-                $cleanedmessage = $args -replace "`n",","
-                Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
-                return
-            }
+            $cleanedmessage = $args -replace "`n",","
+            Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
+            return
         }
         # if we got here we have valid JSON
         if ($jsonmessage.err_code -eq 10011)
