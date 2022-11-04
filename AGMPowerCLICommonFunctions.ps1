@@ -468,8 +468,9 @@ Function Test-AGMJSON()
             }
             if ($validJson -eq $false) 
             {
-                $cleanedmessage = $args -replace "`n",","
-                Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
+                $messagetotest
+                #$cleanedmessage = $args -replace "`n",","
+                #Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
                 return
             }
         }
