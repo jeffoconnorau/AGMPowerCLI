@@ -467,6 +467,7 @@ Function Test-AGMJSON()
             if ($validJson -eq 2) 
             {
                 $messagetotest
+                $validjson
                 #$cleanedmessage = $args -replace "`n",","
                 #Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
                 return
