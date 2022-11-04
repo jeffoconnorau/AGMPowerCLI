@@ -452,6 +452,7 @@ Function Test-AGMJSON()
         }
         else 
         {
+            write-host "5"
             try 
             {
                 $isthisjson = ConvertFrom-Json $args -ErrorAction Stop;
