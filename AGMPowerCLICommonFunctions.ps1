@@ -438,7 +438,7 @@ Function Test-AGMJSON()
 
     if ($args) 
     {
-        $messagetotest = $args
+        [string]$messagetotest = $args
         if ( $((get-host).Version.Major) -gt 5 )
         {
 
@@ -457,7 +457,20 @@ Function Test-AGMJSON()
         }
         else 
         {
-            $jsonmessage = ConvertFrom-Json $messagetotest -ErrorAction Stop;
+            $validJson = 1
+            try 
+            {
+                $jsonmessage = ConvertFrom-Json $messagetotest -ErrorAction Stop;
+                $validJson = 1;
+            }  catch  {
+                $validJson = 2;
+            }
+            if ($validJson -eq 2) 
+            {
+                $cleanedmessage = $args -replace "`n",","
+                Get-AGMErrorMessage  -messagetoprint $cleanedmessage 
+                return
+            }
         }
         # if we got here we have valid JSON
         if ($jsonmessage.err_code -eq 10011)
