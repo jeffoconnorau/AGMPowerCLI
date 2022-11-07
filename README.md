@@ -16,6 +16,7 @@ A Powershell module to issue API calls to an Actifio Global Manager or a Google 
 **[User Story: Setting Appliance timezone](#user-story-setting-appliance-timezone)**<br>
 **[User Story: Setting Appliance discovery schedule](#user-story-setting-appliance-discovery-schedule)**<br>
 **[User Story: Org Creation](#user-story-org-creation)**<br>
+**[User Story: Restoring an Application](#user-story-restoring-an-application)**<br>
 **[Contributing](#contributing)**<br>
 **[Disclaimer](#disclaimer)**<br>
 
@@ -1128,8 +1129,6 @@ time  frequency
 09:00 daily
 ```
 
-
-
 ## User Story: Org Creation
 
 If we want to create an Org we need to get the IDs of the various resources we want to put into the org.   We could run a series of commands like this:
@@ -1181,6 +1180,35 @@ PS > $org.resourcecollection.hostlist
 442009
 449560
 ```
+## User Story: Restoring an Application
+For the vast bulk of application types where we want to restore the application type the main thing we need is the image ID that will be used.
+First find the application you want to work with:
+```
+Get-AGMApplication -filtervalue managed=true | select id,appname,apptype
+```
+This will give you the application ID (in this example it is 425468), which we then use to learn the images:
+```
+$appid=425468
+Get-AGMImage -filtervalue appid=$appid -sort consistencydate:desc | select id,consistencydate,jobclass
+```
+We then take the image ID and run a restore.   However some application types can restore individual objects which we can specify as an objectlist, so we use this syntax to find the objects:
+```
+$imageid = 791691
+(Get-AGMImage 791691).restorableobjects.name
+```
+There are a number of parameters we can use:
+* $imageid:  The imageid or imagename are mandatory.
+* $imagename: The imageid or imagename are mandatory.
+* $jsonbody:  This can be used if you know what the desired JSON body is, otherwise use the following parameters:
+* $donotrecover:   This is for databases.  Specifies that the Databases is not restored with recovery.
+* $disableschedule:  This is a switch that will control whether the schedule will be disabled when a restore is run.  By default it is is false
+* $objectlist:  This is a comma separated list of objects to be restored, such as DBs in an instance or Consistency Group
+* $username:  This is a username
+* $password:  This is the password for the username
+* $datastore:  For VMware restores, specifies which datastore will be used for the restored VM
+* $poweroffvm:  For VMware restore, specified if the VM should be restored in the powered off state.  By default this is false and the VM is powered on at restore time time.
+
+
 ## Contributing
 Have a patch that will benefit this project? Awesome! Follow these steps to have
 it accepted.
