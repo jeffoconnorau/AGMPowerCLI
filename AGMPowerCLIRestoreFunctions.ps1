@@ -28,7 +28,14 @@ Function Restore-AGMApplication ([string]$imageid,[string]$imagename,[string]$js
     Uses image ID 1234 to restore DB1 and DB2 in Instance or a Consistency Group
 
     .DESCRIPTION
-    A function to restore Applications
+    A function to restore Applications   To learn the Image ID follow this:
+    Learn the App ID:
+    Get-AGMApplication -filtervalue managed=true | select id,appname,apptype
+    Now learn the image ID (change app ID to suit):
+    Get-Image -filtervalue appid=425468 -sort consistencydate:desc | select id,consistencydate,jobclass
+    Now use the image ID to restore the application.
+    If you want to learn which objects you want to place in the comma separated list object list use a command like this:
+    Get-AGMImage 829387).restorableobjects.name
 
     #>
 
