@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Function Restore-AGMApplication ([string]$imageid,[string]$imagename,[string]$jsonbody,[switch]$recover,[switch]$donotdisableschedule,[string]$objectlist,[string]$username,[string]$password,[string]$datastore,[switch]$poweronvm) 
+Function Restore-AGMApplication ([string]$imageid,[string]$imagename,[string]$jsonbody,[switch]$donotrecover,[switch]$disableschedule,[string]$objectlist,[string]$username,[string]$password,[string]$datastore,[switch]$poweroffvm) 
 {
     <#
     .SYNOPSIS
@@ -74,8 +74,8 @@ Function Restore-AGMApplication ([string]$imageid,[string]$imagename,[string]$js
         }
 
         # these two should appear every time
-        if (!($recover)) { $recover = $true }
-        if (!($notdisableschedule)) { $notdisableschedule = $true}
+        if ($donotrecover) { $recover = $false } else { $recover = $true }
+        if (!($disableschedule)) { $notdisableschedule = $true} else { $notdisableschedule = $false }
 
         # now we build a body 
         $body = [ordered]@{}
@@ -85,7 +85,7 @@ Function Restore-AGMApplication ([string]$imageid,[string]$imagename,[string]$js
         if ($username) { $body += [ordered]@{ username = $username } }
         if ($password) { $body += [ordered]@{ password = $password } }
         if ($datastore) { $body += [ordered]@{ datastore = $datastore } }
-        if ($poweronvm) { $body += [ordered]@{ poweronvm = $poweronvm } }
+        if ($poweroffvm) { $body += [ordered]@{ poweronvm = $false } }
     }
     $jsonbody = $body | ConvertTo-Json
 
