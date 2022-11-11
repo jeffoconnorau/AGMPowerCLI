@@ -86,8 +86,9 @@ Function Restore-AGMApplication ([string]$imageid,[string]$imagename,[string]$js
         if ($password) { $body += [ordered]@{ password = $password } }
         if ($datastore) { $body += [ordered]@{ datastore = $datastore } }
         if ($poweroffvm) { $body += [ordered]@{ poweronvm = $false } }
+        $jsonbody = $body | ConvertTo-Json
     }
-    $jsonbody = $body | ConvertTo-Json
+    
 
     $endpoint = "/backup/$imageid/restore"
     Post-AGMAPIData  -endpoint $endpoint -jsonbody $jsonbody
