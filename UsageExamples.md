@@ -21,6 +21,8 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 **[Images](#images)**<br>
 **[Image expiration](#image-expiration)**<br>
+**[Image creation with an On-Demand Job](image-creation-with-an-ondemand-job)**<br>
+**[Image creation in bulk using policy ID](image-creation-in-bulk-using-policy-id)**<br>
 **[Image restore](#image-restore)**<br>
 
 **[Organizations](#organizations)**<br>
@@ -568,10 +570,7 @@ We can delete  the group with syntax like this:
 Remove-AGMConsistencyGroup 353953
 ```
 
-
-
 # Images
-
 
 ## Image expiration
 
@@ -642,6 +641,166 @@ Image_0265223 2021-09-14 00:00:00
 PS >
 ```
 The images will expire over the next hour.
+
+## Image creation with an OnDemand Job
+
+When we want to manually create a new backup image, this is called running an on-demand job.   We can do this with the ```New-AGMLibImage``` command.
+You can learn the application ID of the application in question with:  ```Get-AGMApplication```  You may want to use filters. 
+This is a good example of a filter:
+```
+Get-AGMApplication -filtervalue managed=true -sort appname:asc | select id,appname,apptype
+```
+In this example we know the application ID so we request a new image.   A snapshot job will automatically run.   If a snapshot policy cannot be found, a direct to onvault job will be attempted.
+```
+$appid = 425466
+New-AGMLibImage $appid
+```
+We may want to start a particular policy so we can use the app ID to learn relevant policies:
+```
+$appid = 425466
+Get-AGMLibPolicies -appid $appid
+```
+We then use the policy ID we learned.  We also added a label:
+```
+$policyid = 425080
+New-AGMLibImage -appid $appid -policyid $policyid -label "Dev image after upgrade"
+```
+If the application is a database we can use ```-backuptype log``` or ```-backuptype db``` like this:
+```
+New-AGMLibImage  -appid 2133445 -backuptype log
+```
+
+### Tracking jobs
+
+The command to start an on-demand job does not return a jobname, meaning you need to search for the newly created job.
+One solution to do this is to start each job with a unique label. If you use a label then we can find the job easily.  First start the job with a label like this:
+```
+PS /> New-AGMLibImage -appid 409016 -label "tinyrun1"
+Running this command: New-AGMLibImage  -appid 409016 -policyid 425081 -label tinyrun1
+```
+Now we search for a job with that label:
+```
+PS /> Get-AGMJobStatus -filtervalue "label=tinyrun1" | select jobname,status,progress,startdate
+
+jobname     status    progress startdate
+-------     ------    -------- ---------
+Job_0185433 running          7 2022-11-11 09:18:44
+```
+But the label has to be unique or you can end up in situation like this where we run a second job with the previously used label:
+```
+PS /Users/avw/Documents> New-AGMLibImage -appid 409016 -label "tinyrun1"
+Running this command: New-AGMLibImage  -appid 409016 -policyid 425081 -label tinyrun1
+```
+First we find the old job (because the new job has not started yet):
+```
+PS /> Get-AGMJobStatus -filtervalue "label=tinyrun1" | select jobname,status,progress,startdate
+
+jobname     status    progress startdate
+-------     ------    -------- ---------
+Job_0185433 succeeded          2022-11-11 09:18:44
+```
+Now we find the old job and the new job:
+```
+PS /> Get-AGMJobStatus -filtervalue "label=tinyrun1" | select jobname,status,progress,startdate
+
+jobname     status    progress startdate
+-------     ------    -------- ---------
+Job_0185358 running          7 2022-11-11 09:11:37
+Job_0185433 succeeded          2022-11-11 09:18:44
+```
+
+## Image creation in bulk using policy ID
+
+One way to create a semi air-gapped solution is to restrict access to the OnVault pool by using limited time windows that are user controlled.
+If we create an OnVault or Direct2Onvault policy that never runs, meaning it is set to run everyday except everyday, then the policy will only run when manually requested.
+
+Now since this user story relies on running specific policies for specific groups of apps, we need a way to group them.
+There are two ways to achieve this:
+
+* Using unique Templates for each group
+* Using LogicalGroups to group your apps.   This is the recommended method.
+
+Once we have done this, then we can use **Start-AGMLibPolicy** to run a job against all apps either for one policy or in one logical group (or both).
+So just run the command and follow the prompts to build your command:
+```
+Start-AGMLibPolicy
+```
+We then run our command, for instance:
+```
+PS > Start-AGMLibPolicy -policyid 6393 -backuptype dblog
+Starting job for hostname: mysqlsource   appname: mysqlsource   appid: 51919 using: snap policyID: 6393 from SLTName: PDSnaps
+Starting job for hostname: mysqltarget   appname: mysqltarget   appid: 36104 using: snap policyID: 6393 from SLTName: PDSnaps
+Starting job for hostname: tiny   appname: tiny   appid: 35590 using: snap policyID: 6393 from SLTName: PDSnaps
+PS >
+```
+We can then monitor the jobs like this:
+```
+PS /tmp/agmpowercli> Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
+
+status  progress
+------  --------
+running       97
+running       98
+```
+Your logic would work like this:
+1. Count the relevant apps.  In this example we have 2.
+```
+PS /tmp/agmpowercli> $appgrab = Get-AGMApplication -filtervalue "sltname=FSSnaps_RW_OV"
+PS /tmp/agmpowercli> $appgrab.count
+2
+```
+2. Count the current images.  We currently have 6 OnVault images.
+```
+PS /tmp/agmpowercli> $imagegrab = Get-AGMImage -filtervalue "sltname=FSSnaps_RW_OV&jobclass=OnVault"
+PS /tmp/agmpowercli> $imagegrab.count
+6
+```
+3. Run a new OnVault job.  We get two jobs started.
+```
+PS /tmp/agmpowercli> Start-AGMLibPolicy -policyid 25627
+Starting job for appid 20577 using cloud policy ID 25627 from SLT FSSnaps_RW_OV
+Starting job for appid 6965 using cloud policy ID 25627 from SLT FSSnaps_RW_OV
+```
+4.  Scan for running jobs until they all finish
+```
+PS /tmp/agmpowercli> Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
+
+status             progress
+------             --------
+queued                    0
+queued (readiness)        0
+
+PS /tmp/agmpowercli> Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
+
+status  progress
+------  --------
+running        2
+running        2
+
+PS /tmp/agmpowercli> Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
+
+status    progress
+------    --------
+running         98
+succeeded      100
+
+PS /tmp/agmpowercli> Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
+
+status progress
+------ --------
+
+
+PS /tmp/agmpowercli>
+
+```
+5. Count the images and ensure they went up by the number of apps.   Note that if expiration run at this time, this will confuse the issue.
+You can see here we went from 6 to 8.
+```
+PS /tmp/agmpowercli> $imagegrab = Get-AGMImage -filtervalue "sltname=FSSnaps_RW_OV&jobclass=OnVault"
+PS /tmp/agmpowercli> $imagegrab.count
+8
+PS /tmp/agmpowercli>
+```
 
 ## Image restore
 For the vast bulk of application types where we want to restore the application type the main thing we need is the image ID that will be used.
