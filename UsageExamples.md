@@ -24,7 +24,7 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 **[Image restore](#image-restore)**<br>
 
 **[Organizations](#organizations)**<br>
-**[Organization Creation](#Organization-creation)**<br>
+**[Organization Creation](#organization-creation)**<br>
 
 
 # Appliances
