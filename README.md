@@ -508,9 +508,9 @@ https://github.com/Actifio/AGMPowerLib/blob/main/README.md
 
 The following links have all moved but are here in case users has them bookmarked
 
-* [User Story: Bulk unprotection of VMs](UsageExamples.md#application-bulk-unprotection)
-* [User Story: Managing Protection of a GCP VM](UsageExamples.md#compute-engine-instance-management)
-* [User Story: Managing GCP Cloud Credentials](UsageExamples.md#compute-engine-instances)
+#### [User Story: Bulk unprotection of VMs](UsageExamples.md#application-bulk-unprotection)
+#### [User Story: Managing Protection of a GCP VM](UsageExamples.md#compute-engine-instance-management)
+#### [User Story: Managing GCP Cloud Credentials](UsageExamples.md#compute-engine-instances)
 * [User Story: Adding GCP Instances](UsageExamples.md#compute-engine-instance-discovery)
 * [User Story: Bulk expiration](UsageExamples.md#image-expiration)
 * [User Story: Appliance management](UsageExamples.md#appliance-add-and-remove)
