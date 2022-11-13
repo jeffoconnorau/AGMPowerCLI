@@ -21,8 +21,8 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 **[Images](#images)**<br>
 **[Image expiration](#image-expiration)**<br>
-**[Image creation with an On-Demand Job](image-creation-with-an-ondemand-job)**<br>
-**[Image creation in bulk using policy ID](image-creation-in-bulk-using-policy-id)**<br>
+**[Image creation with an On-Demand Job](#image-creation-with-an-ondemand-job)**<br>
+**[Image creation in bulk using policy ID](#image-creation-in-bulk-using-policy-id)**<br>
 **[Image restore](#image-restore)**<br>
 
 **[Organizations](#organizations)**<br>
