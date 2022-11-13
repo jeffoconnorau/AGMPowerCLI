@@ -15,7 +15,7 @@ This module is intended to deliver the following:
 * Allow the user to create and remove sessions so that API commands can be issued
 * Issue commands to API end points 
 
-There is a partner module:  AGMPowerLib found here:  https://github.com/Actifio/AGMPowerLib
+There is a partner module:  AGMPowerLib found [here](https://github.com/Actifio/AGMPowerLib)
 The AGMPowerLib module contains what we call composite functions, these being complex combination of API endpoints.   
 We chose to separate the two modules (a module for end points versus a module for composite functions), to make it easier to differentiate if you are working with a single end-point or working with a composite collection of endpoints.  
 
@@ -160,7 +160,7 @@ AGM     10.0.1.4673
 PS C:\Users\av>
 ```
 
-Now jump over to https://github.com/Actifio/AGMPowerLib and install AGMPowerLib.
+Now jump over to [AGMPowerLib](https://github.com/Actifio/AGMPowerLib) and install AGMPowerLib.
 
 ##### Silent Install
 
@@ -504,8 +504,7 @@ PS > $LASTEXITCODE
 
 # Usage Examples
 
-Usage examples are in a separate document that you will find [here](UsageExamples.md)   Note that some usage examples will use the AGMPowerLib module, so also ensure you have that installed:
-https://github.com/Actifio/AGMPowerLib/blob/main/README.md
+Usage examples are in a separate document that you will find [here](UsageExamples.md)   Note that some usage examples will use the AGMPowerLib module, so also ensure you have [AGMPowerLib](https://github.com/Actifio/AGMPowerLib/blob/main/README.md) installed:
 
 The following links have all moved but are here in case users has them bookmarked
 
