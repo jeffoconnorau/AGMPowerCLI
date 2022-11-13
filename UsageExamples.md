@@ -1,19 +1,20 @@
 
+# Usage Examples
+This document contains usage examples that include both AGMPowerCLI and AGMPowerLIB commands.
+
 **[Appliances](#appliances)**<br>
 **[Appliance add and remove](#appliance-add-and-remove)**<br>
 **[Appliance discovery schedule](#appliance-discovery-schedule)**<br>
 **[Appliance info and report commands](#appliance-info-and-report-commands)**<br>
-**[Appliance timezone](#setting-appliance-timezone)**<br>
+**[Appliance timezone](#appliance-timezone)**<br>
 
 **[Applications](#applications)**<br>
 **[Application bulk unprotection](#application-bulk-unprotection)**<br>
-
 
 **[Compute Engine Instances](#compute-engine-instance)**<br>
 **[Compute Engine Cloud Credentials](#compute-engine-cloud-credentials)**<br>
 **[Compute Engine Instance Discovery](#compute-engine-instance-discovery)**<br>
 **[Compute Engine Instance Management](#compute-engine-instance-management)**<br>
-
 
 **[Consistency Groups](#consistency-groups)**<br>
 **[Consistency Group Management](#consistency-group-management)**<br>
@@ -22,16 +23,16 @@
 **[Image expiration](#image-expiration)**<br>
 **[Image restore](#image-restore)**<br>
 
-**[Organisations](#organisations)**<br>
-**[Organisation Creation](#Organisation-creation)**<br>
-
-
+**[Organizations](#organizations)**<br>
+**[Organization Creation](#Organization-creation)**<br>
 
 
 # Appliances
 
 
 ## Appliance add and remove
+
+> **Note**:   You cannot perform appliance add and remove in Google Cloud Backup and DR.  This is for Actifio AGM only.
 
 You may want to add or remove an Appliance from AGM.   You can list all the Appliances with this command:
 ```
@@ -671,11 +672,11 @@ There are a number of parameters we can use:
 * $poweroffvm:  For VMware restore, specified if the VM should be restored in the powered off state.  By default this is false and the VM is powered on at restore time time.
 
 
-# Organisations
+# Organizations
 
-## Organisation Creation
+## Organization Creation
 
-If we want to create an Org we need to get the IDs of the various resources we want to put into the org.   We could run a series of commands like this:
+If we want to create an Organization we need to get the IDs of the various resources we want to put into the Organization.   We could run a series of commands like this:
 ```
 Get-AGMHost | Select-Object id,name
 Get-AGMSLP | Select-Object id,name
