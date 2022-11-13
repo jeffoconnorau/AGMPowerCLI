@@ -1,6 +1,8 @@
 # Change log
 
 Started Change log file as per release 0.0.0.39
+## AGMPowerCLI 0.0.0.47
+* Added many more options to Restore-AGMApplication 
 
 ## AGMPowerCLI 0.0.0.46
 * Minor syntax correction in Get-AGMTimeZoneHandling and Set-AGMTimeZoneHandling
