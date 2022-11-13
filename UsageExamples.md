@@ -11,7 +11,7 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 **[Applications](#applications)**<br>
 **[Application bulk unprotection](#application-bulk-unprotection)**<br>
 
-**[Compute Engine Instances](#compute-engine-instance)**<br>
+**[Compute Engine Instances](#compute-engine-instances)**<br>
 **[Compute Engine Cloud Credentials](#compute-engine-cloud-credentials)**<br>
 **[Compute Engine Instance Discovery](#compute-engine-instance-discovery)**<br>
 **[Compute Engine Instance Management](#compute-engine-instance-management)**<br>
