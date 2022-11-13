@@ -506,7 +506,7 @@ PS > $LASTEXITCODE
 
 Usage examples are in a separate document that you will find [here](UsageExamples.md)   Note that some usage examples will use the AGMPowerLib module, so also ensure you have [AGMPowerLib](https://github.com/Actifio/AGMPowerLib/blob/main/README.md) installed:
 
-The following links have all moved but are here in case users has them bookmarked
+The following examples were all moved from the Readme to the Usage Examples page but are here in case you bookmarked them:
 
 #### [User Story: Bulk unprotection of VMs](UsageExamples.md#application-bulk-unprotection)
 #### [User Story: Managing Protection of a GCP VM](UsageExamples.md#compute-engine-instance-management)
