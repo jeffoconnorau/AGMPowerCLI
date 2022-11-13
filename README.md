@@ -528,7 +528,7 @@ https://github.com/Actifio/AGMPowerLib/blob/main/README.md
 
 ## User Story: Org Creation
 
-## [User Story: Restoring an Application](UsageExamples.md)
+## [User Story: Restoring an Application](UsageExamples.md#image-restore)
 
 
 ## Contributing
