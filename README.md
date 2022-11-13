@@ -6,6 +6,7 @@ A Powershell module to issue API calls to an Actifio Global Manager or a Google 
 **[Usage](#usage)**<br>
 **[What else do I need to know?](#what-else-do-i-need-to-know)**<br>
 **[Contributing](#contributing)**<br>
+**[Usage Examples](#usage-examples)**<br>
 **[Disclaimer](#disclaimer)**<br>
 
 ## What does this module do?
