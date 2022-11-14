@@ -963,11 +963,11 @@ $appdata.host.ipaddress
 
 ## Compute Engine Instance Conversion from VMware VM
 
-In this user story we are going to use VMware VM snapshots (or system state backups) to create a new Compute EngineInstance.  This will be done by using the **New-AGMLibGCEConversion** command.
+In this user story we are going to use VMware VM snapshots to create a new Compute Engine Instance.  This will be done by using the **New-AGMLibGCEConversion** command.
 
 This command requires several inputs so first we explore how to get them.
 
-### Creating a single Compute Engine Instance Instance from VMware/System State Backup
+### Creating a single Compute Engine Instance Instance from VMware Backup
 
 The best way to create the syntax for this command, at least for the first time you run it,  is to simply run the **New-AGMLibGCEConversion** command without any parameters.
 This starts what we called *guided mode* which will help you learn all the syntax to run the command.
@@ -1009,8 +1009,8 @@ Get-AGMImage -filtervalue "apptype=SystemState&apptype=VMBackup&jobclass=OnVault
 
 There are many parameters that may need to be supplied:
 ```
--appid           The application ID of the source VMWare VM or System State you want to mount.  If you use this you don't need to specify an image ID or imagename.   It will use the latest image of that application.
--appname         The application name of the source VMWare VM or System State you want to mount.  This needs to be unique.  If you use this you don't need to specify an image ID or imagename.   It will use the latest image of that application.
+-appid           The application ID of the source VMWare VM you want to mount.  If you use this you don't need to specify an image ID or imagename.   It will use the latest image of that application.
+-appname         The application name of the source VMWare VM you want to mount.  This needs to be unique.  If you use this you don't need to specify an image ID or imagename.   It will use the latest image of that application.
 -imageid         You need to supply either the imageid or the imagename or both (or specify -appid instead to get the latest image).  To avoid using this, you can specify -appid or -appname instead
 -imagename       You need to supply either the imageid or the imagename or both (or specify -appid instead to get the latest image).  To avoid using this, you can specify -appid or -appname instead
 -srcid           Learn this with Get-AGMLibCredentialSrcID.  You need to use the correct srcid that matches the appliance that is going to run the mount.
@@ -1028,8 +1028,8 @@ There are many parameters that may need to be supplied:
 -nic0subnet      The subnet name in URL format for nic0
 -nic0externalip  Only 'none' and 'auto' are valid choices.  If you don't use this variable then the default for nic0 is 'none'
 -nic0internalip  Only specify this is you want to set an internal IP.  Otherwise the IP for nic0 will be auto assigned.   
--poweroffvm      By default the new Compute EngineInstance will be left powered on after creation.   If you want it to be created but then powered off, then specify this flag.
--migratevm       By default the new Compute EngineInstance will be dependent on the mounting Appliance.  To migrate all data onto Compute Engine Persistent Disk, then specify this flag.
+-poweroffvm      By default the new Compute Engine Instance will be left powered on after creation.   If you want it to be created but then powered off, then specify this flag.
+-migratevm       By default the new Compute Engine Instance will be dependent on the mounting Appliance.  To migrate all data onto Compute Engine Persistent Disk, then specify this flag.
 -preferedsource  Optional,  used if we want to force selection of images from a particular storage pool, either snapshot, streamsnap or onvault  (use lower case)
 ```
 Optionally you can request a second NIC using nic1:
@@ -1064,7 +1064,7 @@ The expected configuration in this scenario is that the end-user will be looking
 | VMware | GCP Zone |
 
 The goal is to offer a simplified way to manage failover from Production to DR where:
-* The backup mechanism is to use VMware snapshots or System State backup
+* The backup mechanism is to use VMware snapshots
 * These images are created by an on-premises Backup Appliance and then replicated into cloud either in an OnVault pool or via StreamSnap.
 * DR occurs by issuing commands to the DR Appliance to create new Compute Engine Instance Instances (most likely after importing the OnVault images)
 * You may need to first run an OnVault import using this [method](#image-import-from-onvault)
@@ -1126,7 +1126,7 @@ command : New-AGMLibGCEConversion -projectname project1 -machinetype n1-standard
 appname : centos2
 appid   :
 result  : failed
-message : Failed to resolve centos2 to a unique valid VMBackup or System State app.  Use Get-AGMLibApplicationID and try again specifying -appid
+message : Failed to resolve centos2 to a unique valid VMBackup app.  Use Get-AGMLibApplicationID and try again specifying -appid
 command : New-AGMLibGCEConversion -projectname project1 -machinetype n1-standard-2 -instancename "apr12test1centos2" -nic0network "https://www.googleapis.com/compute/v1/projects/project1/global/networks/actifioanz" -nic0subnet "https://www.googleapis.com/compute/v1/projects/project1/regions/australia-southeast1/subnetworks/australia" -region "australia-southeast1" -zone "australia-southeast1-a" -srcid
           "391360" -appname "centos2" -serviceaccount "systemstaterecovery@project1.iam.gserviceaccount.com" -preferedsource onvault
 ```
@@ -1137,7 +1137,7 @@ $newrun | where-object {$_.result -ne "started"}
 appname : centos2
 appid   :
 result  : failed
-message : Failed to resolve centos2 to a unique valid VMBackup or System State app.  Use Get-AGMLibApplicationID and try again specifying -appid
+message : Failed to resolve centos2 to a unique valid VMBackup app.  Use Get-AGMLibApplicationID and try again specifying -appid
 command : New-AGMLibGCEConversion -projectname project1 -machinetype n1-standard-2 -instancename "apr12test1centos2" -nic0network "https://www.googleapis.com/compute/v1/projects/project1/global/networks/actifioanz" -nic0subnet "https://www.googleapis.com/compute/v1/projects/project1/regions/australia-southeast1/subnetworks/australia" -region "australia-southeast1" -zone "australia-southeast1-a" -srcid
           "391360" -appname "centos2" -serviceaccount "systemstaterecovery@project1.iam.gserviceaccount.com" -preferedsource onvault
 ```
