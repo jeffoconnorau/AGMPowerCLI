@@ -11,9 +11,9 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 **[Backup Plans](#backup-plans)**</br>
 **[Backup Plan Application](#backup-plan-application)**</br>
+**[Backup Plan Policy Usage](#backup-plan-policy-usage)**</br>
 **[Backup Plan Removal](#backup-plan-removal)**</br>
-**[Backup Plan Bulk Removal](#backup-plan-bulk-removal)**</br>
-**[Displaying Backup Plan Policies](#displaying-backup-plan-policies)**</br>
+**[Backup Plan Removal in Bulk](#backup-plan-removal-in-bulk)**</br>
 **[Importing and Exporting Policy Templates](#importing-and-exporting-policy-templates)**</br>
 
 **[Billing](#billing)**</br>
@@ -470,25 +470,6 @@ Australia/Sydney
 
 Note that Backup Plans is the new term for the SLA Architect.  If you see the term Backup Plan, this is the equivalent of the SLA.
 
-## Displaying Backup Plan Policies
-
-If you wish to display general information about the policies in your backup plan templates then use this command:
-```
-Get-AGMLibPolicies
-```
-If you wish to know which policies are using enforced retention use this command:
-```
-Get-AGMLibPolicies -enforcedretention
-```
-If you wish to know where your Compute Engine instance snapshots are going use this command:
-```
-Get-AGMLibPolicies -snapshotlocation
-```
-If you wish to display all advanced policy options use this command:
-```
-Get-AGMLibPolicies -advancedpolicysettings
-```
-
 ## Backup Plan Application
 
 When we apply a backup plan (SLA) to an application we are protecting or manageing it.  To complete this task we need three things:
@@ -543,6 +524,24 @@ We can validate our policy is applied with a command like this:
 ```
 (Get-AGMApplication $appid).sla
 ```
+## Backup Plan Policy Usage
+
+If you wish to display general information about the policies in your backup plan templates then use this command:
+```
+Get-AGMLibPolicies
+```
+If you wish to know which policies are using enforced retention use this command:
+```
+Get-AGMLibPolicies -enforcedretention
+```
+If you wish to know where your Compute Engine instance snapshots are going use this command:
+```
+Get-AGMLibPolicies -snapshotlocation
+```
+If you wish to display all advanced policy options use this command:
+```
+Get-AGMLibPolicies -advancedpolicysettings
+```
 
 ## Backup Plan Removal
 
@@ -570,7 +569,7 @@ id     appname apptype     managed
 --     ------- -------     -------
 709575 bastion GCPInstance   False
 ```
-## Backup Plan Bulk Removal
+## Backup Plan Removal In Bulk
 
 In this scenario, a large number of VMs that were no longer required were removed from the vCenter. However, as those VMs were still being managed at the time of removal from the VCenter, the following error message is being received constantly
  
