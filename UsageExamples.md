@@ -66,6 +66,13 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 # Appliances
 
+There are two kinds of Appliance depending on which product you are using.  These commands apply to both unless otherwise stated.
+
+| Product | Device 
+| ---- | ---- 
+| Actifio | Sky
+| Google Cloud Backup and DR | Backup/recovery appliance 
+
 ## Appliance add and remove
 
 > **Note**:   You cannot perform appliance add and remove in Google Cloud Backup and DR.  This is for Actifio only.
@@ -176,7 +183,7 @@ time  frequency
 
 > **Note**:   If you want to manage appliance parameters such as slots, use the **Get-AGMLibApplianceParameter** and **Set-AGMLibApplianceParameter** commands documented [here](#appliance-parameter-and-slot-management).
 
-You can run info and report commands on an appliance using AGMPowerCLI.  To do this we need to tell the Management Console which appliance to run the command on. So first learn your appliance ID with **Get-AGMAppliance**.  In this example the appliance we want to work with is ID 70194.
+You can run info and report commands on an appliance using AGMPowerCLI.  To do this we need to tell the Management Console which appliance to run the command on. So first learn your appliance ID with ```Get-AGMAppliance```.  In this example the appliance we want to work with is ID 70194.
 ```
 Get-AGMAppliance | select id,name
 ```
@@ -188,7 +195,7 @@ id     name
 70194  backup-server-32897
 ```
 ### Running info commands
-We can use **Get-AGMAPIApplianceInfo** to send info (also known as udsinfo) commands.   In this example we send the **udsinfo lshost** command to the appliance with ID 70194.
+We can use ```Get-AGMAPIApplianceInfo``` to send info (also known as udsinfo) commands.   In this example we send the ```udsinfo lshost``` command to the appliance with ID 70194.
 ```
 Get-AGMAPIApplianceInfo -applianceid 70194 -command lshost | select id,hostname
 ```
@@ -211,7 +218,7 @@ Get-AGMAPIApplianceInfo -applianceid 70194 -command lshost -arguments "filterval
 
 ### Running report commands
 
-We can use **Get-AGMAPIApplianceReport** to send report commands.  If you want to know which commands you can send, start with *reportlist*.
+We can use ```Get-AGMAPIApplianceReport``` to send report commands.  If you want to know which commands you can send, start with ```reportlist```.
 ```
 Get-AGMAPIApplianceReport -applianceid 70194 -command reportlist
 ```
@@ -221,7 +228,7 @@ ReportName             ReportFunction                                           
 ----------             --------------                                                                           ------------------
 reportadvancedsettings Show all Advanced policy options that have been set                                      AdministratorRole
 ```
-In this example we run the *reportapps* command:
+In this example we run the ```reportapps``` command:
 ```
 Get-AGMAPIApplianceReport -applianceid 70194 -command reportapps | select hostname,appname,"MDLStat(GB)"
 ```
@@ -244,7 +251,7 @@ ubuntu3       ubuntu3            26.191
 winsrv2019-1  WinSrv2019-1       37.332
 winsrv2019-2  WinSrv2019-2       36.062
 ```
-We then send an argument of **-a tiny** to restrict the output to applications with a name of **tiny**
+We then send an argument of ```-a tiny``` to restrict the output to applications with a name of **tiny**
 ```
 Get-AGMAPIApplianceReport -applianceid 70194 -command reportapps -arguments "-a tiny" | select hostname,appname,"MDLStat(GB)"
 ```
@@ -255,14 +262,14 @@ HostName AppName MDLStat(GB)
 tiny     tiny    20.000
 ```
 #### Running a commnd with multiple arguments
-If you need to send multiple arguments separate them with an **&**, for example, this command send the **reportimages** command to appliance ID 406219 with the **-a 0** and **-s** parameters and exports it to CSV.
+If you need to send multiple arguments separate them with an **&**, for example, this command sends the **reportimages** command to appliance ID 406219 with the **-a 0** and **-s** parameters and exports it to CSV.
 ```
 Get-AGMAPIApplianceReport -applianceid 406219 -command reportimages -arguments "-a 0&-s" |  Export-Csv disks.csv
 ```
 
 ## Appliance Parameter and Slot Management
 
-Each backup appliance has a set of parameters that are used to:
+Each appliance has a set of parameters that are used to:
 
 * Enable and disable functions.  These parameters are usually: 0 (off) or 1 (on)
 * Set slot limits to control concurrently running jobs
