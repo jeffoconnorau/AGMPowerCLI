@@ -9,10 +9,10 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 **[Appliance Parameter and Slot Management](#appliance-parameter-and-slot-management)**</br>
 **[Appliance Timezone](#appliance-timezone)**<br>
 
-**[Applications](#applications)**<br>
-**[Application bulk unprotection](#application-bulk-unprotection)**<br>
-
 **[Backup Plans](#backup-plans)**</br>
+**[Backup Plan Application](#backup-plan-application)**</br>
+**[Backup Plan Removal](#backup-plan-removal)**</br>
+**[Backup Plan Bulk Removal](#backup-plan-bulk-removal)**</br>
 **[Displaying Backup Plan Policies](#displaying-backup-plan-policies)**</br>
 **[Importing and Exporting Policy Templates](#importing-and-exporting-policy-templates)**</br>
 
@@ -463,9 +463,114 @@ timezone
 --------
 Australia/Sydney
 ```
-# Applications
 
-## Application bulk unprotection
+
+
+# Backup Plans
+
+Note that Backup Plans is the new term for the SLA Architect.  If you see the term Backup Plan, this is the equivalent of the SLA.
+
+## Displaying Backup Plan Policies
+
+If you wish to display general information about the policies in your backup plan templates then use this command:
+```
+Get-AGMLibPolicies
+```
+If you wish to know which policies are using enforced retention use this command:
+```
+Get-AGMLibPolicies -enforcedretention
+```
+If you wish to know where your compute engine instance snapshots are going use this command:
+```
+Get-AGMLibPolicies -snapshotlocation
+```
+If you wish to display all advanced policy options use this command:
+```
+Get-AGMLibPolicies -advancedpolicysettings
+```
+
+## Backup Plan Application
+
+When we apply a backup plan (SLA) to an application we are protecting or manageing it.  To complete this task we need three things:
+* appid:  The Application ID
+* sltid:  The Policy template ID
+* slpid:  The backup profil ID
+
+In this example the application name is ```bastion``` so we find the Application ID with this command, confirming the apptype is correct and that it is currently being protected (managed=true):
+```
+$appname = "bastion"
+Get-AGMApplication -filtervalue appname=$appname | select id,appname,apptype,managed
+```
+The output should look like this:
+```
+id     appname apptype     managed
+--     ------- -------     -------
+709575 bastion GCPInstance   False
+```
+We learn the sltid command with this command:
+```
+Get-AGMSLT | select id,name
+```
+The output should look like this:
+```
+id     name
+--     ----
+425079 VMware Direct to OnVault
+425013 VMware Snap to OnVault
+108758 pd-snaps-multiregional
+```
+We now learn the slpid with this command:
+```
+Get-AGMSLP  | select id,name,localnode
+```
+The output should look like this:
+```
+id     name                       localnode
+--     ----                       ---------
+706611 backup-server29736_Profile backup-server-29736
+406229 29736 avwarglab            backup-server-29736
+```
+We now assemble the command we need to use.  Note that if you wanted to change any policy settings you should add ```-scheduler disabled``` to the command:
+```
+$appid = 709575
+$sltid = 108758
+$slpid = 706611
+New-AGMSLA -appid $appid -sltid $sltid -slpid $slpid 
+```    
+The command should return SLA information.
+
+We can validate our policy is applied with a command like this:
+```
+(Get-AGMApplication $appid).sla
+```
+
+## Backup Plan Removal
+
+To remove a backup plan (SLA) from an application (to unprotect or unmanage it), we need the application ID.  In this example the application name is ```bastion``` so we find the Application ID with this command, confirming the apptype is correct and that it is currently being protected (managed=true):
+```
+$appname = "bastion"
+Get-AGMApplication -filtervalue appname=$appname | select id,appname,apptype,managed
+```
+The output should look like this:
+```
+id     appname apptype     managed
+--     ------- -------     -------
+709575 bastion GCPInstance    True
+```
+We then take the appid and remove the backup plan (SLA):
+```
+$appid=709575
+Remove-AGMSLA -appid $appid
+```
+We then confirm managed is now false, confirming the application is no longer protected:
+```
+Get-AGMApplication -filtervalue appname=bastion | select id,appname,apptype,managed
+
+id     appname apptype     managed
+--     ------- -------     -------
+709575 bastion GCPInstance   False
+```
+## Backup Plan Bulk Removal
 
 In this scenario, a large number of VMs that were no longer required were removed from the vCenter. However, as those VMs were still being managed at the time of removal from the VCenter, the following error message is being received constantly
  
@@ -558,28 +663,6 @@ foreach ($app in $appstounmanage)
 Output will be blank but the VMs will all be deleted.
 
 
-# Backup Plans
-
-Note that Backup Plans is the new term for the SLA Architect.  
-
-## Displaying Backup Plan Policies
-
-If you wish to display general information about the policies in your backup plan templates then use this command:
-```
-Get-AGMLibPolicies
-```
-If you wish to know which policies are using enforced retention use this command:
-```
-Get-AGMLibPolicies -enforcedretention
-```
-If you wish to know where your compute engine instance snapshots are going use this command:
-```
-Get-AGMLibPolicies -snapshotlocation
-```
-If you wish to display all advanced policy options use this command:
-```
-Get-AGMLibPolicies -advancedpolicysettings
-```
 
 ## Importing and Exporting Policy Templates
 
@@ -2606,9 +2689,9 @@ Output should look like this:
 ```
 id      hostname                  srcid
 --      --------                  -----
-5552172 scvmm.sa.actifio.com      4661
-5552150 hq-vcenter.sa.actifio.com 4460
-5534713 vcenter-dr.sa.actifio.com 4371
+5552172 scvmm.sa.acme.com          4661
+5552150 hq-vcenter.sa.acme.com     4460
+5534713 vcenter-dr.sa.acme.com     4371
 
 $vcenterid = 5552150
 ```
@@ -2620,13 +2703,13 @@ Output should look like this:
 ```
 id       hostname
 --       --------
-26534616 sa-esx8.sa.actifio.com
-5552168  sa-esx6.sa.actifio.com
-5552166  sa-esx5.sa.actifio.com
-5552164  sa-esx1.sa.actifio.com
-5552162  sa-esx2.sa.actifio.com
-5552160  sa-esx4.sa.actifio.com
-5552158  sa-esx7.sa.actifio.com
+26534616 sa-esx8.sa.acme.com
+5552168  sa-esx6.sa.acme.com
+5552166  sa-esx5.sa.acme.com
+5552164  sa-esx1.sa.acme.com
+5552162  sa-esx2.sa.acme.com
+5552160  sa-esx4.sa.acme.com
+5552158  sa-esx7.sa.acme.com
 
 $esxhostlist = @(5552166,5552168)
 $esxhostlist

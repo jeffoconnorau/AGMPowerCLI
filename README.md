@@ -508,7 +508,7 @@ Usage examples are in a separate document that you will find [here](UsageExample
 
 The following examples were all moved from the Readme to the Usage Examples page but are here in case you bookmarked them:
 
-#### [User Story: Bulk unprotection of VMs](UsageExamples.md#application-bulk-unprotection)
+#### [User Story: Bulk unprotection of VMs](UsageExamples.md#backup-plan-bulk-removal)
 #### [User Story: Managing Protection of a GCP VM](UsageExamples.md#compute-engine-instance-management)
 #### [User Story: Managing GCP Cloud Credentials](UsageExamples.md#compute-engine-instances)
 #### [User Story: Adding GCP Instances](UsageExamples.md#compute-engine-instance-discovery)
