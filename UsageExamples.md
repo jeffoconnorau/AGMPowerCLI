@@ -33,11 +33,11 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 **[Consistency Group Management](#consistency-group-management)**<br>
 
 **[Images](#images)**<br>
-**[Image creation with an On-Demand Job](#image-creation-with-an-ondemand-job)**<br>
-**[Image creation in bulk using policy ID](#image-creation-in-bulk-using-policy-id)**<br>
+**[Image Creation With An On-Demand Job](#image-creation-with-an-ondemand-job)**<br>
+**[Image Creation In Bulk Using Policy ID](#image-creation-in-bulk-using-policy-id)**<br>
 **[Image Expiration In Bulk](#image-expiration-in-bulk)**<br>
-**[Image import from OnVault](#image-import-from-onvault)**<br>
-**[Image restore](#image-restore)**<br>
+**[Image Import From OnVault](#image-import-from-onvault)**<br>
+**[Image Restore](#image-restore)**<br>
 
 **[Mount](#mount)**</br>
 **[Multi Mount for Ransomware Analysis](#multi-Mount-for-ransomware-analysis)**</br>
@@ -50,12 +50,12 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 **[SAP HANA Multi Mount](#sap-hana-multi-mount)**</br>
 
 **[SQL Server](#sql-server)**</br>
-**[SQL Server Mount](#sql-server-mount)**</br>
-**[SQL Server Mount with point in time recovery](#sql-server-mount-with-point-in-time-recovery)**</br>
-**[SQL Server Mount and Migrate](#sql-server-mount-and-migrate)**</br>
-**[SQL Server Multi Mount and Migrate](#sql-server-multi-mount-and-migrate)**</br>
+**[SQL Server Database Mount](#sql-server-database-mount)**</br>
+**[SQL Server Database Mount with point in time recovery](#sql-server-database-mount-with-point-in-time-recovery)**</br>
+**[SQL Server Database Mount and Migrate](#sql-server-database-mount-and-migrate)**</br>
 **[SQL Server Instance Mount](#sql-server-instance-mount)**</br>
-**[SQL Server protecting and rewinding child apps](#sql-server-protecting-and-rewinding-child-apps)**</br>
+**[SQL Server Multi Mount and Migrate](#sql-server-multi-mount-and-migrate)**</br>
+**[SQL Server Protecting and Rewinding Child Apps](#sql-server-protecting-and-rewinding-child-apps)**</br>
 
 **[VMware](#vmware)**</br>
 **[VMware Multi Mount](#vmware-multi-mount)**</br>
@@ -2054,7 +2054,7 @@ New-AGMLibSAPHANAMultiMount -instancelist sapmount.csv
 ```
 # SQL Server
 
-## SQL Server Mount
+## SQL Server Database Mount
 
 In this 'story' a user wants to mount the latest snapshot of a SQL DB to a host
 
@@ -2186,7 +2186,7 @@ id      host                   consistencydate     backupname     jobclass
 7397570 @{hostname=sydwinsql5} 2020-10-30 13:54:16 Image_10979874 snapshot
 ```
 
-## SQL Server Mount and Migrate
+## SQL Server Database Mount and Migrate
 
 In this user story we are going to use SQL Mount and Migrate to move a mount back to server disk
 
@@ -2448,10 +2448,7 @@ previousimagestate : FinalizeStarted
 currentimagestate  : ImageNotFound
 ```
 
-
-
-
-## SQL Server mount with point in time recovery
+## SQL Server Database Mount with point in time recovery
 
 In this 'story' a user wants to mount a specific snapshot of a SQL DB to a host rolled to a specific point in time.   We start with an appname:
 
@@ -2554,7 +2551,7 @@ So now we know the names of the DBs inside our SQL instance, we just need to cho
  New-AGMLibMSSQLMount -appid 5534398 -targethostname demo-sql-5 -label "AV instance mount" -sqlinstance DEMO-SQL-5 -consistencygroupname avcg -dbnamelist "smalldb1,smalldb2" -dbnameprefix "testdev_" -dbnamesuffix "_av"
 ```
 
-## SQL Server protecting and rewinding child apps
+## SQL Server Protecting and Rewinding Child Apps
 
 In this story, we create a child app of a SQL DB that is protected by an on-demand template.
 
