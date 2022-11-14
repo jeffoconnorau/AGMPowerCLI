@@ -1942,7 +1942,7 @@ So now we know the id of the Database inside our HANA instance, we just need to 
 ```
 New-AGMLibSAPHANAMount -appid 577110 -targethostname coe-hana-2 -dbsid "TGT" -userstorekey "ACTBACKUP" -mountpointperimage "/tgt" -label "Test HANA database"
 ```
-If you run ```New-AGMLibSAPHANAMount``` in guided mode, you can take the option to generate a CSV file.   This can be used to run New-AGMLibSAPHANAMultiMount
+If you run ```New-AGMLibSAPHANAMount``` in guided mode, you can take the option to generate a CSV file.   This can be used to run ```New-AGMLibSAPHANAMultiMount```
 
 ##  SAP HANA Multi Mount
 
