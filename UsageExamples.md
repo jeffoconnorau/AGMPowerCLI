@@ -66,7 +66,7 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 # Appliances
 
-There are two kinds of Appliance depending on which product you are using.  These commands apply to both unless otherwise stated.
+An Appliance does the work of creating backups.  There are two kinds of Appliance depending on which product you are using.  These commands apply to both unless otherwise stated.
 
 | Product | Device 
 | ---- | ---- 
@@ -475,11 +475,13 @@ Australia/Sydney
 
 # Backup Plans
 
-Note that Backup Plans is the new term for the SLA Architect.  If you see the term Backup Plan, this is the equivalent of the SLA.
+A Backup Plan is a combination of a policy template (that defines what backup policies we use, when they are run and how long the resulting backup is retained) and a resource profile (that defines which appliance creates the backup and where it stores it).  We apply a backup plan to an application and backups start to get created.
+
+Note that Backup Plans is the new term for the SLA Architect.  If you see the term Backup Plan, this is the equivalent of what Actifio called an SLA.
 
 ## Backup Plan Application
 
-When we apply a backup plan (SLA) to an application we are protecting or manageing it.  To complete this task we need three things:
+When we apply a backup plan (SLA) to an application we are protecting or managing it.  To complete this task we need three things:
 * ```-appid xxx```      The Application ID
 * ```-sltid yyy```   The Policy template ID
 * ```-slpid zzz```   The Resource profile ID
@@ -729,6 +731,8 @@ Our import is now complete.
 
 # Billing
 
+Billing should be tracked in the relevant billing page of the Cloud Console.  This section is to help you understand what generated those bills.
+
 # Backup SKU Usage
 
 Usage for the Backup and DR Service is charged on a per GiB of protected application (front end) data.    Pricing is documented here:
@@ -755,7 +759,15 @@ If the SKU description is not listed then please open an Issue in GitHub and sha
 
 # Compute Engine Instances
 
+Compute Engine Instances and their backups are called different things depending on where you look:
+
+* GCE Instances - These are Compute Engine Instances
+* GCP Instances - These are Compute Engine Instances
+* PD Snapshots - These are backups of snapshots of the persistent disks used by Compute Engine Instances
+
 ## Compute Engine Cloud Credentials
+
+Cloud Credentials point to stored credentials for the Service Account that is used to create Compute Engine instance backups and then use them.
 
 ### Listing Cloud Credentials
 
