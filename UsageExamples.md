@@ -47,7 +47,7 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 **[SAP HANA](#sap-hana)**</br>
 **[SAP HANA Mount](#sap-hana-mount)**</br>
-**[SAP HANA](#sap-hana)**</br>
+**[SAP HANA Multi Mount](#sap-hana-multi-mount)**</br>
 
 **[SQL Server](#sql-server)**</br>
 **[SQL Server Mount](#sql-server-mount)**</br>
@@ -70,7 +70,7 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 > **Note**:   You cannot perform Sky appliance add and remove in Google Cloud Backup and DR.  This is for Actifio only.
 
-You may want to add or remove a Sky Appliance from AGM.   You can list all the Sky Appliances with this command:
+You may want to add or remove a Sky Appliance from the Web GUI.   You can list all the Sky Appliances with this command:
 ```
 Get-AGMAppliance | select id,name,ipaddress
 ```
@@ -473,7 +473,7 @@ In this scenario, a large number of VMs that were no longer required were remove
 Error 933 - Failed to find VM with matching BIOS UUID
 ```
 
-### 1)  Create a list of affected VMs using AGM PowerShell
+### 1)  Create a list of affected VMs
 
 First we need to create a list of affected VMs.  The simplest way to do this is to run these commands:
 
@@ -493,7 +493,7 @@ Now open your CSV file called missingvms.csv and go to the VMware administrator.
 Validate each VM is truly gone.
 Edit the CSV and remove any VMs you don't want to unprotect.   
  
-### 3) Unprotection script using AGM Powershell
+### 3) Unprotection script
 
 Because we have a CSV file of affected VMs we can run this simple PowerShell script. 
 
@@ -550,7 +550,7 @@ Output will be blank but the VMs will all be unprotected
 ### 4) Bulk deletion of the Applications
 
 If any of the Applications have images, it is not recommended you delete them, as this creates orphans apps and images.
-If you are determined to also delete them, run this script to delete the VMs from AGM and Appliances.
+If you are determined to also delete them, run this script to delete the VMs from the backup software.
 ```
 foreach ($app in $appstounmanage)
 { Remove-AGMApplication -appid $($app.appid) }
@@ -583,7 +583,7 @@ Get-AGMLibPolicies -advancedpolicysettings
 
 ## Importing and Exporting Policy Templates
 
-In this user story we are going to export our Policy Templates (also called Service Level Templates or SLTs) from AGM in case we want to import them into a different AGM.
+In this user story we are going to export our Policy Templates (also called Service Level Templates or SLTs) from the backup system in case we want to import them into a different one.
 
 First we validate our SLTs.
 
@@ -601,7 +601,7 @@ We now export all the SLTs to a file called export.json.  If we only want to exp
 ```
 Export-AGMLibSLT -all -filename export.json
 ```
-We now login to our target AGM
+We now login to our target Web GUI.
 
 We validate there are no Templates.   Currently this function expects there to be no templates in the target.  However if there are, as long as there are no name clashes, the import will still succeed.  In this example there are no templates in the target.
 ```
@@ -889,7 +889,7 @@ This command requires several inputs so first we explore how to get them.
 
 The best way to create the syntax for this command, at least for the first time you run it,  is to simply run the **New-AGMLibGCEConversion** command without any parameters.
 This starts what we called *guided mode* which will help you learn all the syntax to run the command.
-The guided menus will ask questions in roughly the same order as the menus appear in the AGM Web GUI.
+The guided menus will ask questions in roughly the same order as the menus appear in the Web GUI.
 The end result is you will get several choices:
 
 1. Run the command there and then
@@ -989,7 +989,7 @@ The goal is to offer a simplified way to manage failover from Production to DR w
 
 The best way to create the syntax for this command, at least for the first time you run it,  simply run the **New-AGMLibGCEConversion** command without any parameters.
 This starts what we called *guided mode* which will help you create the command.
-The guided menus will appear in roughly the same order as the menus appear in the AGM Web GUI.
+The guided menus will appear in roughly the same order as the menus appear in the Web GUI.
 The end result is you wil get two choices:
 
 1. Print out a simple command
@@ -1107,7 +1107,7 @@ We have two choices on how to handle this image:
 ```
  Remove-AGMMount Image_0021181  -d
 ```
-2. Preserve the image on GCP side. This command deletes the mounted image record on Actifio GO side but leaves the Compute Engine Instance on the GCP side. In the AGM GUI this is called forgetting the image.   You can see the only difference with the choice above is the -p for preserve.
+2. Preserve the image on GCP side. This command deletes the mounted image record on Actifio GO side but leaves the Compute Engine Instance on the GCP side. In the Web GUI this is called forgetting the image.   You can see the only difference with the choice above is the -p for preserve.
 ```
  Remove-AGMMount Image_0021181  -d -p
 ```
@@ -1125,7 +1125,7 @@ This video will help you understand how to use this command:   https://youtu.be/
 
 The best way to create the syntax for this command, at least for the first time you run it,  is to simply run the **New-AGMLibGCPInstance** command without any parameters.
 This starts what we called *guided mode* which will help you learn all the syntax to run the command.
-The guided menus will appear in roughly the same order as the menus appear in the AGM Web GUI.
+The guided menus will appear in roughly the same order as the menus appear in the Web GUI.
 The end result is you will get several choices:
 
 1. Run the command
@@ -1278,7 +1278,7 @@ One simple strategy is to run this command:
 ```
 Remove-AGMLibMount -gceinstanceforget
 ```
-This will remove the mounted info from AGM side, but leave the instances in place on Google Side.
+This will remove the mounted info from the backup side, but leave the instances in place on Google Side.
 Then on the Google Console side, keep or delete them as you wish.
 
 #### Monitoring the jobs created by a multi mount by creating an object
@@ -1395,11 +1395,11 @@ New-AGMLibGCEInstanceDiscovery -discoveryfile ./disco.csv -backup -usertag "corp
 ```
 3. How do I learn the names of the templates to use as values for the tags?    
 
-You can either look at Templates in the SLA Architect in AGM or run: **Get-AGMSLT**
+You can either look at Templates in the SLA Architect in Web GUI or run: **Get-AGMSLT**
 
-4. What if I don't want all instances to be added to AGM   
+4. What if I don't want all instances to be added?   
 
-This function has to add them all to ensure each instance is examined.   If you add them to AGM and then delete them from AGM, they won't be added back in a second run because an Actifio label with a value of **unmanaged** will be added to them.
+This function has to add them all to ensure each instance is examined.   If you add them then delete them, they won't be added back in a second run because an Actifio label with a value of **unmanaged** will be added to them.
 
 
 
@@ -1944,7 +1944,7 @@ New-AGMLibSAPHANAMount -appid 577110 -targethostname coe-hana-2 -dbsid "TGT" -us
 ```
 If you run ```New-AGMLibSAPHANAMount``` in guided mode, you can take the option to generate a CSV file.   This can be used to run New-AGMLibSAPHANAMultiMount
 
-## User Story: SAP HANA Database Multi Mount
+##  SAP HANA Multi Mount
 
 You can run ```New-AGMLibSAPHANAMount``` in guided mode and take the option to generate a CSV file.     You can then edit it to mount multiple new SAP HANA instances at once.   A sample file would look like this:
 ```
@@ -2011,7 +2011,7 @@ pathname
 --------
 DEMO-SQL-4
 ```
-Because applications can have images on multiple appliances, if we don't specify an Image name or Image ID, we need to tell AGM which appliance to use for the source image.   We do this specifying the clusterid of the relevant appliance with -mountapplianceid.   To learn the clusterids we run this command:
+Because applications can have images on multiple appliances, if we don't specify an Image name or Image ID, we need to tell the system which appliance to use for the source image.   We do this specifying the clusterid of the relevant appliance with -mountapplianceid.   To learn the clusterids we run this command:
 ```
 Get-AGMAppliance | select-object name,clusterid
 ```
@@ -2114,7 +2114,7 @@ The final command looks like this:
 New-AGMLibMSSQLMount -appid 884945 -mountapplianceid 1415071155 -label "test1" -targethostid 655169 -sqlinstance "SYDWINSQL5" -dbname "avtest77"
 ```
 
-Rather than learn the image ID, we can store the appid and mount appliance ID and then let AGM find the latest snapshot:
+Rather than learn the image ID, we can store the appid and mount appliance ID and then let the system find the latest snapshot:
 ```
 -appid 884945 -mountapplianceid 1415071155
 ```
@@ -2159,7 +2159,7 @@ To change migrate settings we can run:  **Set-AGMLibMSSQLMigrate** and follow th
 Set-AGMLibMSSQLMigrate -imageid 6860452 -copythreadcount 2 -frequency 2
 ```
 This syntax sets the copy threads to 2 and the frequency to 2 hours for Image ID 6860452.   You can learn the image ID with **Get-AGMLibActiveImage -i** or **Set-AGMLibMSSQLMigrate**
-This command is the same as using *Update Migration Frequency* in the Active Mounts panel of AGM.
+This command is the same as using *Update Migration Frequency* in the Active Mounts panel of the Web GUI.
 You can check the migration settings with a command like this:
 ```
 Get-AGMImage -id 6859821 | select-object migrate-frequency,migrate-copythreadcount,migrate-configured
@@ -2178,7 +2178,7 @@ If we decide to cancel the migrate we can run this command:
 Remove-AGMMigrate -imageid 6860452
 ```
 You can learn the image ID with **Get-AGMLibActiveImage -i** or **Set-AGMLibMSSQLMigrate**
-This command is the same as using *Cancel Migration* in the Active Mounts panel of AGM.
+This command is the same as using *Cancel Migration* in the Active Mounts panel of the Web GUI.
 
 ### Run an on-demand migration job
 
@@ -2187,7 +2187,7 @@ The frequency you set will determine how often migrate jobs are run.   You can r
 Start-AGMMigrate -imageid 56072427 
 ```
 This runs a migration job for Image ID 56072427.  You can learn the image ID with **Get-AGMLibActiveImage -i** or **Set-AGMLibMSSQLMigrate**
-This command is the same as using *Run Migration Job Now* in the Active Mounts panel of AGM.
+This command is the same as using *Run Migration Job Now* in the Active Mounts panel of the Web GUI.
 
 You can monitor this job with this command.  We need to know the App ID of the source application.  It will show both running and completed jobs
 ```
@@ -2208,7 +2208,7 @@ When you are ready to switch over, we need to run a finalize with this job:
 Start-AGMMigrate -imageid 56072427 -finalize
 ```
 This command runs a Finalize job for Image ID 56072427. You can learn the image ID with **Get-AGMLibActiveImage -i** or **Set-AGMLibMSSQLMigrate**
-This command is the same as using *Finalize Migration* in the Active Mounts panel of AGM.
+This command is the same as using *Finalize Migration* in the Active Mounts panel of the Web GUI.
 
 You can monitor this job with this command.  We need to know the App ID of the source application.  It will show both running and completed jobs
 ```
