@@ -66,7 +66,6 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 # Appliances
 
-
 ## Appliance add and remove
 
 > **Note**:   You cannot perform Sky appliance add and remove in Google Cloud Backup and DR.  This is for Actifio only.
@@ -175,7 +174,7 @@ time  frequency
 
 ## Appliance info and report commands
 
-> **Note**:   If you want to manage appliance parameters such as slots, use the **Get-AGMLibApplianceParameter** and **Set-AGMLibApplianceParameter** commands documented [here](https://github.com/Actifio/AGMPowerLib#user-story-appliance-parameter-management-and-slot-limits).
+> **Note**:   If you want to manage appliance parameters such as slots, use the **Get-AGMLibApplianceParameter** and **Set-AGMLibApplianceParameter** commands documented [here](#appliance-parameter-and-slot-management).
 
 You can run info and report commands on an appliance using AGMPowerCLI.  To do this we need to tell the Management Console which appliance to run the command on. So first learn your appliance ID with **Get-AGMAppliance**.  In this example the appliance we want to work with is ID 70194.
 ```
@@ -986,7 +985,7 @@ The goal is to offer a simplified way to manage failover from Production to DR w
 * The backup mechanism is to use VMware snapshots or System State backup
 * These images are created by an on-premises Backup Appliance and then replicated into cloud either in an OnVault pool or via StreamSnap.
 * DR occurs by issuing commands to the DR Appliance to create new Compute Engine Instance Instances (most likely after importing the OnVault images)
-* You may need to first run an OnVault import using this method: https://github.com/Actifio/AGMPowerLib#importing-onvault-images
+* You may need to first run an OnVault import using this [method](#image-import-from-onvault)
 
 The best way to create the syntax for this command, at least for the first time you run it,  simply run the **New-AGMLibGCEConversion** command without any parameters.
 This starts what we called *guided mode* which will help you create the command.
@@ -1065,21 +1064,19 @@ Once you understand the error you can manually learn the command like this, so y
 ($newrun | where-object {$_.result -ne "started"}).command
 ```
 
-
 #### Monitoring the jobs created by a multi mount by creating an object
 If you want to just see the output as each job is run, then add **-textoutput**
 
-The output will look like this:
 ```
 New-AGMLibGCEConversionMulti -instancelist april12test1.csv -textoutput
-
+```
+Output should look like this:
+```
 The following command encountered this error:       Instance Name already in use
 New-AGMLibGCEConversion -projectname project1 -machinetype n1-standard-2 -instancename "apr12test1centos1" -nic0network "https://www.googleapis.com/compute/v1/projects/project1/global/networks/actifioanz" -nic0subnet "https://www.googleapis.com/compute/v1/projects/project1/regions/australia-southeast1/subnetworks/australia" -region "australia-southeast1" -zone "australia-southeast1-a" -srcid "391360" -appname "Centos1" -serviceaccount "systemstaterecovery@project1.iam.gserviceaccount.com" -preferedsource onvault
 
 The following command started this job:  Job_0867154Optional[Job_0867154] to mount londonsky.c.project1.internal_Image_0499948 started
 New-AGMLibGCEConversion -projectname project1 -machinetype n1-standard-2 -instancename "apr12test1centos3" -nic0network "https://www.googleapis.com/compute/v1/projects/project1/global/networks/actifioanz" -nic0subnet "https://www.googleapis.com/compute/v1/projects/project1/regions/australia-southeast1/subnetworks/australia" -region "australia-southeast1" -zone "australia-southeast1-a" -srcid "391360" -appname "Centos3" -serviceaccount "systemstaterecovery@project1.iam.gserviceaccount.com" -preferedsource onvault
-
-
 ```
 
 ### Managing the mounted Compute Engine Instance Instance 
@@ -1087,7 +1084,9 @@ New-AGMLibGCEConversion -projectname project1 -machinetype n1-standard-2 -instan
 Once we have created a new GCP Instance from PD snapshot, there is no dependency on Actifio because the disks for the instance are all Persistent Disks rather than shared disks from an Actifio Storage Pool,  but the mount is still shown as an Active Image, which means it needs to be managed.   We can see the Active Images with this command:
 ```
 Get-AGMLibActiveImage
-
+```
+Output should look like this:
+```
 imagename        : Image_0021181
 apptype          : GCPInstance
 appliancename    : project1sky
@@ -1112,9 +1111,6 @@ We have two choices on how to handle this image:
 ```
  Remove-AGMMount Image_0021181  -d -p
 ```
-
-
-
 ## Compute Engine Instance Mount
 
 In this user story we are going to use Persistent Disk Snapshots to create a new Compute Engine Instance.  This will be done by using the following command:   **New-AGMLibGCPInstance**
@@ -1212,11 +1208,11 @@ You can specify any labels you want to supply for this new Compute Engine VM wit
 However if you add **-retainlabel true** then any labels that were used the Compute Engine Instance when the snapshot was created will be applied to the new VM.
 Lets imagine the original VM had a label:
 
-**bird:parrot** 
+```bird:parrot```
 
 and we specify the following:   
 
-**-retainlabel true -label "pet:cat,drink:milk"**  
+```-retainlabel true -label "pet:cat,drink:milk"```
 
 then the new VM will have all three labels (the two new ones and the retained one from the original VM).
 
@@ -1348,8 +1344,10 @@ When you run  **New-AGMLibGCEInstanceDiscovery** you have to specify one of thes
 
 An example run is as follows.  In the first zone, no new instances were found.  In the second zone, 3 were found and two protected.   A second run is made on each zone where more than 50 instances need to be processed (since we process 50 at a time).  The third zone had no new VMs.   
 ```
-> New-AGMLibGCEInstanceDiscovery -discoveryfile ./disco.csv -backup
-
+New-AGMLibGCEInstanceDiscovery -discoveryfile ./disco.csv -backup
+```
+Output should look like this:
+```
 count                : 0
 totalcount           : 0
 credentialid         : 6654
@@ -1495,6 +1493,9 @@ First we learn the expiration dates
 ```
 $images = Get-AGMImage -filtervalue appid=35590 | select backupname,expiration
 $images
+```
+Output should look like this:
+```
 
 backupname    expiration
 ----------    ----------
@@ -1505,15 +1506,22 @@ Image_0265223 2021-09-16 10:07:43
 We then change them all to a date prior to today and confirm they changed:
 ```
 foreach ($image in $images) { Set-AGMImage -imagename $image.backupname -expiration "2021-09-14" }
-
+```
+Output should look like this:
+```
 xml                            backupRest
 ---                            ----------
 version="1.0" encoding="UTF-8" backupRest
 version="1.0" encoding="UTF-8" backupRest
 version="1.0" encoding="UTF-8" backupRest
+```
 
+```
 $images = Get-AGMImage -filtervalue appid=35590 | select backupname,expiration
 $images
+```
+Output should look like this:
+```
 
 backupname    expiration
 ----------    ----------
@@ -1570,12 +1578,17 @@ Job_0185433 running          7 2022-11-11 09:18:44
 But the label has to be unique or you can end up in situation like this where we run a second job with the previously used label:
 ```
 New-AGMLibImage -appid 409016 -label "tinyrun1"
+```
+Output should look like this:
+```
 Running this command: New-AGMLibImage  -appid 409016 -policyid 425081 -label tinyrun1
 ```
 First we find the old job (because the new job has not started yet):
 ```
 Get-AGMJobStatus -filtervalue "label=tinyrun1" | select jobname,status,progress,startdate
-
+```
+Output should look like this:
+```
 jobname     status    progress startdate
 -------     ------    -------- ---------
 Job_0185433 succeeded          2022-11-11 09:18:44
@@ -1583,7 +1596,9 @@ Job_0185433 succeeded          2022-11-11 09:18:44
 Now we find the old job and the new job:
 ```
 Get-AGMJobStatus -filtervalue "label=tinyrun1" | select jobname,status,progress,startdate
-
+```
+Output should look like this:
+```
 jobname     status    progress startdate
 -------     ------    -------- ---------
 Job_0185358 running          7 2022-11-11 09:11:37
@@ -1609,6 +1624,9 @@ Start-AGMLibPolicy
 We then run our command, for instance:
 ```
 Start-AGMLibPolicy -policyid 6393 -backuptype dblog
+```
+Output should look like this:
+```
 Starting job for hostname: mysqlsource   appname: mysqlsource   appid: 51919 using: snap policyID: 6393 from SLTName: PDSnaps
 Starting job for hostname: mysqltarget   appname: mysqltarget   appid: 36104 using: snap policyID: 6393 from SLTName: PDSnaps
 Starting job for hostname: tiny   appname: tiny   appid: 35590 using: snap policyID: 6393 from SLTName: PDSnaps
@@ -1617,7 +1635,9 @@ Starting job for hostname: tiny   appname: tiny   appid: 35590 using: snap polic
 We can then monitor the jobs like this:
 ```
 Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
-
+```
+Output should look like this:
+```
 status  progress
 ------  --------
 running       97
@@ -1636,9 +1656,12 @@ $imagegrab = Get-AGMImage -filtervalue "sltname=FSSnaps_RW_OV&jobclass=OnVault"
 $imagegrab.count
 6
 ```
-3. Run a new OnVault job.  We get two jobs started.
+3. Run a new OnVault job. 
 ```
 Start-AGMLibPolicy -policyid 25627
+```
+Output should look like this. We get two jobs started.
+```
 Starting job for appid 20577 using cloud policy ID 25627 from SLT FSSnaps_RW_OV
 Starting job for appid 6965 using cloud policy ID 25627 from SLT FSSnaps_RW_OV
 ```
@@ -1669,9 +1692,6 @@ Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
 
 status progress
 ------ --------
-
-
-
 
 ```
 5. Count the images and ensure they went up by the number of apps.   Note that if expiration run at this time, this will confuse the issue.
@@ -1762,8 +1782,8 @@ Prior to beginning recovery efforts you may want to stop the scheduler and expir
 If you created Logical Groups this is one convenient way to manage this.   
 There are two commands you can use:
 
-* Get-AGMLibSLA      This command will list the Scheduler and Expiration status for all your apps, or if you use -appid or -slaid, for a specific app
-* Set-AGMLibSLA      This command will let you set the scheduler or Expiration status for all your apps, specific apps or specific Logical Groups.
+* ```Get-AGMLibSLA```      This command will list the Scheduler and Expiration status for all your apps, or if you use -appid or -slaid, for a specific app
+* ```Set-AGMLibSLA```      This command will let you set the scheduler or Expiration status for all your apps, specific apps or specific Logical Groups.
 
 #### Building a list of images
 First we build an object that contains a list of images.  For this we can use **Get-AGMLibImageRange** in a syntax like this, where in this example we get all images of filesystems created in the last day:
@@ -1801,7 +1821,9 @@ We need to define a single host to use as our mount target or an array of hosts.
 
 ```
 Get-AGMHost -filtervalue "hostname~mysql" | select id,hostname
-
+```
+Output should look like this:
+```
 id   hostname
 --   --------
 7376 mysqltarget
@@ -1875,9 +1897,6 @@ $org.resourcecollection
 ```
 Output will look like this:
 ```
-$org = Get-AGMOrg -orgid 526553
-$org.resourcecollection
-
 sltlist       : {108758}
 hostlist      : {442009, 460500}
 slplist       : {441943}
@@ -1910,6 +1929,9 @@ $org.resourcecollection.hostlist
 In this 'story' a user wants to mount a HANA database from the latest snapshot of a HANA Instance (HDB) to a host. Most aspects of the story are the same as above, however they need some more information to run their mount command. They learn the App ID of the HANA database where ```act``` is the name of the HANA database.
 ```
 Get-AGMLibApplicationID act |ft
+```
+Output should look like this:
+```
 
 id     friendlytype hostname   hostid appname appliancename applianceip applianceid  appliancetype managed
 --     ------------ --------   ------ ------- ------------- ----------- -----------  ------------- -------
@@ -1956,7 +1978,9 @@ The user finds the appID for the source DB
 
 ```
 Get-AGMLibApplicationID smalldb
-
+```
+Output should look like this:
+```
 id      friendlytype hostname appname appliancename applianceip  appliancetype managed
 --      ------------ -------- ------- ------------- -----------  ------------- -------
 5552336 SQLServer    hq-sql   smalldb sa-sky        172.24.1.180 Sky              True
@@ -1967,6 +1991,9 @@ The user validates the name of the target host:
 
 ```
 Get-AGMLibHostID demo-sql-4
+```
+Output should look like this:
+```
 
 id       hostname   osrelease                                    appliancename applianceip  appliancetype
 --       --------   ---------                                    ------------- -----------  -------------
@@ -1977,7 +2004,9 @@ The user validates the SQL instance name on the target host.  Because the user i
 
 ```
 Get-AGMApplication -filtervalue "hostname~demo-sql-4&apptype~instance" | select pathname
-
+```
+Output should look like this:
+```
 pathname
 --------
 DEMO-SQL-4
@@ -1998,7 +2027,9 @@ The user finds the running job:
 
 ```
 Get-AGMLibRunningJobs
-
+```
+Output should look like this:
+```
 jobname      jobclass   apptype         hostname                    appname               appid    appliancename startdate           progress targethost
 -------      --------   -------         --------                    -------               -----    ------------- ---------           -------- ----------
 Job_24358189 mount      SqlServerWriter hq-sql                      smalldb               5552336  sa-sky        2020-06-24 14:50:08       53 demo-sql-4
@@ -2008,7 +2039,9 @@ The user tracks the job to success:
 
 ```
 Get-AGMLibFollowJobStatus Job_24358189
-
+```
+Output should look like this:
+```
 jobname      status  progress queuedate           startdate           duration
 -------      ------  -------- ---------           ---------           --------
 Job_24358189 running       95 2020-06-24 14:49:33 2020-06-24 14:50:08 00:01:30
@@ -2023,7 +2056,9 @@ The user validates the mount exists:
 
 ```
 Get-AGMLibActiveImage
-
+```
+Output should look like this:
+```
 imagename      apptype         hostname        appname appid    mountedhostname childappname appliancename consumedsize label
 ---------      -------         --------        ------- -----    --------------- ------------ ------------- ------------ -----
 Image_24358189 SqlServerWriter hq-sql          smalldb 5552336  demo-sql-4      avtest       sa-sky                   0 test and dev made easy
@@ -2040,7 +2075,9 @@ Remove-AGMMount Image_24358189 -d
 The user confirms if the mount created a child app
 ```
 Get-AGMLibApplicationID avtest
-
+```
+Output should look like this:
+```
 id       friendlytype hostname   appname appliancename applianceip  appliancetype managed
 --       ------------ --------   ------- ------------- -----------  ------------- -------
 52410625 SQLServer    demo-sql-4 avtest  sa-sky        172.24.1.180 Sky             False
@@ -2056,7 +2093,9 @@ Presuming we know the name of our orphan app and the host it once lived on.  Cho
 
 ```
 get-agmimage -filtervalue appname=avdb1 | select id,host,consistencydate,backupname,jobclass | ft *
-
+```
+Output should look like this:
+```
 id      host                   consistencydate     backupname     jobclass
 --      ----                   ---------------     ----------     --------
 7397674 @{hostname=sydwinsql5} 2020-10-30 13:55:26 Image_10979893 snapshot
@@ -2124,7 +2163,9 @@ This command is the same as using *Update Migration Frequency* in the Active Mou
 You can check the migration settings with a command like this:
 ```
 Get-AGMImage -id 6859821 | select-object migrate-frequency,migrate-copythreadcount,migrate-configured
-
+```
+Output should look like this:
+```
 migrate-frequency migrate-copythreadcount migrate-configured
 ----------------- ----------------------- ------------------
                24                       4               True
@@ -2150,8 +2191,10 @@ This command is the same as using *Run Migration Job Now* in the Active Mounts p
 
 You can monitor this job with this command.  We need to know the App ID of the source application.  It will show both running and completed jobs
 ```
-/Users/anthonyv/Documents/github/AGMPowerLib> get-agmjobstatus -filtervalue "jobclass=Migrate&appid=884945" | select-object status,startdate,enddate | sort-object startdate
-
+get-agmjobstatus -filtervalue "jobclass=Migrate&appid=884945" | select-object status,startdate,enddate | sort-object startdate
+```
+Output should look like this:
+```
 status    startdate           enddate
 ------    ---------           -------
 succeeded 2020-10-09 14:41:55 2020-10-09 14:42:15
@@ -2169,8 +2212,10 @@ This command is the same as using *Finalize Migration* in the Active Mounts pane
 
 You can monitor this job with this command.  We need to know the App ID of the source application.  It will show both running and completed jobs
 ```
-/Users/anthonyv/Documents/github/AGMPowerLib> get-agmjobstatus -filtervalue "jobclass=Finalize&appid=884945" | select-object status,startdate,enddate | sort-object startdate
-
+Get-agmjobstatus -filtervalue "jobclass=Finalize&appid=884945" | select-object status,startdate,enddate | sort-object startdate
+```
+Output should look like this:
+```
 status    startdate           enddate
 ------    ---------           -------
 succeeded 2020-10-09 15:02:15 2020-10-09 15:04:06
@@ -2330,7 +2375,9 @@ The user finds the appID for the source DB
 
 ```
 Get-AGMLibApplicationID smalldb
-
+```
+Output should look like this:
+```
 id      friendlytype hostname appname appliancename applianceip  appliancetype managed
 --      ------------ -------- ------- ------------- -----------  ------------- -------
 5552336 SQLServer    hq-sql   smalldb sa-sky        172.24.1.180 Sky              True
@@ -2341,7 +2388,9 @@ We now get a list of images:
 
 ```
 Get-AGMLibImageDetails 5552336
-
+```
+Output should look like this:
+```
 backupname            jobclass     consistencydate     endpit
 ----------            --------     ---------------     ------
 Image_24351142        snapshot     2020-06-24 11:55:37 2020-06-25 15:07:16
@@ -2353,7 +2402,9 @@ The user runs a mount command specifying the source appid, target host and SQL I
 
 ```
 New-AGMLibMSSQLMount -imagename Image_24351142 -appid 5552336 -targethostname demo-sql-4 -label "test and dev made easy" -sqlinstance DEMO-SQL-4 -dbname avtest -recoverypoint "2020-06-23 16:00"
-
+```
+Output should look like this:
+```
 errormessage
 ------------
 Specified recovery point 2020-06-23 16:00 is earlier than image consistency date 2020-06-24 11:55:37.  Specify an earlier image.
@@ -2370,7 +2421,9 @@ In this 'story' a user wants to mount two databases from the latest snapshot of 
 
 ```
 Get-AGMLibApplicationID  HQ-SQL
-
+```
+Output should look like this:
+```
 id      friendlytype hostname appname appliancename applianceip  appliancetype managed
 --      ------------ -------- ------- ------------- -----------  ------------- -------
 5534398 SqlInstance  hq-sql   HQ-SQL  sa-sky        172.24.1.180 Sky              True
@@ -2379,7 +2432,9 @@ id      friendlytype hostname appname appliancename applianceip  appliancetype m
 We now learn the instance members:
 ```
 Get-AGMApplicationInstanceMember 5534398
-
+```
+Output should look like this:
+```
 rule            : exclude
 totaldb         : 9
 includecount    : 4
@@ -2395,7 +2450,9 @@ However the eligible list is not easy to read, so lets expand it and put it into
 
 ```
 Get-AGMApplicationInstanceMember 5534398 | Select-Object -ExpandProperty eligiblelist | ft
-
+```
+Output should look like this:
+```
 id       appname            apptype         srcid    sensitivity systemdb ispartofmemberrule appstate
 --       -------            -------         -----    ----------- -------- ------------------ --------
 5552340  ReportServer       SqlServerWriter 4810               0    False               True        0
@@ -2438,7 +2495,9 @@ slaid         : 6403030
 We run an on-demand snapshot of the child app (the mount) when we are ready to make that first bookmark:
 ```
 New-AGMLibImage -appid 6403028
-
+```
+Output should look like this:
+```
 jobname     status  queuedate           startdate
 -------     ------  ---------           ---------
 Job_9900142 running 2020-09-04 17:00:41 2020-09-04 17:00:41
@@ -2446,7 +2505,9 @@ Job_9900142 running 2020-09-04 17:00:41 2020-09-04 17:00:41
 The image is created quickly:
 ```
 Get-AGMLibLatestImage 6403028
-
+```
+Output should look like this:
+```
 appliance       : sydactsky1
 hostname        : sydwinsql5
 appname         : avtestrp10
@@ -2473,7 +2534,9 @@ Get-AGMLibRunningJobs | ft *
 We then monitor the job, it runs quickly as its a rewind
 ```
 Get-AGMLibFollowJobStatus Job_9900239
-
+```
+Output should look like this:
+```
 jobname   : Job_9900239
 status    : succeeded
 message   : Success
@@ -2534,7 +2597,9 @@ Now we have our image list, we can begin to create our recovery command.
 First we learn our vcenter host ID and set id:
 ```
 Get-AGMHost -filtervalue "isvcenterhost=true" | select id,hostname,srcid
-
+```
+Output should look like this:
+```
 id      hostname                  srcid
 --      --------                  -----
 5552172 scvmm.sa.actifio.com      4661
@@ -2546,7 +2611,9 @@ $vcenterid = 5552150
 Now learn your ESXHost IDs and make a simple array.  We need to choose ESX hosts thatr have datastores in common, because we are going to round robin across the ESX hosts and datastores.
 ```
 Get-AGMHost -filtervalue "isesxhost=true&vcenterhostid=4460" | select id,hostname
-
+```
+Output should look like this:
+```
 id       hostname
 --       --------
 26534616 sa-esx8.sa.actifio.com
@@ -2570,7 +2637,6 @@ $datastorelist
 IBM-FC-V3700
 Pure
 ```
-
 ### Run our multi-mount command
 
 We can now fire our new command using the VMware settings we defined and our image list:
@@ -2605,8 +2671,6 @@ You can just specify one esxhost ID with -esxhostid.   If you are using NFS data
 #### datastore vs datastorelist
 
 You can also specify a single datastore rather than a list.
-
-
 
 # Workflows
 
