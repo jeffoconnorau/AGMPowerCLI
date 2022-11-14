@@ -1946,7 +1946,7 @@ If you run ```New-AGMLibSAPHANAMount``` in guided mode, you can take the option 
 
 ##  SAP HANA Multi Mount
 
-You can run ```New-AGMLibSAPHANAMount``` in guided mode and take the option to generate a CSV file.     You can then edit it to mount multiple new SAP HANA instances at once.   A sample file would look like this:
+You can run ```New-AGMLibSAPHANAMount``` in guided mode and take the option to generate a CSV file which you can then edit it to mount multiple new SAP HANA instances at once.   A sample file would look like this:
 ```
 appid,appname,mountapplianceid,imagename,targethostid,dbsid,userstorekey,mountpointperimage,label,recoverypoint,mountmode,mapdiskstoallesxhosts,sltid,slpid
 835132,"act","144091747698","Image_0160795","749871","act","actbackup","/mount","label1","2022-11-07 17:00:39","nfs","false","108758","706611"
@@ -1967,7 +1967,10 @@ The following fields are optional:
 * ```mapdiskstoallesxhosts```  VMware only (are we mapping to all ESXi hosts)
 * ```sltid```  template ID if re-protection is requested. Learn this with ```Get-AGMSLT```
 * ```slpid```  profile ID if re-protection is requested. Learn this with ```Get-AGMSLP```
-
+To run the multi-mount you would use this command:
+```
+New-AGMLibSAPHANAMultiMount -instancelist sapmount.csv
+```
 # SQL Server
 
 ## SQL Server Mount
