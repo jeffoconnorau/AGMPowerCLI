@@ -16,8 +16,8 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 **[Displaying Backup Plan Policies](#displaying-backup-plan-policies)**</br>
 **[Importing and Exporting Policy Templates](#importing-and-exporting-policy-templates)**</br>
 
-**[Billing]**</br>
-**[Display Backup SKU Usage](#displaying-backup-sku-usage)**</br>
+**[Billing](#billing)**</br>
+**[Display Backup SKU Usage](#display-backup-sku-usage)**</br>
 
 **[Compute Engine Instances](#compute-engine-instances)**<br>
 **[Compute Engine Cloud Credentials](#compute-engine-cloud-credentials)**<br>
@@ -69,9 +69,9 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 ## Appliance add and remove
 
-> **Note**:   You cannot perform appliance add and remove in Google Cloud Backup and DR.  This is for Actifio AGM only.
+> **Note**:   You cannot perform Sky appliance add and remove in Google Cloud Backup and DR.  This is for Actifio only.
 
-You may want to add or remove an Appliance from AGM.   You can list all the Appliances with this command:
+You may want to add or remove a Sky Appliance from AGM.   You can list all the Sky Appliances with this command:
 ```
 Get-AGMAppliance | select id,name,ipaddress
 
@@ -80,7 +80,7 @@ id    name       ipaddress
 7286  backupsky1 10.194.0.20
 45408 backupsky2 10.194.0.38
 ```
-We can then remove the Appliance by specifying the ID of the appliance with this command:
+We can then remove the Sky Appliance by specifying the ID of the appliance with this command:
 ```
 Remove-AGMAppliance 45408
 Get-AGMAppliance | select id,name,ipaddress
@@ -89,7 +89,7 @@ id   name       ipaddress
 --   ----       ---------
 7286 backupsky1 10.194.0.20
 ```
-We can add the Appliance back with this command.  Note we can do a dryrun to make sure the add will work, but you don't need to.  The main thing with a dry run is we need to see an approval token because that is key to actually adding the appliance.  
+We can add the Sky Appliance back with this command.  Note we can do a dryrun to make sure the add will work, but you don't need to.  The main thing with a dry run is we need to see an approval token because that is key to actually adding the appliance.  
 ```
 New-AGMAppliance -ipaddress 10.194.0.38 -username admin -password password -dryrun | select-object approvaltoken,cluster,report
 
@@ -374,11 +374,6 @@ Set-AGMLibApplianceParameter -applianceid 361153 -param reservedsnapslots -value
 Set-AGMLibApplianceParameter -applianceid 361153 -param maxsnapslots -value 15
 Set-AGMLibApplianceParameter -applianceid 361153 -param unreservedslots -value 15
 ```
-
-
-
-
-
 ## Appliance timezone
 To display Appliance timezone, learn the appliance ID and then query the relevant appliance:
 ```
@@ -415,8 +410,6 @@ timezone
 --------
 Australia/Sydney
 ```
-
-
 # Applications
 
 ## Application bulk unprotection
