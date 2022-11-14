@@ -72,19 +72,21 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 > **Note**:   You cannot perform Sky appliance add and remove in Google Cloud Backup and DR.  This is for Actifio only.
 
 You may want to add or remove a Sky Appliance from AGM.   You can list all the Sky Appliances with this command:
-```
-Get-AGMAppliance | select id,name,ipaddress
 
+```Get-AGMAppliance | select id,name,ipaddress```
+
+Output should look like this:
+```
 id    name       ipaddress
 --    ----       ---------
 7286  backupsky1 10.194.0.20
 45408 backupsky2 10.194.0.38
 ```
 We can then remove the Sky Appliance by specifying the ID of the appliance with this command:
-```
-Remove-AGMAppliance 45408
-Get-AGMAppliance | select id,name,ipaddress
 
+```Remove-AGMAppliance 45408```
+```Get-AGMAppliance | select id,name,ipaddress```
+```
 id   name       ipaddress
 --   ----       ---------
 7286 backupsky1 10.194.0.20
