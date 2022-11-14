@@ -83,10 +83,10 @@ id    name       ipaddress
 45408 backupsky2 10.194.0.38
 ```
 We can then remove the Sky Appliance by specifying the ID of the appliance with this command:
-
 ```
 Remove-AGMAppliance 45408
 ```
+We list the appliances with:
 ```
 Get-AGMAppliance | select id,name,ipaddress
 ```
@@ -106,7 +106,7 @@ approvaltoken          cluster                                                  
 -------------          -------                                                      ------
 05535A005F051E00480608 @{clusterid=141925880424; ipaddress=10.194.0.38; masterid=0} {"errcode":0,"summary":"Objects to be imported:\n\t.....
 ```
-This is the same command but without the dryrun.   After the command finishes, we list the Appliances to see our new one has been added:
+This is the same command but without the dryrun:
 ```
 New-AGMAppliance -ipaddress 10.194.0.38 -username admin -password password  | select-object cluster,report
 ```
@@ -116,6 +116,7 @@ cluster                                                                         
 -------                                                                                                               ------
 @{id=45582; href=https://10.194.0.3/actifio/cluster/45582; clusterid=141925880424; ipaddress=10.194.0.38; masterid=0} {"errcode":0,"summary"...
 ```
+We list the appliances with:
 ```
 Get-AGMAppliance | select id,name,ipaddress
 ```
@@ -131,7 +132,9 @@ id    name       ipaddress
 To set the start time when auto discovery runs (instead of the default 2am), first learn the appliance ID:
 ```
 Get-AGMAppliance | select id,name
-
+```
+Output should look like this:
+```
 id     name
 --     ----
 591780 backup-server-67154
@@ -141,6 +144,9 @@ Display if an existing schedule is set (if no schedule is shown, then the defaul
 ```
 $applianceid = 406219
 Get-AGMAPIApplianceInfo -applianceid $applianceid -command getschedule -arguments "name=autodiscovery"
+```
+Output should look like this:
+```
 time  frequency
 ----  ---------
 10:00 daily
@@ -149,13 +155,19 @@ To set the schedule use the following syntax.  In this example we set it to 9am 
 ```
 $applianceid = 406219
 Set-AGMAPIApplianceTask -applianceid $applianceid -command setschedule -arguments "name=autodiscovery&frequency=daily&time=09:00"
-
+```
+Output should look like this:
+```
 status
 ------
      0
-
+```
+Check schedule with this command:
+```
 Get-AGMAPIApplianceInfo -applianceid $applianceid -command getschedule -arguments "name=autodiscovery"
-
+```
+Output should look like this:
+```
 time  frequency
 ----  ---------
 09:00 daily
@@ -168,7 +180,9 @@ time  frequency
 You can run info and report commands on an appliance using AGMPowerCLI.  To do this we need to tell the Management Console which appliance to run the command on. So first learn your appliance ID with **Get-AGMAppliance**.  In this example the appliance we want to work with is ID 70194.
 ```
 Get-AGMAppliance | select id,name
-
+```
+Output should look like this:
+```
 id     name
 --     ----
 406219 backup-server-29736
@@ -178,7 +192,9 @@ id     name
 We can use **Get-AGMAPIApplianceInfo** to send info (also known as udsinfo) commands.   In this example we send the **udsinfo lshost** command to the appliance with ID 70194.
 ```
 Get-AGMAPIApplianceInfo -applianceid 70194 -command lshost | select id,hostname
-
+```
+Output should look like this:
+```
 id     hostname
 --     --------
 16432  tiny
@@ -199,7 +215,9 @@ Get-AGMAPIApplianceInfo -applianceid 70194 -command lshost -arguments "filterval
 We can use **Get-AGMAPIApplianceReport** to send report commands.  If you want to know which commands you can send, start with *reportlist*.
 ```
 Get-AGMAPIApplianceReport -applianceid 70194 -command reportlist
-
+```
+Output should look like this:
+```
 ReportName             ReportFunction                                                                           RequiredRoleRights
 ----------             --------------                                                                           ------------------
 reportadvancedsettings Show all Advanced policy options that have been set                                      AdministratorRole
@@ -207,7 +225,9 @@ reportadvancedsettings Show all Advanced policy options that have been set      
 In this example we run the *reportapps* command:
 ```
 Get-AGMAPIApplianceReport -applianceid 70194 -command reportapps | select hostname,appname,"MDLStat(GB)"
-
+```
+Output should look like this:
+```
 HostName      AppName            MDLStat(GB)
 --------      -------            -----------
 tiny          tiny               20.000
@@ -228,7 +248,9 @@ winsrv2019-2  WinSrv2019-2       36.062
 We then send an argument of **-a tiny** to restrict the output to applications with a name of **tiny**
 ```
 Get-AGMAPIApplianceReport -applianceid 70194 -command reportapps -arguments "-a tiny" | select hostname,appname,"MDLStat(GB)"
-
+```
+Output should look like this:
+```
 HostName AppName MDLStat(GB)
 -------- ------- -----------
 tiny     tiny    20.000
@@ -256,14 +278,20 @@ Get-AGMLibApplianceParameter
 If you have multiple appliances then learn the appliance ID of the relevant appliance and then use that ID, like this:
 ```
 Get-AGMAppliance | select id,name
-
+```
+Output should look like this:
+```
 id     name
 --     ----
 406219 backup-server-29736
 406230 backup-server-32142
-
+```
+Now get the parameters for your selected appliance:
+```
 Get-AGMLibApplianceParameter -applianceid 406219
-
+```
+Output should look like this:
+```
 enableexpiration                      : 1
 < output truncated>
 ```
@@ -310,7 +338,9 @@ To manage this we can adjust what are called slot values.  Note that while we ar
 Firstly learn the ID of the relevant Appliance.  In this case the appliance running our jobs is **project1sky** so we will use applianceid **361153**
 ```
 Get-AGMAppliance | select id,name
-
+```
+Output should look like this:
+```
 id     name
 --     ----
 361153 project1sky
@@ -333,7 +363,9 @@ Get-AGMLibApplianceParameter -applianceid 361153 -param unreservedslots
 Here is an example:
 ```
 Get-AGMLibApplianceParameter -applianceid 361153 -param reserveddataaccessslots
-
+```
+Output should look like this:
+```
 reservedondemandslots
 ---------------------
 3
@@ -347,7 +379,9 @@ Set-AGMLibApplianceParameter -applianceid 361153 -param unreservedslots -value 1
 Here is an example:
 ```
 Set-AGMLibApplianceParameter -applianceid 361153 -param reserveddataaccessslots -value 10
-
+```
+Output should look like this:
+```
 reservedondemandslots changed from 3 to 10
 ```
 #### Slot limits for OnVault jobs
@@ -390,14 +424,18 @@ Set-AGMLibApplianceParameter -applianceid 361153 -param unreservedslots -value 1
 To display Appliance timezone, learn the appliance ID and then query the relevant appliance:
 ```
 Get-AGMAppliance | select id,name
-
+```
+Output should look like this:
+```
 id     name
 --     ----
 591780 backup-server-67154
 406219 backup-server-29736
 
 Get-AGMAppliance 406219 | select timezone
-
+```
+Output should look like this:
+```
 timezone
 --------
 UTC
@@ -408,7 +446,9 @@ To set Appliance timezone, use the following syntax, making sure to specify a va
 $timezone = "Australia/Sydney"
 $applianceid = 406219
 Set-AGMAPIApplianceTask -applianceid $applianceid -command "chcluster" -arguments "timezone=$timezone&argument=11"
-
+```
+Output should look like this:
+```
 status
 ------
      0
@@ -417,7 +457,9 @@ status
 Now wait 3 minutes (this takes a little time to update).   If you see the old timezone, please wait a little longer.
 ```
 Get-AGMAppliance 406219 | select timezone
-
+```
+Output should look like this:
+```
 timezone
 --------
 Australia/Sydney
@@ -460,7 +502,9 @@ Import the list and validate the import worked by displaying the imported variab
 ```
 $appstounmanage = Import-Csv -Path .\missingvms.csv
 $appstounmanage
-
+```
+Output should look like this:
+```
 appname      appid
 -------      --
 duoldapproxy 655601
@@ -542,12 +586,10 @@ Get-AGMLibPolicies -advancedpolicysettings
 
 In this user story we are going to export our Policy Templates (also called Service Level Templates or SLTs) from AGM in case we want to import them into a different AGM.
 
-First we login to the source AGM and validate our SLTs.
+First we validate our SLTs.
 
 ```
-PS /Users/avw> Connect-AGM 10.152.0.5 admin -passwordfile userpass.key -i
-Login Successful!
-PS /Users/avw> Get-AGMSLT | select id,name
+Get-AGMSLT | select id,name
 
 id    name
 --    ----
@@ -558,41 +600,42 @@ id    name
 ```
 We now export all the SLTs to a file called export.json.  If we only want to export specific SLTs, then don't specify **-all** and you will get a help menu.
 ```
-PS /Users/avw> Export-AGMLibSLT -all -filename export.json
+Export-AGMLibSLT -all -filename export.json
 ```
-We now login to our target AGM:
-```
-PS /Users/avw> connect-agm 10.194.0.3 admin -passwordfile userpass.key -i
-Login Successful!
-```
+We now login to our target AGM
+
 We validate there are no Templates.   Currently this function expects there to be no templates in the target.  However if there are, as long as there are no name clashes, the import will still succeed.  In this example there are no templates in the target.
 ```
-PS /Users/avw> Get-AGMSLT
-
+Get-AGMSLT
+```
+Output should look like this:
+```
 count items
 ----- -----
     0 {}
-
-PS /Users/avw>
 ```
 We now import the Templates and then validate we now have four imported SLTs:
 ```
-PS /Users/avw> Import-AGMLibSLT -filename export.json
-
+Import-AGMLibSLT -filename export.json
+```
+Output should look like this:
+```
 count items
 ----- -----
     4 {@{@type=sltRest; id=21067; href=https://10.194.0.3/actifio/slt/21067; name=FSSnaps_RW_OV; override=true; policy_href=https://10.194.0.3/actifio/slt/21067/policy}, @{@type=sltRest; id=21070; href=https://10.194.0.3/acti…
-
-PS /Users/avw> Get-AGMSLT | select id,name
-
+```
+We check what happened:
+```
+Get-AGMSLT | select id,name
+```
+Output should look like this:
+```
 id    name
 --    ----
 21081 PDSnaps
 21072 Snap2OV
 21070 FSSnaps
 21067 FSSnaps_RW_OV
-
-PS /Users/avw>
 ```
 Our import is now complete.
 
@@ -629,8 +672,10 @@ If the SKU description is not listed then please open an Issue in GitHub and sha
 ### Listing Cloud Credentials
 
 ```
-PS /Downloads> Get-AGMCredential
-
+Get-AGMCredential
+```
+Output should look like this:
+```
 @type          : cloudCredentialRest
 id             : 218150
 href           : https://10.152.0.5/actifio/cloudcredential
@@ -646,8 +691,10 @@ serviceaccount : avwlabowner@avwlab2.iam.gserviceaccount.com
 
 
 ```
-PS /Downloads> New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824"
-
+New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824"
+```
+Output should look like this:
+```
 @type          : cloudCredentialRest
 id             : 219764
 href           : https://10.152.0.5/actifio/cloudcredential
@@ -662,7 +709,7 @@ serviceaccount : avw-gcsops@glabco.iam.gserviceaccount.com
 
 Situation where key cannot manage project
 ```
-PS /Downloads> New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824" -projectid glabco1
+New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824" -projectid glabco1
 
 @type                    errors
 -----                    ------
@@ -670,7 +717,7 @@ testCredentialResultRest {@{errorcode=4000; errormsg=No privileges for project o
 ```
 Duplicate name
 ```
-PS /Downloads> New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824"
+New-AGMCredential -name test -filename ./glabco-4b72ba3d6a69.json -zone australia-southeast1-c -clusterid "144292692833,145759989824"
 
 err_code err_message
 -------- -----------
@@ -687,12 +734,14 @@ You can also use this command to update the default zone or the credential name 
 
 ### Deleting a Cloud Credential
 ```
-PS /Downloads> Remove-AGMCredential -credentialid 219764 -applianceid "145759989824,144292692833"
+Remove-AGMCredential -credentialid 219764 -applianceid "145759989824,144292692833"
 ```
 Update existing credential with new key and change its name
 ```
-PS /Downloads> Set-AGMCredential -id 219764  -name test1 -filename ./glabco-4b72ba3d6a69.json
-
+Set-AGMCredential -id 219764  -name test1 -filename ./glabco-4b72ba3d6a69.json
+```
+Output should look like this:
+```
 @type          : cloudCredentialRest
 id             : 219764
 href           : https://10.152.0.5/actifio/cloudcredential
@@ -734,7 +783,9 @@ $discovery.items.vm | select vmname,instanceid
 For example:
 ```
 $discovery.items.vm | select vmname,instanceid
-
+```
+Output should look like this:
+```
 vmname      instanceid
 ------      ----------
 consoletest 4240202854121875692
@@ -743,7 +794,9 @@ agm         6655459695622225630
 The total number of VMs that were found and the total number fetched will be different.  In this example, 57 VMs can be found, but only 50 were fetched as the limit defaults to 50:
 ```
 Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid avwlab2
-
+```
+Output should look like this:
+```
 count items                             totalcount
 ----- -----                             ----------
    50 {@{vm=}, @{vm=}, @{vm=}, @{vm=}…}         57
@@ -751,7 +804,9 @@ count items                             totalcount
 By setting the limit to 60 we now fetch all 57 VMs:
 ```
 Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid avwlab2 -limit 60
-
+```
+Output should look like this:
+```
 count items                             totalcount
 ----- -----                             ----------
    57 {@{vm=}, @{vm=}, @{vm=}, @{vm=}…}         57
@@ -761,7 +816,9 @@ count items                             totalcount
 Or we could fetch the first 50 in one command and then in a second command, set an offset of 1, which will fetch all VMs from 51 onwards (offset it added to limit to denote the starting point).  In this example we fetch the remaining 7 VMs (since the limit is 50):
 ```
 Get-AGMCloudVM -credentialid 35548 -clusterid 144292692833 -projectid avwlab2 -limit 50 -offset 1
-
+```
+Output should look like this:
+```
 count items                             totalcount
 ----- -----                             ----------
     7 {@{vm=}, @{vm=}, @{vm=}, @{vm=}…}         57
@@ -786,7 +843,9 @@ Get-AGMApplication -filtervalue appname=bastion
 The term we look for is “Managed” = True 
 ```
 Get-AGMApplication -filtervalue apptype=GCPInstance | select appname,apptype,managed,id, @{N='sltid'; E={$_.sla.slt.id}}, @{N='slpid'; E={$_.sla.slp.id}} | ft
-
+```
+Output should look like this:
+```
 appname     apptype     managed id     sltid slpid
 -------     -------     ------- --     ----- -----
 consoletest GCPInstance   False 224079
@@ -1567,61 +1626,61 @@ running       98
 Your logic would work like this:
 1. Count the relevant apps.  In this example we have 2.
 ```
-PS /tmp/agmpowercli> $appgrab = Get-AGMApplication -filtervalue "sltname=FSSnaps_RW_OV"
-PS /tmp/agmpowercli> $appgrab.count
+$appgrab = Get-AGMApplication -filtervalue "sltname=FSSnaps_RW_OV"
+$appgrab.count
 2
 ```
 2. Count the current images.  We currently have 6 OnVault images.
 ```
-PS /tmp/agmpowercli> $imagegrab = Get-AGMImage -filtervalue "sltname=FSSnaps_RW_OV&jobclass=OnVault"
-PS /tmp/agmpowercli> $imagegrab.count
+$imagegrab = Get-AGMImage -filtervalue "sltname=FSSnaps_RW_OV&jobclass=OnVault"
+$imagegrab.count
 6
 ```
 3. Run a new OnVault job.  We get two jobs started.
 ```
-PS /tmp/agmpowercli> Start-AGMLibPolicy -policyid 25627
+Start-AGMLibPolicy -policyid 25627
 Starting job for appid 20577 using cloud policy ID 25627 from SLT FSSnaps_RW_OV
 Starting job for appid 6965 using cloud policy ID 25627 from SLT FSSnaps_RW_OV
 ```
 4.  Scan for running jobs until they all finish
 ```
-PS /tmp/agmpowercli> Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
+Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
 
 status             progress
 ------             --------
 queued                    0
 queued (readiness)        0
 
-PS /tmp/agmpowercli> Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
+Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
 
 status  progress
 ------  --------
 running        2
 running        2
 
-PS /tmp/agmpowercli> Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
+Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
 
 status    progress
 ------    --------
 running         98
 succeeded      100
 
-PS /tmp/agmpowercli> Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
+Get-AGMJob -filtervalue "policyname=OndemandOV" | select status,progress
 
 status progress
 ------ --------
 
 
-PS /tmp/agmpowercli>
+
 
 ```
 5. Count the images and ensure they went up by the number of apps.   Note that if expiration run at this time, this will confuse the issue.
 You can see here we went from 6 to 8.
 ```
-PS /tmp/agmpowercli> $imagegrab = Get-AGMImage -filtervalue "sltname=FSSnaps_RW_OV&jobclass=OnVault"
-PS /tmp/agmpowercli> $imagegrab.count
+$imagegrab = Get-AGMImage -filtervalue "sltname=FSSnaps_RW_OV&jobclass=OnVault"
+$imagegrab.count
 8
-PS /tmp/agmpowercli>
+
 ```
 
 ## Image Import from OnVault
@@ -1657,9 +1716,6 @@ If you want to monitor the import, add **-monitor** to the command:
 Import-AGMLibOnVault -diskpoolid 199085 -applianceid 1415019931 -monitor
 ```
 Note you can also add **-forget** to forget learned images, or **-owner** to take ownership of those images.
-
-
-
 
 ## Image restore
 For the vast bulk of application types where we want to restore the application type the main thing we need is the image ID that will be used.
@@ -1744,14 +1800,14 @@ Now we have our image list, we can begin to create our recovery command.
 We need to define a single host to use as our mount target or an array of hosts.
 
 ```
-PS /tmp/agmpowerlib> Get-AGMHost -filtervalue "hostname~mysql" | select id,hostname
+Get-AGMHost -filtervalue "hostname~mysql" | select id,hostname
 
 id   hostname
 --   --------
 7376 mysqltarget
 6915 mysqlsource
 
-PS /tmp/agmpowerlib> $hostlist = @(7376,6915)
+$hostlist = @(7376,6915)
 ```
 We could also define a specific host like this:
 ```
@@ -1793,10 +1849,6 @@ However we could update a large number of images with this command:
 ```
 Set-AGMLibImage
 ```
-
-
-
-
 # Organizations
 
 ## Organization Creation
