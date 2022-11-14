@@ -508,19 +508,18 @@ Usage examples are in a separate document that you will find [here](UsageExample
 
 The following examples were all moved from the Readme to the Usage Examples page but are here in case you bookmarked them:
 
-#### [User Story: Bulk unprotection of VMs](UsageExamples.md#backup-plan-removal-in-bulk)
-#### [User Story: Managing Protection of a GCP VM](UsageExamples.md#compute-engine-instance-management)
-#### [User Story: Managing GCP Cloud Credentials](UsageExamples.md#compute-engine-instances)
 #### [User Story: Adding GCP Instances](UsageExamples.md#compute-engine-instance-discovery)
-#### [User Story: Bulk expiration](UsageExamples.md#image-expiration)
 #### [User Story: Appliance management](UsageExamples.md#appliance-add-and-remove)
+#### [User Story: Bulk expiration](UsageExamples.md#image-expiration)
+#### [User Story: Bulk unprotection of VMs](UsageExamples.md#backup-plan-removal-in-bulk)
 #### [User Story: Consistency Group management](UsageExamples.md#consistency-group-management)
+#### [User Story: Managing GCP Cloud Credentials](UsageExamples.md#compute-engine-instances)
+#### [User Story: Managing Protection of a GCP VM](UsageExamples.md#compute-engine-instance-management)
+#### [User Story: Org Creation](UsageExamples.md#organization-creation)
+#### [User Story: Restoring an Application](UsageExamples.md#image-restore)
 #### [User Story: Running appliance info and report commands](UsageExamples.md#appliance-info-and-report-commands)
 #### [User Story: Setting Appliance timezone](UsageExamples.md#appliance-timezone)
 #### [User Story: Setting Appliance discovery schedule](UsageExamples.md#appliance-discovery-schedule)
-#### [User Story: Org Creation](UsageExamples.md#organization-creation)
-#### [User Story: Restoring an Application](UsageExamples.md#image-restore)
-
 
 ## Contributing
 Have a patch that will benefit this project? Awesome! Follow these steps to have
