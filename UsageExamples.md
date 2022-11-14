@@ -480,7 +480,7 @@ If you wish to know which policies are using enforced retention use this command
 ```
 Get-AGMLibPolicies -enforcedretention
 ```
-If you wish to know where your compute engine instance snapshots are going use this command:
+If you wish to know where your Compute Engine instance snapshots are going use this command:
 ```
 Get-AGMLibPolicies -snapshotlocation
 ```
@@ -492,9 +492,9 @@ Get-AGMLibPolicies -advancedpolicysettings
 ## Backup Plan Application
 
 When we apply a backup plan (SLA) to an application we are protecting or manageing it.  To complete this task we need three things:
-* appid:  The Application ID
-* sltid:  The Policy template ID
-* slpid:  The backup profil ID
+* ```-appid xxx```      The Application ID
+* ```-sltid yyy```   The Policy template ID
+* ```-slpid zzz```   The Resource profile ID
 
 In this example the application name is ```bastion``` so we find the Application ID with this command, confirming the apptype is correct and that it is currently being protected (managed=true):
 ```
