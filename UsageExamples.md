@@ -72,9 +72,9 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 > **Note**:   You cannot perform Sky appliance add and remove in Google Cloud Backup and DR.  This is for Actifio only.
 
 You may want to add or remove a Sky Appliance from AGM.   You can list all the Sky Appliances with this command:
-
-```Get-AGMAppliance | select id,name,ipaddress```
-
+```
+Get-AGMAppliance | select id,name,ipaddress
+```
 Output should look like this:
 ```
 id    name       ipaddress
@@ -84,8 +84,13 @@ id    name       ipaddress
 ```
 We can then remove the Sky Appliance by specifying the ID of the appliance with this command:
 
-```Remove-AGMAppliance 45408```
-```Get-AGMAppliance | select id,name,ipaddress```
+```
+Remove-AGMAppliance 45408
+```
+```
+Get-AGMAppliance | select id,name,ipaddress
+```
+Output should look like this:
 ```
 id   name       ipaddress
 --   ----       ---------
@@ -94,7 +99,9 @@ id   name       ipaddress
 We can add the Sky Appliance back with this command.  Note we can do a dryrun to make sure the add will work, but you don't need to.  The main thing with a dry run is we need to see an approval token because that is key to actually adding the appliance.  
 ```
 New-AGMAppliance -ipaddress 10.194.0.38 -username admin -password password -dryrun | select-object approvaltoken,cluster,report
-
+```
+Output should look like this:
+```
 approvaltoken          cluster                                                      report
 -------------          -------                                                      ------
 05535A005F051E00480608 @{clusterid=141925880424; ipaddress=10.194.0.38; masterid=0} {"errcode":0,"summary":"Objects to be imported:\n\t.....
@@ -102,19 +109,22 @@ approvaltoken          cluster                                                  
 This is the same command but without the dryrun.   After the command finishes, we list the Appliances to see our new one has been added:
 ```
 New-AGMAppliance -ipaddress 10.194.0.38 -username admin -password password  | select-object cluster,report
-
+```
+Output should look like this:
+```
 cluster                                                                                                               report
 -------                                                                                                               ------
 @{id=45582; href=https://10.194.0.3/actifio/cluster/45582; clusterid=141925880424; ipaddress=10.194.0.38; masterid=0} {"errcode":0,"summary"...
-
+```
+```
 Get-AGMAppliance | select id,name,ipaddress
-
+```
+Output should look like this:
+```
 id    name       ipaddress
 --    ----       ---------
 45582 backdrsky2 10.194.0.38
 7286  backupsky1 10.194.0.20
-
-
 ```
 ## Appliance discovery schedule
 
