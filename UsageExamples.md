@@ -17,7 +17,7 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 **[Importing and Exporting Policy Templates](#importing-and-exporting-policy-templates)**</br>
 
 **[Billing](#billing)**</br>
-**[Display Backup SKU Usage](#display-backup-sku-usage)**</br>
+**[Backup SKU Usage](#backup-sku-usage)**</br>
 
 **[Compute Engine Instances](#compute-engine-instances)**<br>
 **[Compute Engine Cloud Credentials](#compute-engine-cloud-credentials)**<br>
@@ -722,7 +722,7 @@ Our import is now complete.
 
 # Billing
 
-# Display Backup SKU Usage
+# Backup SKU Usage
 
 Usage for the Backup and DR Service is charged on a per GiB of protected application (front end) data.    Pricing is documented here:
 https://cloud.google.com/backup-disaster-recovery/pricing
