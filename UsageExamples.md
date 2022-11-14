@@ -33,9 +33,9 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 **[Consistency Group Management](#consistency-group-management)**<br>
 
 **[Images](#images)**<br>
-**[Image expiration](#image-expiration)**<br>
 **[Image creation with an On-Demand Job](#image-creation-with-an-ondemand-job)**<br>
 **[Image creation in bulk using policy ID](#image-creation-in-bulk-using-policy-id)**<br>
+**[Image Expiration In Bulk](#image-expiration-in-bulk)**<br>
 **[Image import from OnVault](#image-import-from-onvault)**<br>
 **[Image restore](#image-restore)**<br>
 
@@ -126,7 +126,7 @@ id    name       ipaddress
 45582 backdrsky2 10.194.0.38
 7286  backupsky1 10.194.0.20
 ```
-## Appliance discovery schedule
+## Appliance Discovery Schedule
 
 To set the start time when auto discovery runs (instead of the default 2am), first learn the appliance ID:
 ```
@@ -172,7 +172,7 @@ time  frequency
 09:00 daily
 ```
 
-## Appliance info and report commands
+## Appliance Info And Report Commands
 
 > **Note**:   If you want to manage appliance parameters such as slots, use the **Get-AGMLibApplianceParameter** and **Set-AGMLibApplianceParameter** commands documented [here](#appliance-parameter-and-slot-management).
 
@@ -1535,83 +1535,6 @@ Remove-AGMConsistencyGroup 353953
 
 # Images
 
-## Image expiration
-
-You may have a requirement to expire large numbers of images at one time.   One way to approach this is to use the Remove-AGMImage command in a loop. However this may fail as shown in the example below.  The issue is that the first expiration job is still running while you attempt to execute the following jobs, which causes a collission:
-```
-$images = Get-AGMImage -filtervalue appid=35590 | select backupname
-$images
-
-backupname
-----------
-Image_0272391
-Image_0270340
-Image_0268295
-Image_0267271
-Image_0266247
-Image_0265223
-Image_0262151
-Image_0259079
-
-foreach ($image in $images)
->> {
->> remove-agmimage -imagename $image.backupname
->> }
-
-err_code err_message
--------- -----------
-   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
-   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
-   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
-   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
-   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
-   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
-   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
-
-```
-There are two solutions for this.   Either insert a sleep in between each Remove-AGMImage command, or preferably use the method below, where we set the image expiration date instead:
-
-First we learn the expiration dates
-```
-$images = Get-AGMImage -filtervalue appid=35590 | select backupname,expiration
-$images
-```
-Output should look like this:
-```
-
-backupname    expiration
-----------    ----------
-Image_0267271 2021-09-18 19:02:27
-Image_0266247 2021-09-17 11:03:09
-Image_0265223 2021-09-16 10:07:43
-```
-We then change them all to a date prior to today and confirm they changed:
-```
-foreach ($image in $images) { Set-AGMImage -imagename $image.backupname -expiration "2021-09-14" }
-```
-Output should look like this:
-```
-xml                            backupRest
----                            ----------
-version="1.0" encoding="UTF-8" backupRest
-version="1.0" encoding="UTF-8" backupRest
-version="1.0" encoding="UTF-8" backupRest
-```
-
-```
-$images = Get-AGMImage -filtervalue appid=35590 | select backupname,expiration
-$images
-```
-Output should look like this:
-```
-
-backupname    expiration
-----------    ----------
-Image_0267271 2021-09-14 00:00:00
-Image_0266247 2021-09-14 00:00:00
-Image_0265223 2021-09-14 00:00:00
-```
-The images will expire over the next hour.
 
 ## Image creation with an OnDemand Job
 
@@ -1782,8 +1705,83 @@ You can see here we went from 6 to 8.
 $imagegrab = Get-AGMImage -filtervalue "sltname=FSSnaps_RW_OV&jobclass=OnVault"
 $imagegrab.count
 8
+```
+## Image Expiration In Bulk
+
+You may have a requirement to expire large numbers of images at one time.   One way to approach this is to use the Remove-AGMImage command in a loop. However this may fail as shown in the example below.  The issue is that the first expiration job is still running while you attempt to execute the following jobs, which causes a collission:
+```
+$images = Get-AGMImage -filtervalue appid=35590 | select backupname
+$images
+
+backupname
+----------
+Image_0272391
+Image_0270340
+Image_0268295
+Image_0267271
+Image_0266247
+Image_0265223
+Image_0262151
+Image_0259079
+
+foreach ($image in $images)
+>> {
+>> remove-agmimage -imagename $image.backupname
+>> }
+
+err_code err_message
+-------- -----------
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
+   10023 avwlab2sky:,	errormessage: expiration in progress, try again later,	errorcode: 10017
 
 ```
+There are two solutions for this.   Either insert a sleep in between each Remove-AGMImage command, or preferably use the method below, where we set the image expiration date instead:
+
+First we learn the expiration dates
+```
+$images = Get-AGMImage -filtervalue appid=35590 | select backupname,expiration
+$images
+```
+Output should look like this:
+```
+backupname    expiration
+----------    ----------
+Image_0267271 2021-09-18 19:02:27
+Image_0266247 2021-09-17 11:03:09
+Image_0265223 2021-09-16 10:07:43
+```
+We then change them all to a date prior to today and confirm they changed:
+```
+foreach ($image in $images) { Set-AGMImage -imagename $image.backupname -expiration "2021-09-14" }
+```
+Output should look like this:
+```
+xml                            backupRest
+---                            ----------
+version="1.0" encoding="UTF-8" backupRest
+version="1.0" encoding="UTF-8" backupRest
+version="1.0" encoding="UTF-8" backupRest
+```
+
+```
+$images = Get-AGMImage -filtervalue appid=35590 | select backupname,expiration
+$images
+```
+Output should look like this:
+```
+
+backupname    expiration
+----------    ----------
+Image_0267271 2021-09-14 00:00:00
+Image_0266247 2021-09-14 00:00:00
+Image_0265223 2021-09-14 00:00:00
+```
+The images will expire over the next hour.
 
 ## Image Import from OnVault
 
