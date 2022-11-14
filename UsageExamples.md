@@ -1837,7 +1837,7 @@ Import-AGMLibOnVault -diskpoolid 199085 -applianceid 1415019931 -monitor
 Note you can also add **-forget** to forget learned images, or **-owner** to take ownership of those images.
 
 ## Image restore
-For the vast bulk of application types where we want to restore the application type the main thing we need is the image ID that will be used.
+For the vast bulk of application types where we want to restore the application, the main thing we need is the image ID that will be used.
 First find the application you want to work with:
 ```
 Get-AGMApplication -filtervalue managed=true | select id,appname,apptype
