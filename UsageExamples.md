@@ -68,9 +68,9 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 ## Appliance add and remove
 
-> **Note**:   You cannot perform Sky appliance add and remove in Google Cloud Backup and DR.  This is for Actifio only.
+> **Note**:   You cannot perform appliance add and remove in Google Cloud Backup and DR.  This is for Actifio only.
 
-You may want to add or remove a Sky Appliance from the Web GUI.   You can list all the Sky Appliances with this command:
+You may want to add or remove a Sky Appliance from the AGM Web GUI.   You can list all the Sky Appliances with this command:
 ```
 Get-AGMAppliance | select id,name,ipaddress
 ```
@@ -467,7 +467,7 @@ Australia/Sydney
 
 ## Application bulk unprotection
 
-In this scenario, a large number of VMs that were no longer required were removed from the vCenter. However, as those VMs were still being managed by Actifio at the time of removal from the VCenter, the following error message is being received constantly
+In this scenario, a large number of VMs that were no longer required were removed from the vCenter. However, as those VMs were still being managed at the time of removal from the VCenter, the following error message is being received constantly
  
  ```
 Error 933 - Failed to find VM with matching BIOS UUID
@@ -947,7 +947,7 @@ There are many parameters that may need to be supplied:
 -nic0externalip  Only 'none' and 'auto' are valid choices.  If you don't use this variable then the default for nic0 is 'none'
 -nic0internalip  Only specify this is you want to set an internal IP.  Otherwise the IP for nic0 will be auto assigned.   
 -poweroffvm      By default the new Compute EngineInstance will be left powered on after creation.   If you want it to be created but then powered off, then specify this flag.
--migratevm       By default the new Compute EngineInstance will be dependent on the Actifio Appliance.  To migrate all data onto Compute Engine Persistent Disk, then specify this flag.
+-migratevm       By default the new Compute EngineInstance will be dependent on the mounting Appliance.  To migrate all data onto Compute Engine Persistent Disk, then specify this flag.
 -preferedsource  Optional,  used if we want to force selection of images from a particular storage pool, either snapshot, streamsnap or onvault  (use lower case)
 ```
 Optionally you can request a second NIC using nic1:
@@ -1081,7 +1081,7 @@ New-AGMLibGCEConversion -projectname project1 -machinetype n1-standard-2 -instan
 
 ### Managing the mounted Compute Engine Instance Instance 
 
-Once we have created a new GCP Instance from PD snapshot, there is no dependency on Actifio because the disks for the instance are all Persistent Disks rather than shared disks from an Actifio Storage Pool,  but the mount is still shown as an Active Image, which means it needs to be managed.   We can see the Active Images with this command:
+Once we have created a new GCP Instance from PD snapshot, there is no dependency on the appliance because the disks for the instance are all Persistent Disks rather than shared disks from an appliance Storage Pool,  but the mount is still shown as an Active Image, which means it needs to be managed.   We can see the Active Images with this command:
 ```
 Get-AGMLibActiveImage
 ```
@@ -1102,12 +1102,12 @@ imagestate       : Mounted
 ```
 We have two choices on how to handle this image:
 
-1. Unmount and delete. This command deletes the mounted image record on the Actifio GO side and the Compute Engine Instance on the GCP side.
+1. Unmount and delete. This command deletes the mounted image record on the appliance side and the Compute Engine Instance on the GCP side.
 
 ```
  Remove-AGMMount Image_0021181  -d
 ```
-2. Preserve the image on GCP side. This command deletes the mounted image record on Actifio GO side but leaves the Compute Engine Instance on the GCP side. In the Web GUI this is called forgetting the image.   You can see the only difference with the choice above is the -p for preserve.
+2. Preserve the image on GCP side. This command deletes the mounted image record on the appliance side but leaves the Compute Engine Instance on the GCP side. In the Web GUI this is called forgetting the image.   You can see the only difference with the choice above is the -p for preserve.
 ```
  Remove-AGMMount Image_0021181  -d -p
 ```
@@ -2108,7 +2108,7 @@ id      host                   consistencydate     backupname     jobclass
 
 ## SQL Server Mount and Migrate
 
-In this user story we are going to use SQL Mount and Migrate to move an Actifio Mount back to server disk
+In this user story we are going to use SQL Mount and Migrate to move a mount back to server disk
 
 ### Create the mount
 
@@ -2227,7 +2227,7 @@ succeeded 2020-10-09 15:02:15 2020-10-09 15:04:06
 
 ## SQL Server Multi Mount and Migrate
 
-In this user story we are going to use SQL Mount and Migrate to move an Actifio Mount back to server disk but we are going to run multiple mounts and migrates in a single pass using a CSV file
+In this user story we are going to use SQL Mount and Migrate to move a Mount back to server disk but we are going to run multiple mounts and migrates in a single pass using a CSV file
 
 This video also documents the process:   https://youtu.be/QX5Sn3XHbCM
 
