@@ -48,7 +48,7 @@ You then need to go to **IAM & Admin** > **Service Accounts**.  Find that servic
 * ```Service Account Token Creator```
 * ```Service Account OpenID Connect Identity Token Creator```
 
-> **Note**: Do not assign either of these ```Token Creator``` roles to a service account at the project level.  Doing so will allow that account to _impersonate_ any other service account, which will make that user able to login as any user that has access to a **Backup and DR** role.
+> **Warning**: Do not assign either of these ```Token Creator``` roles to a service account at the project level.  Doing so will allow that account to _impersonate_ any other service account, which will make that user able to login as any user that has access to a **Backup and DR** role.
 
 Decide where/how you will run your service account. You have two options:
 1. Compute Engine Instance with attached service account
