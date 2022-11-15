@@ -6,12 +6,17 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 >**[Appliance Add And Remove](#appliance-add-and-remove)**<br>
 **[Appliance Discovery Schedule](#appliance-discovery-schedule)**<br>
 **[Appliance Info And Report Commands](#appliance-info-and-report-commands)**<br>
+**[Appliance Logs](#appliance-logs)**<br>
 **[Appliance Parameter and Slot Management](#appliance-parameter-and-slot-management)**</br>
 **[Appliance Timezone](#appliance-timezone)**<br>
 
+**[Applications](#applications)**<br>
+>**[Application IDs](#application-ids)**<br>
+
 **[Backup Plans](#backup-plans)**</br>
->**[Backup Plan Application](#backup-plan-application)**</br>
+>**[Applying a Backup Plan](#applying-a-backup-plan)**</br>
 **[Backup Plan Policy Usage](#backup-plan-policy-usage)**</br>
+**[Backup Plan Policy Usage By Application](#backup-plan-policy-usage-by-application)**</br>
 **[Backup Plan Removal](#backup-plan-removal)**</br>
 **[Backup Plan Removal in Bulk](#backup-plan-removal-in-bulk)**</br>
 **[Importing and Exporting Policy Templates](#importing-and-exporting-policy-templates)**</br>
@@ -40,7 +45,10 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 **[Image Restore](#image-restore)**<br>
 
 **[Mount](#mount)**</br>
->**[Multi Mount for Ransomware Analysis](#multi-Mount-for-ransomware-analysis)**</br>
+>**[Active Mounts](#active-mounts)**</br>
+**[Display Container Mount YAML](#display-container-mount-yaml)**</br>
+**[Multi Mount for Ransomware Analysis](#multi-Mount-for-ransomware-analysis)**</br>
+
 
 **[Organizations](#organizations)**<br>
 >**[Organization Creation](#organization-creation)**<br>
@@ -267,6 +275,20 @@ If you need to send multiple arguments separate them with an **&**, for example,
 Get-AGMAPIApplianceReport -applianceid 406219 -command reportimages -arguments "-a 0&-s" |  Export-Csv disks.csv
 ```
 
+## Appliance Logs
+
+We can fetch logs from an Appliance with the following command:
+```
+Get-AGMLibApplianceLogs -logtype "udppm,psrv"
+```
+A zip file will download in the folder you ran the command in.
+
+* If you don't know what log types to download, just run the command without parameters.
+* If you have more than one appliance you will need to specify which appliance to download from with ```-applianceid xxxx``` You can learn applianceID with ```Get-AGMAppliance```
+* You can download agent (connector) logs by specifying the host ID with ```-hostid xxx``` and ```-logtypes "agent"``` or for AGM, ```-logtypes "connector"```   Learn host ID with ```Get-AGMHost```
+* You can also use ```-startdate``` and ```-enddate``` for instance ```-startdate "2022-10-01" -enddate "2022-10-04"```
+
+
 ## Appliance Parameter and Slot Management
 
 Each appliance has a set of parameters that are used to:
@@ -471,6 +493,51 @@ timezone
 Australia/Sydney
 ```
 
+# Applications
+
+Applications are effectively data sources.  They contain the data we want to backup.
+
+## Application IDs
+
+The most common requirement for many commands is to supply the application ID, which is a unique number for each application.   This command is the default choice however if you run it without filters or select statements you will be overwhelmed:
+```
+Get-AGMApplication
+```
+So you could use a command like this to find a host called ```bastion```:
+```
+$appname = "bastion"
+Get-AGMApplication -filtervalue appname=$appname | select id,appname,apptype
+```
+Output would look like this:
+```
+id     appname apptype
+--     ------- -------
+709575 bastion GCPInstance
+```
+An alternative is to use this command:
+```
+Get-AGMLibApplicationID
+```
+Lets say we are looking for a host called ```bastion```.   We could use a command like this and get the key information we need:
+```
+Get-AGMLibApplicationID -appname bastion
+
+id            : 709575
+friendlytype  : GCP Instance
+hostname      : bastion
+hostid        : 709573
+appname       : bastion
+appliancename : backup-server-29736
+applianceip   : 10.0.3.29
+applianceid   : 144091747698
+appliancetype : Sky
+managed       : True
+slaid         : 965514
+```
+There are many search options, for instance if you don't know the full name you can ```-fuzzy``` like this:
+```
+Get-AGMLibApplicationID -appname bastio -fuzzy
+```
 
 
 # Backup Plans
@@ -479,7 +546,7 @@ A Backup Plan is a combination of a policy template (that defines what backup po
 
 Note that Backup Plans is the new term for the SLA Architect.  If you see the term Backup Plan, this is the equivalent of what Actifio called an SLA.
 
-## Backup Plan Application
+## Applying a Backup Plan
 
 When we apply a backup plan (SLA) to an application we are protecting or managing it.  To complete this task we need three things:
 * ```-appid xxx```      The Application ID
@@ -550,6 +617,34 @@ Get-AGMLibPolicies -snapshotlocation
 If you wish to display all advanced policy options use this command:
 ```
 Get-AGMLibPolicies -advancedpolicysettings
+```
+
+## Backup Plan Policy Usage By Application
+
+If you wish to know exact details about what policies are applied to a specific application then learn the application ID using the procedure [here](#application-ids) and then run this command (using your AppID):
+```
+$appid=789632
+Get-AGMLibAppPolicies -appid $appid
+```
+Output should look like this:
+```
+policyid  : 70801
+name      : Daily DB
+operation : snapshot
+priority  : medium
+retention : 7 days
+starttime : 00:00
+endtime   : 07:00
+rpo       : 24 hours
+
+policyid  : 105138
+name      : Daily OV
+operation : onvault
+priority  : medium
+retention : 30 days
+starttime : 00:00
+endtime   : 18:50
+rpo       : 24 hours
 ```
 
 ## Backup Plan Removal
@@ -674,7 +769,7 @@ Output will be blank but the VMs will all be deleted.
 
 ## Importing and Exporting Policy Templates
 
-In this user story we are going to export our Policy Templates (also called Service Level Templates or SLTs) from the backup system in case we want to import them into a different one.
+In this user story we are going to export our Policy Templates (also called Service Level Templates or SLTs) from our AGM/Management Console in case we want to import them into a different one.
 
 First we validate our SLTs.
 
@@ -692,7 +787,7 @@ We now export all the SLTs to a file called export.json.  If we only want to exp
 ```
 Export-AGMLibSLT -all -filename export.json
 ```
-We now login to our target Web GUI.
+We now login to our target AGM/Management Console.
 
 We validate there are no Templates.   Currently this function expects there to be no templates in the target.  However if there are, as long as there are no name clashes, the import will still succeed.  In this example there are no templates in the target.
 ```
@@ -1865,6 +1960,58 @@ There are a number of parameters we can use:
 * $poweroffvm:  For VMware restore, specified if the VM should be restored in the powered off state.  By default this is false and the VM is powered on at restore time time.
 
 # Mount
+
+## Active Mounts 
+
+An active image is another term for a mounted image.   In the GUI we display them by going to ```App Manager > Active Mounts```
+
+We can display them by running this command:
+```
+Get-AGMLibActiveImage
+```
+Output should look like this:
+```
+id               : 834142
+imagename        : Image_0153552
+apptype          : VMBackup
+appliancename    : backup-server-29736
+hostname         : centos1
+appname          : centos1
+mountedhost      : avtestmount
+allowedip        :
+childappname     : avtestmount
+consumedsize_gib : 0.237
+daysold          : 8
+label            : testmount
+imagestate       : Mounted
+
+id               : 877783
+imagename        : Image_0174903
+apptype          : SqlServerWriter
+appliancename    : backup-server-29736
+hostname         : windows
+appname          : CRM
+mountedhost      : windows
+allowedip        :
+childappname     :
+consumedsize_gib : 0
+daysold          : 6
+label            :
+imagestate       : Mounted
+```
+You can filter output with the following filters:
+* ```-appid 1234``` To filter on App ID 
+* ```-label "labeltext"``` To filter on the label field
+* ```-unmount``` To only display images in the unmounted state
+
+
+## Display Container Mount YAML
+
+If you have used the option to mount to a Container, you may want to get the YAML file needed to allow the Container to access it.  First learn the mounted image ID or imagename with the [Get-AGMLibActiveImage](#active-mounts) command and then use it like this:
+```
+$imagename = Image_0174936
+Get-AGMLibContainerYAML -imagename $imagename
+```
 
 ## Multi Mount for Ransomware Analysis
 
