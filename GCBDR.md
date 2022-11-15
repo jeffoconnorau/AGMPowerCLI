@@ -33,7 +33,7 @@ In this example (yours will be different!):
 
 ## Creating your Service Account
 
-> **Note**: Do not use a default (auto generated) service account for this process such as the ```Compute Engine Service Agent``` Use either a new service account or one that was previously manually created.  
+> **Warning**: Do not use a default (auto generated) service account for this process such as the ```Compute Engine Service Agent``` Use either a new service account or one that was previously manually created.  
 
 From Cloud Console IAM & Admin panel in the project where Backup and DR was activated, go to **Service Account** and choose **Create Service Account**.  You can also modify an existing one if desired.
 
