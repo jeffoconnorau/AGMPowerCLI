@@ -101,7 +101,7 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 **[VMware](#vmware)**</br>
 >**[Using a VMware mount to create a new VMware VM](#using-a-vmware-mount-to-create-a-new-vmware-vm)**</br>
-**[Mounting a VMware VM backup to an existing VM](#mounting-a-vmware-vm-backup-to-an-existing-vm**</br>
+**[Mounting a VMware VM backup to an existing VM](#mounting-a-vmware-vm-backup-to-an-existing-vm)**</br>
 **[VMware Multi Mount](#vmware-multi-mount)**</br>
 
 **[Workflows](#Workflows)**</br>
