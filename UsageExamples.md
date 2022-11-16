@@ -100,8 +100,8 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 **[SQL Server Protecting and Rewinding Child Apps](#sql-server-protecting-and-rewinding-child-apps)**</br>
 
 **[VMware](#vmware)**</br>
->**[Creating a VMware mount as new VM](#creating-a-vmware-mount-as-new-vm)**</br>
-**[Creating a VMware mount to existing VM](#creating-a-vmware-mount-as-existing-vm)**</br>
+>**[Using a VMware mount to create a new VMware VM](#using-a-vmware-mount-to-create-a-new-vmware-vm)**</br>
+**[Mounting a VMware VM backup to an existing VM](#mounting-a-vmware-vm-backup-to-an-existing-vm**</br>
 **[VMware Multi Mount](#vmware-multi-mount)**</br>
 
 **[Workflows](#Workflows)**</br>
@@ -3097,13 +3097,13 @@ We can then continue to work with our child app, creating new snapshots or even 
 
 # VMware
 
-## Creating a VMware mount as new VM
+## Using a VMware mount to create a new VMware VM
 To create a new VMware VM from backup use this command:
 ```
 New-AGMLibVM 
 ```
 
-## Creating a VMware mount to existing VM
+## Mounting a VMware VM backup to an existing VM
 To mount to an existing host use this command:
 ```
 New-AGMLibVMExisting
