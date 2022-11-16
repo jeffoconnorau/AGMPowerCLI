@@ -93,6 +93,7 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 **[SQL Server](#sql-server)**</br>
 >**[SQL Server Database Mount](#sql-server-database-mount)**</br>
+**[SQL Server Database Clone](#sql-server-database-clone)**</br>
 **[SQL Server Database Mount with point in time recovery](#sql-server-database-mount-with-point-in-time-recovery)**</br>
 **[SQL Server Database Mount and Migrate](#sql-server-database-mount-and-migrate)**</br>
 **[SQL Server Instance Mount](#sql-server-instance-mount)**</br>
@@ -2522,6 +2523,12 @@ Restore-AGMLibSAPHANA
 
 # SQL Server
 
+## SQL Server Database Clone
+
+As opposed to a mount which rapidly creates a virtual copy of the database(s) where the data is being accessed via the backup appliance, a clone creates a new full copy of the database on the host server disk.  To do this run this command in guided mode:
+```
+New-AGMLibMSSQLClone
+```
 ## SQL Server Database Mount
 
 In this 'story' a user wants to mount the latest snapshot of a SQL DB to a host
