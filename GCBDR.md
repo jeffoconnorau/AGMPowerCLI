@@ -9,17 +9,6 @@ To perform Backup and DR PowerShell operations, you need the following:
     1. A Linux or Windows Compute Engine Instance with an attached service account which has GCloud CLI and PowerShell installed.
     1. A Linux, Mac or Windows host which has GCloud CLI and PowerShell installed and which has a downloaded JSON key for the relevant service account.  
 
-## Timeouts 
-
-Backup and DR uses OpenID Connect (OIDC) ID tokens that are valid for 1 hour (3,600 seconds).  When they expire you will see a message like this:
-```
-PS /> New-AGMLibSAPHANAMount
-
-errormessage
-------------
-OpenID Connect token expired: JWT has expired
-```
-You will need to re-run Connect-AGM to generate a new token.
 
 ## Getting Management Console details
 
@@ -141,6 +130,19 @@ localnode       : backup-server-36842
 clusterid       : 145126716485
 createdate      : 2022-03-25 04:33:00
 ```
+
+## Timeouts 
+
+Backup and DR uses OpenID Connect (OIDC) ID tokens that are valid for 1 hour (3,600 seconds).  When they expire you will see a message like this:
+```
+PS /> New-AGMLibSAPHANAMount
+
+errormessage
+------------
+OpenID Connect token expired: JWT has expired
+```
+You will need to re-run Connect-AGM to generate a new token.
+
 
 ## Converting Scripts From Actifio GO to Backup and DR
 
