@@ -12,9 +12,16 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 
 **[Applications](#applications)**<br>
 >**[Application IDs](#application-ids)**<br>
+**[Find Images for a particular application](#find-images-for-a-particular-application)**<br>
+**[Find the Latest Image For a Particular Application](#find-the-latest-image-for-a-particular-application)**<br>
+
+**[Audit](#audit)**</br>
+>**[Finding the Last Command a User Issued](#finding-the-last-command-a-user-issued)**</br>
 
 **[Backup Plans](#backup-plans)**</br>
 >**[Applying a Backup Plan](#applying-a-backup-plan)**</br>
+**[Disabling a Backup Plan](#disabling-a-backup-plan)**</br>
+**[Backup Plan Enablement Status](#backup-plan-enablement-status)**</br>
 **[Backup Plan Policy Usage](#backup-plan-policy-usage)**</br>
 **[Backup Plan Policy Usage By Application](#backup-plan-policy-usage-by-application)**</br>
 **[Backup Plan Removal](#backup-plan-removal)**</br>
@@ -37,25 +44,52 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 **[Consistency Groups](#consistency-groups)**<br>
 >**[Consistency Group Management](#consistency-group-management)**<br>
 
+**[DB2](#db2)**</br>
+**[Creating a DB2 mount](#creating-a-db2-mount)**</br>
+
+**[FileSystem](#filesystem)**</br>
+**[Creating a FileSystem mount](#creating-a-filesystem-mount)**</br>
+
+**[Hosts](#hosts)**<br>
+>**[Finding a Host ID by Host Name](#finding-a-host-id-by-host-name)**<br>
+**[Finding a Host ID by Operating System Type](#finding-a-host-id-by-operating-system-type)**<br>
+
 **[Images](#images)**<br>
 >**[Image Creation With An On-Demand Job](#image-creation-with-an-ondemand-job)**<br>
 **[Image Creation In Bulk Using Policy ID](#image-creation-in-bulk-using-policy-id)**<br>
 **[Image Expiration In Bulk](#image-expiration-in-bulk)**<br>
 **[Image Import From OnVault](#image-import-from-onvault)**<br>
+**[Persistent Disk Import From OnVault](#persistent-disk-import-from-onvault)**<br>
 **[Image Restore](#image-restore)**<br>
+**[Setting an Image Label](#setting-an-image-label)**</br>
+
+**[Jobs](#jobs)**<br>
+>**[Finding Running Jobs](#finding-running-jobs)**<br>
+**[Following a Running Job](#following-a-running-job)**<br>
 
 **[Mount](#mount)**</br>
 >**[Active Mounts](#active-mounts)**</br>
+**[Create new mount to a Container](#create-new-mount-to-a-container)**</br>
 **[Display Container Mount YAML](#display-container-mount-yaml)**</br>
 **[Multi Mount for Ransomware Analysis](#multi-Mount-for-ransomware-analysis)**</br>
+**[Unmounting an Image](#unmounting-an-image)**</br>
 
+**[MySQL](#mysql)**</br>
+**[Creating a MySQL mount](#creating-a-mysql-mount)**</br>
+
+**[Oracle](#oracle)**</br>
+**[Creating a Oracle mount](#creating-a-oracle-mount)**</br>
 
 **[Organizations](#organizations)**<br>
 >**[Organization Creation](#organization-creation)**<br>
 
+**[PostgreSQL](#postgresql)**</br>
+**[Creating a PostgresSQL mount](#creating-a-postgresql-mount)**</br>
+
 **[SAP HANA](#sap-hana)**</br>
 >**[SAP HANA Mount](#sap-hana-mount)**</br>
 **[SAP HANA Multi Mount](#sap-hana-multi-mount)**</br>
+**[SAP HANA Restore](#sap-hana-restore)**</br>
 
 **[SQL Server](#sql-server)**</br>
 >**[SQL Server Database Mount](#sql-server-database-mount)**</br>
@@ -66,10 +100,13 @@ This document contains usage examples that include both AGMPowerCLI and AGMPower
 **[SQL Server Protecting and Rewinding Child Apps](#sql-server-protecting-and-rewinding-child-apps)**</br>
 
 **[VMware](#vmware)**</br>
->**[VMware Multi Mount](#vmware-multi-mount)**</br>
+>**[Creating a VMware mount as new VM](#creating-a-vmware-mount-as-new-vm)**</br>
+**[Creating a VMware mount to existing VM](#creating-a-vmware-mount-as-existing-vm)**</br>
+**[VMware Multi Mount](#vmware-multi-mount)**</br>
 
 **[Workflows](#Workflows)**</br>
->**[Running a Workflow](#running-a-workflow)**</br>
+>**[Checking the Status of a Workflow](#checking-the-status-of-a-workflow)**</br>
+**[Running a Workflow](#running-a-workflow)**</br>
 
 
 # Appliances
@@ -538,7 +575,74 @@ There are many search options, for instance if you don't know the full name you 
 ```
 Get-AGMLibApplicationID -appname bastio -fuzzy
 ```
+## Find Images for a particular application
 
+If we know the application ID, we can find any images for that application with this command:
+```
+$appid = 709575
+Get-AGMLibImageDetails -appid $appid
+```
+Output will look like this (backupname is the same thing as imagename).
+```
+backupname    jobclass consistencydate     endpit
+----------    -------- ---------------     ------
+Image_0177198 snapshot 2022-11-10 09:22:36
+Image_0184241 snapshot 2022-11-11 06:00:14
+Image_0185325 snapshot 2022-11-11 09:05:46
+Image_0189474 snapshot 2022-11-14 13:59:12
+Image_0192543 snapshot 2022-11-15 08:34:40
+Image_0196638 snapshot 2022-11-16 08:46:17
+```
+
+## Find the Latest Image For a Particular Application
+If we want to know the most recent image created for a particular application we can use this command:
+```
+$appid = 709575
+Get-AGMLibLatestImage -appid $appid
+```
+Output will look like this (backupname is the same thing as imagename).
+```
+appliance       : backup-server-29736
+hostname        : bastion
+appname         : bastion
+appid           : 709575
+jobclass        : snapshot
+backupname      : Image_0196638
+id              : 984504
+consistencydate : 2022-11-16 08:46:17
+endpit          :
+sltname         : pd-snaps-multiregional
+slpname         : backup-server29736_Profile
+policyname      : daily snap
+```
+The default is for snapshot, but you can also specify a jobclass:
+* ```-jobclass OnVault``` To look for OnVault images
+
+# Audit
+
+## Finding the last command a user issued
+
+While the audit log contains a lot of events where users look at data (get) we may want to see commands where users changed things (post, put and delete).  So if we know the username we can use this command which looks at posts by default:
+```
+Get-AGMLibLastPostCommand -username apiuser@.iam.gserviceaccount.com
+```
+Output will typically look like this, where in this example the user expired image 425577
+```
+@type      : auditRest
+id         : 986486
+href       : https://agm.backupdr.actifiogo.com/actifio/localaudit/986486
+issuedate  : 2022-11-16 10:51:39
+username   : apiuser@iam.gserviceaccount.com
+command    : POST https://agm.backupdr.actifiogo.com/actifio/backup/425577/expire force=TRUE Session 5b53bf3e
+ipaddress  : 10.1.1.1
+component  : RESTful
+status     : 10008
+privileged : False
+```
+We can look for other command types with either:
+* ```-delete``` To look for deletes normally associated with deleting things 
+* ```-put``` To look for puts, normally associated with changing things
+* ```-limit 2``` To get the last 2 commands.   You can look for as many commands as you like.
 
 # Backup Plans
 
@@ -600,6 +704,33 @@ We can validate our policy is applied with a command like this:
 ```
 (Get-AGMApplication $appid).sla
 ```
+## Disabling a Backup Plan
+We can disable the SLA for a particular application or logical group or literally every known application.  This command is interactive:
+```
+Set-AGMLibSLA
+```
+It will build a command you can run then or store for later.  A typical command would look like this:
+```
+Set-AGMLibSLA -slaid 741509  -scheduler enable -expiration enable
+```
+
+## Backup Plan Enablement Status
+Each backup plan can have its scheduler disabled (to prevent new backups being created) as well as its expiration disabled (to prevent old backups being expired).  To check on all applications you this command:
+```
+Get-AGMLibSLA 
+```
+Output will look like this:
+```
+hostname     appname                apptype         slaid  appid  scheduler expiration sltname                  slpname                    logicalgroupname
+--------     -------                -------         -----  -----  --------- ---------- -------                  -------                    ----------------
+avw tiny     AVW Tiny               VMBackup        741509 409016 enabled   enabled    VMware Direct to OnVault 29736 avwargolis
+bastion      bastion                GCPInstance     965514 709575 enabled   enabled    pd-snaps-multiregional   backup-server29736_Profile
+```
+You can also specify the following things to see a subset:
+* ```-appid 409016``` To see a specific appid, in this example appid 409016
+* ```-slaid 741509``` To see a specific sla (Backup plan) ID, in this example slaid 741509
+* ```-logicalgroup 1234``` To see all members of a specific logical group, in this example group ID 1234
+
 ## Backup Plan Policy Usage
 
 If you wish to display general information about the policies in your backup plan templates then use this command:
@@ -1647,8 +1778,54 @@ We can delete  the group with syntax like this:
 Remove-AGMConsistencyGroup 353953
 ```
 
-# Images
+# DB2
 
+## Creating a DB2 Mount
+This command will create a DB2 mount using a guided menu:
+```
+New-AGMLibDb2Mount
+```
+
+# FileSystem
+
+## Creating a FileSystem Mount
+This command will create a FileSystem mount using a guided menu:
+```
+New-AGMLibFSMount
+```
+
+# Hosts
+
+## Finding a Host ID by Host Name
+
+If you know the name of a host but want to find its host ID, then use this command:
+```
+$nameofhost = "bastion"
+Get-AGMLibHostID $nameofhost
+```
+Output will look like this:
+```
+id            : 709573
+hostname      : bastion
+osrelease     :
+appliancename : backup-server-29736
+applianceip   : 10.0.3.29
+appliancetype : Sky
+```
+## Finding a Host ID by Operating System Type
+
+You can find all hosts with an installed agent (Connector) using an ostype of either ```Linux``` or ```Win32``` using a command like this:
+```
+Get-AGMLibHostList -ostype Linux
+Get-AGMLibHostList -ostype Win32
+```
+Output will look like this:
+```
+id     hostname ostype ApplianceName
+--     -------- ------ -------------
+744253 windows  Win32  backup-server-29736
+```
+# Images
 
 ## Image creation with an OnDemand Job
 
@@ -1931,6 +2108,29 @@ Import-AGMLibOnVault -diskpoolid 199085 -applianceid 1415019931 -monitor
 ```
 Note you can also add **-forget** to forget learned images, or **-owner** to take ownership of those images.
 
+## Persistent Disk Import From OnVault
+
+Imports or forgets PD Snapshot images.  Note there is no Forget-AGMLibPDSnapshot command.  You can do import and forget from this function. 
+
+Imports all PD Snapshot images from disk pool ID 20060633 onto Appliance ID 1415019931
+```
+Import-AGMLibPDSnapshot -diskpoolid 20060633 -applianceid 1415019931 
+```
+
+Imports all PD Snapshot images from disk pool ID 20060633 and App ID 4788 onto Appliance ID 1415019931:
+```
+Import-AGMLibPDSnapshot -diskpoolid 20060633 -applianceid 1415019931 -appid 4788
+```
+Imports all PD Snapshot images from disk pool ID 20060633 and App ID 4788 onto Appliance ID 1415019931 and takes ownership:
+```
+Import-AGMLibPDSnapshot -diskpoolid 20060633 -applianceid 1415019931 -appid 4788 -owner
+```
+Forgets all PD Snapshot images imported from disk pool ID 20060633 and App ID 4788 onto Appliance ID 1415019931:
+```
+Import-AGMLibPDSnapshot -diskpoolid 20060633 -applianceid 1415019931 -appid 4788 -forget
+```
+
+
 ## Image restore
 For the vast bulk of application types where we want to restore the application, the main thing we need is the image ID that will be used.
 First find the application you want to work with:
@@ -1958,6 +2158,58 @@ There are a number of parameters we can use:
 * $password:  This is the password for the username
 * $datastore:  For VMware restores, specifies which datastore will be used for the restored VM
 * $poweroffvm:  For VMware restore, specified if the VM should be restored in the powered off state.  By default this is false and the VM is powered on at restore time time.
+
+## Setting an Image Label
+
+This function is used to label a large number of images in a single command.  This is done by supplying one of the following:
+* A list of images to label, normally created with New-AGMLibImageRange.  We then use:   ```Set-AGMLibImage -imagelist <imagelist>```
+* A CSV file contained a list of images with new labels.  The file needs to have at least id,backupname,label as headings.  You could use ```New-AGMLibImageRange``` to create this file.  Then use:  ```Set-AGMLibImage -filename <filename.csv>```
+* *An imagename.   You could learn this in the AGM Web GUI.   Then use:  ```Set-AGMLibImage -imagename <imagename> -label <newlabel>"```
+
+# Jobs
+
+## Finding Running Jobs
+
+To list all running jobs use this command:
+```
+Get-AGMLibRunningJobs
+```
+Output will look like this:
+```
+jobname       : Job_0198174
+jobclass      : DirectOnVault
+apptype       : VMBackup
+hostname      : avw tiny
+appname       : AVW Tiny
+appid         : 409016
+appliancename : backup-server-29736
+status        : running
+queuedate     : 2022-11-16 12:24:38
+startdate     : 2022-11-16 12:24:38
+progress      : 0
+targethost    :
+duration      : 00:00:05
+```
+You can also use a variety of options:
+* ```-every``` To also show queued jobs
+* ```-jobclass snapshot``` To only track a specific jobclass such as snapshot
+* ```-monitor``` To track all running jobs with automated refresh
+* ```-refresh 5``` Used with ```-monitor``` to change the refresh rate in seconds to a different value
+* ```-sltname gold``` Track jobs started by a specific policy template, in this example one named *gold*
+
+## Following a Running Job
+ 
+If you have a started a job you might want to track it to completion so you know when its finished.  You can do this with his command:
+```
+$jobname = "Job_0198174"
+Get-AGMLibFollowJobStatus $jobname
+```
+Output will look like this:
+```
+jobname     status  progress queuedate           startdate           duration targethost
+-------     ------  -------- ---------           ---------           -------- ----------
+Job_0198174 running        0 2022-11-16 12:24:38 2022-11-16 12:24:38 00:00:18 esxi-109187.a130d0de.australia-southeast1.gve.goog
+```
 
 # Mount
 
@@ -2004,6 +2256,19 @@ You can filter output with the following filters:
 * ```-label "labeltext"``` To filter on the label field
 * ```-unmount``` To only display images in the unmounted state
 
+
+## Create new mount to a Container
+
+This command runs a guided menu to mount an image to a container
+```
+New-AGMLibContainerMount 
+```
+In this example we mount Image ID 54380607  The ```-volumes``` list each moint point in the image.  Each mount point is comma separated.  For each each mountpoint we need three values, that are semi-colon separated.  In this example, there are two mount points, the first one is ```/dev/hanavg/log``` .  It is given an appliance mountpoint of ```/test1``` and an NFS export path of ```/custmnt2```
+
+The allowedips is a comma separated list of IP addresses that can connect to the appliance mountpoint.
+```
+New-AGMLibContainerMount -imageid 54380607 -volumes "dasvol:/dev/hanavg/log;/tmp/cmounts/test1;/custmnt2,dasvol:/dev/hanavg/data;/tmp/cmounts/test2;/ss" -allowedips "1.1.1.1,10.10.10.10"
+```
 
 ## Display Container Mount YAML
 
@@ -2117,6 +2382,29 @@ However we could update a large number of images with this command:
 ```
 Set-AGMLibImage
 ```
+## Unmounting an Image
+We can find mounted image with  [Get-AGMLibActiveImages](#active-mounts) 
+
+Then use this command to unmount and delete a mounted image:
+```
+$imagename = Image_0174936
+Remove-AGMLibMount -imagename $imagename -delete
+```
+You can also use the following:
+* ```-imageid 1234``` To use image ID rather than image name
+* ```-force``` To force the unmount.   Don't do this without clear reason
+* ```-preservevm ``` This applies to Compute Engine Instances created from Persistent Disk Snapshot.   When used the Appliance Image of the mount is removed, but on the Compute Engine  side the new VM is retained.   
+* ```-gceinstanceforget```  Forgets all mounted Compute Engine Instance.  This is the same as running ```-preservevm``` against them
+
+
+# Oracle
+
+## Creating a Oracle Mount
+This command will create a Oracle mount using a guided menu:
+```
+New-AGMLibOracleMount
+```
+
 # Organizations
 
 ## Organization Creation
@@ -2166,6 +2454,14 @@ $org = Get-AGMOrg -orgid 526553
 $org.resourcecollection.hostlist
 442009
 449560
+```
+
+# PostgreSQL
+
+## Creating a PostgreSQL Mount
+This command will create a PostgreSQL mount using a guided menu:
+```
+New-AGMLibPostgreSQLMount
 ```
 
 # SAP HANA
@@ -2218,6 +2514,12 @@ To run the multi-mount you would use this command:
 ```
 New-AGMLibSAPHANAMultiMount -instancelist sapmount.csv
 ```
+## SAP HANA Restore
+To restore an SAP HANA database we can use this command which will run a guided menu:
+```
+Restore-AGMLibSAPHANA 
+```
+
 # SQL Server
 
 ## SQL Server Database Mount
@@ -2795,7 +3097,19 @@ We can then continue to work with our child app, creating new snapshots or even 
 
 # VMware
 
-# VMware Multi Mount
+## Creating a VMware mount as new VM
+To create a new VMware VM from backup use this command:
+```
+New-AGMLibVM 
+```
+
+## Creating a VMware mount to existing VM
+To mount to an existing host use this command:
+```
+New-AGMLibVMExisting
+```
+
+## VMware Multi Mount
 
 There are many cases where you may want to mount many VMs in one hit.  A simple scenario is ransomware, where you are trying to find an uninfected or as yet unattacked (but infected) image for each production VM.   So lets mount as many images as we can as quickly as we can so we can find unaffected VMs and start the recovery.
 
@@ -2920,6 +3234,17 @@ You can just specify one esxhost ID with -esxhostid.   If you are using NFS data
 You can also specify a single datastore rather than a list.
 
 # Workflows
+
+## Checking the Status of a Workflow
+We can check the status of a workflow with this command.  If you don't know the ID, it will help you find it.
+```
+Get-AGMLibWorkflowStatus
+```
+You can then use other options to work with a specific workflow ID:
+* ```-workflowid 1234``` To see a specific workflow, in this example workflow ID 1234
+* ```-monitor``` To monitor a running workflow when used with ```-workflowid 1234```
+* ```-previous``` To see the previous run of the workflow when used with ```-workflowid 1234```
+
 
 ## Running a Workflow
 
